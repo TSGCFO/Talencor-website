@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import HeroSection from "@/components/hero-section";
 import ServicesOverview from "@/components/services-overview";
 import StatisticsSection from "@/components/statistics-section";
@@ -9,16 +8,6 @@ import { Check, Star } from "lucide-react";
 export default function Home() {
   return (
     <>
-      <Helmet>
-        <title>Talencor Staffing - Professional Employment Solutions | Connecting Talent with Opportunity</title>
-        <meta 
-          name="description" 
-          content="Professional staffing agency connecting exceptional talent with outstanding opportunities across Canada. Comprehensive recruitment solutions for job seekers and employers." 
-        />
-        <meta property="og:title" content="Talencor Staffing - Professional Employment Solutions" />
-        <meta property="og:description" content="Professional staffing agency connecting exceptional talent with outstanding opportunities across Canada." />
-        <meta property="og:type" content="website" />
-      </Helmet>
 
       <HeroSection />
       <ServicesOverview />
