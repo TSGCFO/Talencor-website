@@ -1,0 +1,102 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export default function Header() {
+  const [location] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigation = [
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    { name: "Job Seekers", href: "/job-seekers" },
+    { name: "Employers", href: "/employers" },
+    { name: "About", href: "/about" },
+  ];
+
+  const isActive = (href: string) => {
+    if (href === "/" && location === "/") return true;
+    if (href !== "/" && location.startsWith(href)) return true;
+    return false;
+  };
+
+  return (
+    <header className="bg-white shadow-lg sticky top-0 z-50">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0 flex items-center">
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-navy font-montserrat">TALENCOR</span>
+              <span className="text-xs text-corporate-blue font-open-sans tracking-wider">STAFFING</span>
+            </div>
+          </Link>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-8">
+              {navigation.map((item) => (
+                <Link 
+                  key={item.name}
+                  href={item.href}
+                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive(item.href)
+                      ? "text-navy"
+                      : "text-charcoal hover:text-corporate-blue"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <Link href="/contact">
+                <Button className="bg-energetic-orange hover:bg-orange-600 text-white">
+                  Contact Us
+                </Button>
+              </Link>
+            </div>
+          </div>
+          
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-charcoal hover:text-corporate-blue"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </Button>
+          </div>
+        </div>
+      </nav>
+      
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navigation.map((item) => (
+              <Link 
+                key={item.name}
+                href={item.href}
+                className={`block px-3 py-2 font-medium ${
+                  isActive(item.href)
+                    ? "text-navy"
+                    : "text-charcoal hover:text-corporate-blue"
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
+              <Button className="bg-energetic-orange text-white mx-3 w-[calc(100%-1.5rem)]">
+                Contact Us
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
