@@ -290,7 +290,7 @@ export default function Contact() {
                         
                         <Button 
                           type="submit" 
-                          className="w-full bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold font-montserrat"
+                          className="w-full bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold font-montserrat"
                           disabled={submitContact.isPending}
                         >
                           {submitContact.isPending ? "Sending..." : "Send Message"}

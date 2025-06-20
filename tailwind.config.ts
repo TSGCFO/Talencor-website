@@ -61,6 +61,12 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
+        // Talencor Brand Colors
+        "talencor-gold": "var(--talencor-gold)",
+        "talencor-orange": "var(--talencor-orange)",
+        "talencor-light": "var(--talencor-light)",
+        "charcoal": "var(--charcoal)",
+        "light-grey": "var(--light-grey)",
       },
       keyframes: {
         "accordion-down": {
