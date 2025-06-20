@@ -85,7 +85,7 @@ export default function Contact() {
       <section className="bg-gradient-to-br from-light-grey to-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">Get in Touch</h1>
+            <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-charcoal mb-6">Get in Touch</h1>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
               Ready to take the next step? Contact our team today to discuss your staffing needs or career goals
             </p>
@@ -96,15 +96,15 @@ export default function Contact() {
             <div className="mb-12 lg:mb-0">
               <Card className="shadow-xl">
                 <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold font-montserrat text-navy mb-6">Contact Information</h2>
+                  <h2 className="text-2xl font-bold font-montserrat text-charcoal mb-6">Contact Information</h2>
                   
                   <div className="space-y-6">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-corporate-blue rounded-full flex items-center justify-center mr-4">
+                      <div className="flex-shrink-0 w-8 h-8 bg-talencor-gold rounded-full flex items-center justify-center mr-4">
                         <MapPin size={16} className="text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold font-montserrat text-navy mb-1">Address</h4>
+                        <h4 className="font-semibold font-montserrat text-charcoal mb-1">Address</h4>
                         <p className="text-charcoal">
                           {COMPANY_INFO.address.street}<br/>
                           {COMPANY_INFO.address.city}, {COMPANY_INFO.address.province} {COMPANY_INFO.address.postal}
@@ -113,31 +113,31 @@ export default function Contact() {
                     </div>
                     
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-corporate-blue rounded-full flex items-center justify-center mr-4">
+                      <div className="flex-shrink-0 w-8 h-8 bg-talencor-gold rounded-full flex items-center justify-center mr-4">
                         <Phone size={16} className="text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold font-montserrat text-navy mb-1">Phone</h4>
+                        <h4 className="font-semibold font-montserrat text-charcoal mb-1">Phone</h4>
                         <p className="text-charcoal">{COMPANY_INFO.phone}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-corporate-blue rounded-full flex items-center justify-center mr-4">
+                      <div className="flex-shrink-0 w-8 h-8 bg-talencor-gold rounded-full flex items-center justify-center mr-4">
                         <Mail size={16} className="text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold font-montserrat text-navy mb-1">Email</h4>
+                        <h4 className="font-semibold font-montserrat text-charcoal mb-1">Email</h4>
                         <p className="text-charcoal">{COMPANY_INFO.email}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 w-8 h-8 bg-corporate-blue rounded-full flex items-center justify-center mr-4">
+                      <div className="flex-shrink-0 w-8 h-8 bg-talencor-gold rounded-full flex items-center justify-center mr-4">
                         <Clock size={16} className="text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold font-montserrat text-navy mb-1">Hours</h4>
+                        <h4 className="font-semibold font-montserrat text-charcoal mb-1">Hours</h4>
                         <p className="text-charcoal">
                           {COMPANY_INFO.hours.weekdays}<br/>
                           {COMPANY_INFO.hours.saturday}

@@ -38,12 +38,12 @@ export default function ServicesOverview() {
                   <div className={`mb-4 ${iconColors[index % 3]}`}>
                     <IconComponent size={32} />
                   </div>
-                  <h3 className="text-2xl font-bold font-montserrat text-navy mb-4">{service.title}</h3>
+                  <h3 className="text-2xl font-bold font-montserrat text-charcoal mb-4">{service.title}</h3>
                   <p className="text-charcoal mb-6 leading-relaxed">
                     {service.description}
                   </p>
                   <Link href="/contact">
-                    <span className="text-corporate-blue hover:text-navy font-semibold font-montserrat cursor-pointer inline-flex items-center">
+                    <span className="text-talencor-gold hover:text-charcoal font-semibold font-montserrat cursor-pointer inline-flex items-center">
                       Learn More <ArrowRight size={16} className="ml-1" />
                     </span>
                   </Link>
