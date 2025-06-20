@@ -85,7 +85,10 @@ The contact form follows this flow:
 
 ## Changelog
 
-- June 20, 2025. Initial setup
+- June 20, 2025: Initial setup
+- June 20, 2025: Updated brand colors from blue to Talencor's golden/orange palette throughout website
+- June 20, 2025: Integrated actual Talencor logo into header and footer components
+- June 20, 2025: Added PostgreSQL database integration with DatabaseStorage replacing in-memory storage
 
 ## User Preferences
 
