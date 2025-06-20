@@ -147,23 +147,23 @@ export default function Contact() {
                   </div>
                   
                   <div className="mt-8 pt-8 border-t border-gray-200">
-                    <h4 className="font-semibold font-montserrat text-navy mb-4">Follow Us</h4>
+                    <h4 className="font-semibold font-montserrat text-charcoal mb-4">Follow Us</h4>
                     <div className="flex space-x-4">
                       <a 
                         href={COMPANY_INFO.socialMedia.linkedin}
-                        className="w-10 h-10 bg-corporate-blue hover:bg-navy rounded-full flex items-center justify-center text-white transition-colors"
+                        className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center text-white transition-colors"
                       >
                         <Linkedin size={16} />
                       </a>
                       <a 
                         href={COMPANY_INFO.socialMedia.twitter}
-                        className="w-10 h-10 bg-corporate-blue hover:bg-navy rounded-full flex items-center justify-center text-white transition-colors"
+                        className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center text-white transition-colors"
                       >
                         <Twitter size={16} />
                       </a>
                       <a 
                         href={COMPANY_INFO.socialMedia.facebook}
-                        className="w-10 h-10 bg-corporate-blue hover:bg-navy rounded-full flex items-center justify-center text-white transition-colors"
+                        className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center text-white transition-colors"
                       >
                         <Facebook size={16} />
                       </a>
@@ -177,7 +177,7 @@ export default function Contact() {
             <div>
               <Card className="shadow-xl">
                 <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold font-montserrat text-navy mb-6">Send us a Message</h2>
+                  <h2 className="text-2xl font-bold font-montserrat text-charcoal mb-6">Send us a Message</h2>
                   
                   {isSubmitted ? (
                     <div className="text-center py-8">
@@ -186,7 +186,7 @@ export default function Contact() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-bold text-navy mb-2">Thank You!</h3>
+                      <h3 className="text-xl font-bold text-charcoal mb-2">Thank You!</h3>
                       <p className="text-charcoal">Your message has been sent successfully. We'll get back to you soon.</p>
                     </div>
                   ) : (
@@ -198,7 +198,7 @@ export default function Contact() {
                             name="firstName"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-sm font-medium font-montserrat text-navy">First Name</FormLabel>
+                                <FormLabel className="text-sm font-medium font-montserrat text-charcoal">First Name</FormLabel>
                                 <FormControl>
                                   <Input {...field} className="px-4 py-3" />
                                 </FormControl>
@@ -211,7 +211,7 @@ export default function Contact() {
                             name="lastName"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-sm font-medium font-montserrat text-navy">Last Name</FormLabel>
+                                <FormLabel className="text-sm font-medium font-montserrat text-charcoal">Last Name</FormLabel>
                                 <FormControl>
                                   <Input {...field} className="px-4 py-3" />
                                 </FormControl>
@@ -226,7 +226,7 @@ export default function Contact() {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-sm font-medium font-montserrat text-navy">Email</FormLabel>
+                              <FormLabel className="text-sm font-medium font-montserrat text-charcoal">Email</FormLabel>
                               <FormControl>
                                 <Input type="email" {...field} className="px-4 py-3" />
                               </FormControl>
@@ -240,7 +240,7 @@ export default function Contact() {
                           name="phone"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-sm font-medium font-montserrat text-navy">Phone</FormLabel>
+                              <FormLabel className="text-sm font-medium font-montserrat text-charcoal">Phone</FormLabel>
                               <FormControl>
                                 <Input type="tel" {...field} className="px-4 py-3" />
                               </FormControl>
@@ -254,7 +254,7 @@ export default function Contact() {
                           name="inquiryType"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-sm font-medium font-montserrat text-navy">Inquiry Type</FormLabel>
+                              <FormLabel className="text-sm font-medium font-montserrat text-charcoal">Inquiry Type</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger className="px-4 py-3">
@@ -279,7 +279,7 @@ export default function Contact() {
                           name="message"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-sm font-medium font-montserrat text-navy">Message</FormLabel>
+                              <FormLabel className="text-sm font-medium font-montserrat text-charcoal">Message</FormLabel>
                               <FormControl>
                                 <Textarea {...field} rows={4} className="px-4 py-3" />
                               </FormControl>
