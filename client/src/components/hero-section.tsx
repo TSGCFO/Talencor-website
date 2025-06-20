@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-navy to-corporate-blue text-white py-20 lg:py-32">
+    <section className="relative bg-gradient-to-br from-charcoal to-gray-800 text-white py-20 lg:py-32">
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       <div 
         className="absolute inset-0 bg-cover bg-center"
@@ -15,21 +15,21 @@ export default function HeroSection() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
           <div className="mb-12 lg:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6 leading-tight">
-              Connecting <span className="text-energetic-orange">Talent</span> with Opportunity
+              Connecting <span className="text-talencor-gold">Talent</span> with Opportunity
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
               Professional staffing solutions that drive success for job seekers and employers across Canada
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/job-seekers">
-                <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto">
+                <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto">
                   Find Your Next Role
                 </Button>
               </Link>
               <Link href="/employers">
                 <Button 
                   variant="outline" 
-                  className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto"
+                  className="border-2 border-white hover:bg-white hover:text-charcoal text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto"
                 >
                   Hire Top Talent
                 </Button>

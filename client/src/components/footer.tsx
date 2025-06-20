@@ -63,7 +63,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link 
                     href={link.href}
-                    className="text-gray-300 hover:text-energetic-orange transition-colors"
+                    className="text-gray-300 hover:text-talencor-gold transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -79,7 +79,7 @@ export default function Footer() {
                 <li key={service}>
                   <Link 
                     href="/services"
-                    className="text-gray-300 hover:text-energetic-orange transition-colors"
+                    className="text-gray-300 hover:text-talencor-gold transition-colors"
                   >
                     {service}
                   </Link>
