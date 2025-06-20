@@ -27,10 +27,11 @@ export default function Header() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center">
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-navy font-montserrat">TALENCOR</span>
-              <span className="text-xs text-corporate-blue font-open-sans tracking-wider">STAFFING</span>
-            </div>
+            <img 
+              src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+              alt="Talencor Staffing" 
+              className="h-12 w-auto"
+            />
           </Link>
           
           {/* Desktop Navigation */}
@@ -42,15 +43,15 @@ export default function Header() {
                   href={item.href}
                   className={`px-3 py-2 text-sm font-medium transition-colors ${
                     isActive(item.href)
-                      ? "text-navy"
-                      : "text-charcoal hover:text-corporate-blue"
+                      ? "text-talencor-gold"
+                      : "text-charcoal hover:text-talencor-orange"
                   }`}
                 >
                   {item.name}
                 </Link>
               ))}
               <Link href="/contact">
-                <Button className="bg-energetic-orange hover:bg-orange-600 text-white">
+                <Button className="bg-talencor-gold hover:bg-talencor-orange text-white">
                   Contact Us
                 </Button>
               </Link>
@@ -81,8 +82,8 @@ export default function Header() {
                 href={item.href}
                 className={`block px-3 py-2 font-medium ${
                   isActive(item.href)
-                    ? "text-navy"
-                    : "text-charcoal hover:text-corporate-blue"
+                    ? "text-talencor-gold"
+                    : "text-charcoal hover:text-talencor-orange"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -90,7 +91,7 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-              <Button className="bg-energetic-orange text-white mx-3 w-[calc(100%-1.5rem)]">
+              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white mx-3 w-[calc(100%-1.5rem)]">
                 Contact Us
               </Button>
             </Link>

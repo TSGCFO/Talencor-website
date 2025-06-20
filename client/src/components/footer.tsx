@@ -20,13 +20,16 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-navy text-white py-16">
+    <footer className="bg-charcoal text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <div className="flex flex-col mb-4">
-              <span className="text-2xl font-bold text-white font-montserrat">TALENCOR</span>
-              <span className="text-xs text-energetic-orange font-open-sans tracking-wider">STAFFING</span>
+            <div className="flex items-center mb-4">
+              <img 
+                src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+                alt="Talencor Staffing" 
+                className="h-10 w-auto"
+              />
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Connecting exceptional talent with outstanding opportunities across Canada. Your trusted partner for all staffing needs.
@@ -34,19 +37,19 @@ export default function Footer() {
             <div className="flex space-x-4">
               <a 
                 href={COMPANY_INFO.socialMedia.linkedin} 
-                className="w-10 h-10 bg-corporate-blue hover:bg-energetic-orange rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center transition-colors"
               >
                 <Linkedin size={16} />
               </a>
               <a 
                 href={COMPANY_INFO.socialMedia.twitter}
-                className="w-10 h-10 bg-corporate-blue hover:bg-energetic-orange rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center transition-colors"
               >
                 <Twitter size={16} />
               </a>
               <a 
                 href={COMPANY_INFO.socialMedia.facebook}
-                className="w-10 h-10 bg-corporate-blue hover:bg-energetic-orange rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center transition-colors"
               >
                 <Facebook size={16} />
               </a>
