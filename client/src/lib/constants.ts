@@ -11,8 +11,9 @@ export const COMPANY_INFO = {
     complex: "Airport Business Complex"
   },
   hours: {
-    weekdays: "Monday - Friday: 10:00 AM - 6:00 PM",
-    saturday: "Saturday: Closed"
+    weekdays: "Monday - Friday: 10:00 AM - 5:00 PM",
+    saturday: "Saturday: Closed",
+    sunday: "Sunday: Closed"
   },
   socialMedia: {
     linkedin: "#",

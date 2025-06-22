@@ -141,7 +141,8 @@ export default function Contact() {
                         <h4 className="font-semibold font-montserrat text-charcoal mb-1">Hours</h4>
                         <p className="text-charcoal">
                           {COMPANY_INFO.hours.weekdays}<br/>
-                          {COMPANY_INFO.hours.saturday}
+                          {COMPANY_INFO.hours.saturday}<br/>
+                          {COMPANY_INFO.hours.sunday}
                         </p>
                       </div>
                     </div>
