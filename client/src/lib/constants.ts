@@ -1,17 +1,18 @@
 export const COMPANY_INFO = {
   name: "Talencor Staffing",
   tagline: "Professional Employment Solutions",
-  phone: "(905) 555-0123",
+  phone: "(647) 946-2177",
   email: "info@talencor.com",
   address: {
-    street: "123 Business Center Dr",
+    street: "2985 Drew Rd #206",
     city: "Mississauga",
     province: "ON",
-    postal: "L5B 2N5"
+    postal: "L4T 0A4",
+    complex: "Airport Business Complex"
   },
   hours: {
-    weekdays: "Monday - Friday: 8:00 AM - 6:00 PM",
-    saturday: "Saturday: 9:00 AM - 1:00 PM"
+    weekdays: "Monday - Friday: 10:00 AM - 6:00 PM",
+    saturday: "Saturday: Closed"
   },
   socialMedia: {
     linkedin: "#",

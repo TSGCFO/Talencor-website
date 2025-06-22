@@ -89,6 +89,7 @@ The contact form follows this flow:
 - June 20, 2025: Updated brand colors from blue to Talencor's golden/orange palette throughout website
 - June 20, 2025: Integrated actual Talencor logo into header and footer components
 - June 20, 2025: Added PostgreSQL database integration with DatabaseStorage replacing in-memory storage
+- June 21, 2025: Updated company information to match Google listing - correct address (2985 Drew Rd #206, Airport Business Complex), phone (647) 946-2177, and business hours
 
 ## User Preferences
 

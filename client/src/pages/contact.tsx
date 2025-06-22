@@ -107,6 +107,7 @@ export default function Contact() {
                         <h4 className="font-semibold font-montserrat text-charcoal mb-1">Address</h4>
                         <p className="text-charcoal">
                           {COMPANY_INFO.address.street}<br/>
+                          {COMPANY_INFO.address.complex}<br/>
                           {COMPANY_INFO.address.city}, {COMPANY_INFO.address.province} {COMPANY_INFO.address.postal}
                         </p>
                       </div>
