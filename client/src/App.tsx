@@ -12,6 +12,7 @@ import JobSeekers from "@/pages/job-seekers";
 import Employers from "@/pages/employers";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
+import JobApplication from "@/pages/job-application";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
           <Route path="/employers" component={Employers} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
+          <Route path="/apply" component={JobApplication} />
           <Route component={NotFound} />
         </Switch>
       </main>
