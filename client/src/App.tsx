@@ -12,7 +12,7 @@ import JobSeekers from "@/pages/job-seekers";
 import Employers from "@/pages/employers";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
-import JobApplication from "@/pages/job-application";
+import JobApplication from "@/pages/job-application-simple";
 import NotFound from "@/pages/not-found";
 
 function Router() {
