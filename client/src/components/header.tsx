@@ -23,21 +23,29 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-r from-navy via-charcoal to-navy shadow-xl sticky top-0 z-50 border-b-4 border-talencor-gold">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+    <header className="bg-gradient-to-r from-navy via-charcoal to-navy shadow-2xl sticky top-0 z-50 border-b-4 border-gradient-to-r from-talencor-gold to-talencor-orange relative">
+      {/* Subtle hexagonal pattern overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="hexagon-pattern h-full w-full"></div>
+      </div>
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="flex justify-between items-center h-24">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center group">
-            <div className="bg-white rounded-lg p-2 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold">
+            <div className="bg-white rounded-lg p-3 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold group-hover:border-talencor-orange">
               <img 
-                src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+                src="/attached_assets/Asset-2@2x-pyfu7br9dozvybydxbgb67ariew9gmukk9h10qfx8g_1750444814380.png" 
                 alt="Talencor Staffing" 
-                className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
+                className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
+                onError={(e) => {
+                  e.currentTarget.src = '/logo-fallback.svg';
+                  e.currentTarget.onerror = null;
+                }}
               />
             </div>
-            <div className="ml-3 hidden sm:block">
-              <div className="text-white font-bold text-xl font-montserrat">TALENCOR</div>
-              <div className="text-talencor-gold text-sm font-medium tracking-wide">STAFFING</div>
+            <div className="ml-4 hidden sm:block">
+              <div className="text-white font-bold text-xl font-montserrat tracking-wide">TALENCOR</div>
+              <div className="text-talencor-gold text-sm font-medium tracking-widest">STAFFING</div>
             </div>
           </Link>
           
