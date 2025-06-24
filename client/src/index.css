@@ -120,4 +120,26 @@
   .bg-navy {
     background-color: var(--navy);
   }
+
+  /* Hexagonal pattern inspired by logo */
+  .hexagon-pattern {
+    background-image: 
+      radial-gradient(circle at 20px 20px, var(--talencor-gold) 2px, transparent 2px),
+      radial-gradient(circle at 60px 60px, var(--talencor-orange) 1px, transparent 1px);
+    background-size: 80px 80px, 40px 40px;
+    background-position: 0 0, 40px 40px;
+  }
+
+  /* Enhanced gradient buttons */
+  .gradient-button {
+    background: linear-gradient(135deg, var(--talencor-gold) 0%, var(--talencor-orange) 100%);
+    box-shadow: 0 4px 15px rgba(221, 153, 51, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .gradient-button:hover {
+    background: linear-gradient(135deg, var(--talencor-orange) 0%, var(--talencor-gold) 100%);
+    box-shadow: 0 6px 20px rgba(221, 153, 51, 0.4);
+    transform: translateY(-2px);
+  }
 }

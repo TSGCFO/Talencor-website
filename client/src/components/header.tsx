@@ -23,16 +23,22 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+    <header className="bg-gradient-to-r from-navy via-charcoal to-navy shadow-xl sticky top-0 z-50 border-b-4 border-talencor-gold">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center">
-            <img 
-              src="/attached_assets/IMG-20250624-WA0000_1750785633629.jpg" 
-              alt="Talencor Staffing" 
-              className="h-12 w-auto"
-            />
+          <Link href="/" className="flex-shrink-0 flex items-center group">
+            <div className="bg-white rounded-lg p-2 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold">
+              <img 
+                src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+                alt="Talencor Staffing" 
+                className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="ml-3 hidden sm:block">
+              <div className="text-white font-bold text-xl font-montserrat">TALENCOR</div>
+              <div className="text-talencor-gold text-sm font-medium tracking-wide">STAFFING</div>
+            </div>
           </Link>
           
           {/* Desktop Navigation */}
@@ -42,17 +48,17 @@ export default function Header() {
                 <Link 
                   key={item.name}
                   href={item.href}
-                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
                     isActive(item.href)
-                      ? "text-talencor-gold"
-                      : "text-charcoal hover:text-talencor-orange"
+                      ? "text-talencor-gold bg-white/10 font-semibold"
+                      : "text-white hover:text-talencor-gold hover:bg-white/10"
                   }`}
                 >
                   {item.name}
                 </Link>
               ))}
               <Link href="/contact">
-                <Button className="bg-talencor-gold hover:bg-talencor-orange text-white">
+                <Button className="bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold text-white font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
                   Contact Us
                 </Button>
               </Link>
@@ -65,7 +71,7 @@ export default function Header() {
               variant="ghost"
               size="sm"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-charcoal hover:text-corporate-blue"
+              className="text-white hover:text-talencor-gold hover:bg-white/10"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>
@@ -75,16 +81,16 @@ export default function Header() {
       
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
+        <div className="md:hidden bg-gradient-to-b from-navy to-charcoal border-t border-talencor-gold">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navigation.map((item) => (
               <Link 
                 key={item.name}
                 href={item.href}
-                className={`block px-3 py-2 font-medium ${
+                className={`block px-4 py-3 font-medium rounded-lg transition-all duration-300 ${
                   isActive(item.href)
-                    ? "text-talencor-gold"
-                    : "text-charcoal hover:text-talencor-orange"
+                    ? "text-talencor-gold bg-white/10 font-semibold"
+                    : "text-white hover:text-talencor-gold hover:bg-white/10"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -92,7 +98,7 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white mx-3 w-[calc(100%-1.5rem)]">
+              <Button className="bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold text-white mx-3 w-[calc(100%-1.5rem)] mt-3 font-semibold shadow-lg">
                 Contact Us
               </Button>
             </Link>

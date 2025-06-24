@@ -20,16 +20,22 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-charcoal text-white py-16">
+    <footer className="bg-gradient-to-br from-navy via-charcoal to-navy text-white py-16 border-t-4 border-talencor-gold">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <div className="flex items-center mb-4">
-              <img 
-                src="/attached_assets/IMG-20250624-WA0000_1750785633629.jpg" 
-                alt="Talencor Staffing" 
-                className="h-10 w-auto"
-              />
+            <div className="flex items-center mb-6">
+              <div className="bg-white rounded-lg p-2 shadow-lg border-2 border-talencor-gold">
+                <img 
+                  src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+                  alt="Talencor Staffing" 
+                  className="h-8 w-auto"
+                />
+              </div>
+              <div className="ml-3">
+                <div className="text-white font-bold text-lg font-montserrat">TALENCOR</div>
+                <div className="text-talencor-gold text-sm font-medium tracking-wide">STAFFING</div>
+              </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Connecting exceptional talent with outstanding opportunities across Canada. Your trusted partner for all staffing needs.
@@ -37,21 +43,21 @@ export default function Footer() {
             <div className="flex space-x-4">
               <a 
                 href={COMPANY_INFO.socialMedia.linkedin} 
-                className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center transition-colors"
+                className="w-12 h-12 bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <Linkedin size={16} />
+                <Linkedin size={20} />
               </a>
               <a 
                 href={COMPANY_INFO.socialMedia.twitter}
-                className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center transition-colors"
+                className="w-12 h-12 bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <Twitter size={16} />
+                <Twitter size={20} />
               </a>
               <a 
                 href={COMPANY_INFO.socialMedia.facebook}
-                className="w-10 h-10 bg-talencor-gold hover:bg-talencor-orange rounded-full flex items-center justify-center transition-colors"
+                className="w-12 h-12 bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <Facebook size={16} />
+                <Facebook size={20} />
               </a>
             </div>
           </div>
