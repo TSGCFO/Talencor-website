@@ -179,7 +179,7 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-corporate-blue text-white">
+      <section className="py-20 bg-navy text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">
             Ready to Experience the Talencor Difference?
@@ -188,7 +188,7 @@ export default function About() {
             Let us show you how our expertise and commitment can help you achieve your goals
           </p>
           <Link href="/contact">
-            <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold">
+            <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
               Get Started Today
             </Button>
           </Link>

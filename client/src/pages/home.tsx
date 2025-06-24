@@ -60,14 +60,14 @@ export default function Home() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/job-seekers">
-                  <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
+                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
                     Browse Jobs
                   </Button>
                 </Link>
                 <Link href="/contact">
                   <Button 
                     variant="outline" 
-                    className="border-2 border-corporate-blue hover:bg-corporate-blue hover:text-white text-corporate-blue px-8 py-4 text-lg font-semibold w-full sm:w-auto"
+                    className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-white text-talencor-gold px-8 py-4 text-lg font-semibold w-full sm:w-auto"
                   >
                     Submit Resume
                   </Button>
@@ -79,12 +79,12 @@ export default function Home() {
       </section>
 
       {/* Employers Section */}
-      <section className="py-20 bg-gradient-to-br from-navy to-corporate-blue text-white">
+      <section className="py-20 bg-gradient-to-br from-navy to-charcoal text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div className="mb-12 lg:mb-0">
               <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">
-                Find Your Perfect <span className="text-energetic-orange">Hire</span>
+                Find Your Perfect <span className="text-talencor-gold">Hire</span>
               </h2>
               <p className="text-xl text-gray-200 mb-8 leading-relaxed">
                 Partner with Talencor to access top talent and streamline your hiring process. Our comprehensive staffing solutions are designed to meet your unique business needs.
@@ -119,7 +119,7 @@ export default function Home() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/employers">
-                  <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
+                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
                     Post a Job
                   </Button>
                 </Link>
