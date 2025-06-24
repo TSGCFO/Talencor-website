@@ -18,7 +18,7 @@ export default function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
           <div className="mb-12 lg:mb-0">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl logo-font mb-6 leading-tight">
               Connecting <span className="text-talencor-gold">Talent</span> with Opportunity
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">

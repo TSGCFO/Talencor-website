@@ -39,8 +39,8 @@ export default function Footer() {
                 />
               </div>
               <div className="ml-3">
-                <div className="text-white font-bold text-lg font-montserrat tracking-wide">TALENCOR</div>
-                <div className="text-talencor-gold text-sm font-medium tracking-widest">STAFFING</div>
+                <div className="text-white logo-font text-lg tracking-wider">TALENCOR</div>
+                <div className="text-talencor-gold brand-text text-xs tracking-[0.2em]">STAFFING</div>
               </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">

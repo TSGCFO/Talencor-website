@@ -46,8 +46,8 @@ export default function Header() {
               />
             </div>
             <div className="ml-4 hidden sm:block">
-              <div className="text-white font-bold text-xl font-montserrat tracking-wide">TALENCOR</div>
-              <div className="text-talencor-gold text-sm font-medium tracking-widest">STAFFING</div>
+              <div className="text-white logo-font text-xl tracking-wider">TALENCOR</div>
+              <div className="text-talencor-gold brand-text text-xs tracking-[0.2em]">STAFFING</div>
             </div>
           </Link>
           
@@ -58,7 +58,7 @@ export default function Header() {
                 <Link 
                   key={item.name}
                   href={item.href}
-                  className={`px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
+                  className={`px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-lg ${
                     isActive(item.href)
                       ? "text-talencor-gold bg-white/10 font-semibold"
                       : "text-white hover:text-talencor-gold hover:bg-white/10"
@@ -68,7 +68,7 @@ export default function Header() {
                 </Link>
               ))}
               <Link href="/contact">
-                <Button className="bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold text-white font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20">
+                <Button className="bg-gradient-to-r from-talencor-gold to-talencor-orange hover:from-talencor-orange hover:to-talencor-gold text-white font-bold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 tracking-wide">
                   Contact Us
                 </Button>
               </Link>

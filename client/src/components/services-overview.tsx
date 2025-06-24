@@ -24,7 +24,7 @@ export default function ServicesOverview() {
           <div className="inline-block bg-gradient-to-r from-talencor-gold to-talencor-orange bg-clip-text text-transparent mb-4">
             <div className="w-16 h-1 bg-gradient-to-r from-talencor-gold to-talencor-orange mx-auto mb-6"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">Our Services</h2>
+          <h2 className="text-4xl md:text-5xl logo-font text-navy mb-6">Our Services</h2>
           <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
             Comprehensive staffing solutions designed to meet the unique needs of modern businesses and career-focused professionals
           </p>

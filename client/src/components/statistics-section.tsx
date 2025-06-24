@@ -15,7 +15,7 @@ export default function StatisticsSection() {
           {STATISTICS.map((stat, index) => (
             <div key={index} className="text-center group">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 border border-talencor-gold/30">
-                <div className="text-4xl md:text-5xl font-bold font-montserrat text-talencor-gold mb-2 group-hover:scale-110 transition-transform duration-300">
+                <div className="text-4xl md:text-5xl logo-font text-talencor-gold mb-2 group-hover:scale-110 transition-transform duration-300">
                   {stat.value}
                 </div>
                 <div className="text-white font-medium">
