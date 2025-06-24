@@ -14,10 +14,17 @@ const iconMap = {
 
 export default function ServicesOverview() {
   return (
-    <section className="py-20 bg-light-grey">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-br from-light-grey to-white relative overflow-hidden">
+      {/* Background hexagonal pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="hexagon-pattern h-full w-full"></div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-charcoal mb-6">Our Services</h2>
+          <div className="inline-block bg-gradient-to-r from-talencor-gold to-talencor-orange bg-clip-text text-transparent mb-4">
+            <div className="w-16 h-1 bg-gradient-to-r from-talencor-gold to-talencor-orange mx-auto mb-6"></div>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">Our Services</h2>
           <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
             Comprehensive staffing solutions designed to meet the unique needs of modern businesses and career-focused professionals
           </p>

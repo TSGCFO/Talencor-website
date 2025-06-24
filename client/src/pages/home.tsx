@@ -13,8 +13,12 @@ export default function Home() {
       <ServicesOverview />
 
       {/* Job Seekers Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-white to-light-grey relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="hexagon-pattern h-full w-full"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div className="mb-12 lg:mb-0">
               <img 
@@ -79,8 +83,12 @@ export default function Home() {
       </section>
 
       {/* Employers Section */}
-      <section className="py-20 bg-gradient-to-br from-navy to-charcoal text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-navy to-charcoal text-white relative overflow-hidden border-t-4 border-talencor-gold">
+        {/* Background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="hexagon-pattern h-full w-full"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div className="mb-12 lg:mb-0">
               <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">

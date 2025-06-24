@@ -26,14 +26,14 @@ export default function HeroSection() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/job-seekers">
-                <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto">
+                <Button className="gradient-button text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto border border-white/20">
                   Find Your Next Role
                 </Button>
               </Link>
               <Link href="/employers">
                 <Button 
                   variant="outline" 
-                  className="border-2 border-white hover:bg-white hover:text-charcoal text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto"
+                  className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-navy text-talencor-gold px-8 py-6 text-lg font-semibold w-full sm:w-auto backdrop-blur-sm bg-white/10"
                 >
                   Hire Top Talent
                 </Button>

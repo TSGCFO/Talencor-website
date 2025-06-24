@@ -125,9 +125,27 @@
   .hexagon-pattern {
     background-image: 
       radial-gradient(circle at 20px 20px, var(--talencor-gold) 2px, transparent 2px),
-      radial-gradient(circle at 60px 60px, var(--talencor-orange) 1px, transparent 1px);
-    background-size: 80px 80px, 40px 40px;
-    background-position: 0 0, 40px 40px;
+      radial-gradient(circle at 60px 60px, var(--talencor-orange) 1px, transparent 1px),
+      radial-gradient(circle at 100px 100px, var(--navy) 1px, transparent 1px);
+    background-size: 120px 120px, 60px 60px, 40px 40px;
+    background-position: 0 0, 60px 60px, 20px 20px;
+  }
+
+  /* Brand accent bars */
+  .brand-accent {
+    position: relative;
+  }
+
+  .brand-accent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--talencor-gold) 0%, var(--talencor-orange) 100%);
+    border-radius: 2px;
   }
 
   /* Enhanced gradient buttons */
