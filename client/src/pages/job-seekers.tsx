@@ -107,7 +107,7 @@ export default function JobSeekers() {
                   <div className="space-y-4">
                     {section.benefits.map((benefit, benefitIndex) => (
                       <div key={benefitIndex} className="flex items-start">
-                        <div className="flex-shrink-0 w-6 h-6 bg-corporate-blue rounded-full flex items-center justify-center mr-3 mt-1">
+                        <div className="flex-shrink-0 w-6 h-6 bg-talencor-gold rounded-full flex items-center justify-center mr-3 mt-1">
                           <Check size={14} className="text-white" />
                         </div>
                         <span className="text-charcoal">{benefit}</span>
@@ -157,11 +157,11 @@ export default function JobSeekers() {
             ].map((industry, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
-                  <div className="text-corporate-blue mb-4 flex justify-center">
+                  <div className="text-talencor-gold mb-4 flex justify-center">
                     {industry.icon}
                   </div>
                   <h3 className="text-lg font-semibold font-montserrat text-navy mb-2">{industry.name}</h3>
-                  <p className="text-energetic-orange font-medium">{industry.jobs}</p>
+                  <p className="text-talencor-gold font-medium">{industry.jobs}</p>
                 </CardContent>
               </Card>
             ))}
@@ -180,7 +180,7 @@ export default function JobSeekers() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold">
+              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
                 Submit Your Resume
               </Button>
             </Link>

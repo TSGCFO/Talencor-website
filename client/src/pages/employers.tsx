@@ -105,7 +105,7 @@ export default function Employers() {
             ].map((section, index) => (
               <div key={index} className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
                 <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="text-energetic-orange mb-6">
+                  <div className="text-talencor-gold mb-6">
                     {section.icon}
                   </div>
                   <h3 className="text-3xl font-bold font-montserrat text-navy mb-6">{section.title}</h3>
@@ -113,7 +113,7 @@ export default function Employers() {
                   <div className="space-y-4">
                     {section.benefits.map((benefit, benefitIndex) => (
                       <div key={benefitIndex} className="flex items-start">
-                        <div className="flex-shrink-0 w-6 h-6 bg-corporate-blue rounded-full flex items-center justify-center mr-3 mt-1">
+                        <div className="flex-shrink-0 w-6 h-6 bg-talencor-gold rounded-full flex items-center justify-center mr-3 mt-1">
                           <Star size={14} className="text-white" />
                         </div>
                         <span className="text-charcoal">{benefit}</span>
@@ -248,7 +248,7 @@ export default function Employers() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold">
+              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
                 Post a Job Opening
               </Button>
             </Link>
