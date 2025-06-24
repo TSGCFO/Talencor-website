@@ -23,7 +23,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-r from-navy via-charcoal to-navy shadow-2xl sticky top-0 z-50 border-b-4 border-gradient-to-r from-talencor-gold to-talencor-orange relative">
+    <header className="bg-gradient-to-r from-navy via-charcoal to-navy shadow-2xl sticky top-0 z-50 border-b-4 border-talencor-gold relative">
       {/* Subtle hexagonal pattern overlay */}
       <div className="absolute inset-0 opacity-5">
         <div className="hexagon-pattern h-full w-full"></div>
@@ -34,12 +34,14 @@ export default function Header() {
           <Link href="/" className="flex-shrink-0 flex items-center group">
             <div className="bg-white rounded-lg p-3 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold group-hover:border-talencor-orange">
               <img 
-                src="/attached_assets/Asset-2@2x-pyfu7br9dozvybydxbgb67ariew9gmukk9h10qfx8g_1750444814380.png" 
+                src="/talencor-logo-alt.png" 
                 alt="Talencor Staffing" 
-                className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
+                className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/logo-fallback.svg';
-                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/talencor-logo-backup.png';
+                  e.currentTarget.onerror = () => {
+                    e.currentTarget.src = '/logo-fallback.svg';
+                  };
                 }}
               />
             </div>

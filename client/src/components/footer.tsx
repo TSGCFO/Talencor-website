@@ -27,12 +27,14 @@ export default function Footer() {
             <div className="flex items-center mb-6">
               <div className="bg-white rounded-lg p-2 shadow-lg border-2 border-talencor-gold">
                 <img 
-                  src="/attached_assets/Asset-2@2x-pyfu7br9dozvybydxbgb67ariew9gmukk9h10qfx8g_1750444814380.png" 
+                  src="/talencor-logo-alt.png" 
                   alt="Talencor Staffing" 
-                  className="h-6 w-auto"
+                  className="h-8 w-auto"
                   onError={(e) => {
-                    e.currentTarget.src = '/logo-fallback.svg';
-                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/talencor-logo-backup.png';
+                    e.currentTarget.onerror = () => {
+                      e.currentTarget.src = '/logo-fallback.svg';
+                    };
                   }}
                 />
               </div>
