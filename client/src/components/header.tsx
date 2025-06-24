@@ -29,7 +29,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center">
             <img 
-              src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+              src="/attached_assets/IMG-20250624-WA0000_1750785633629.jpg" 
               alt="Talencor Staffing" 
               className="h-12 w-auto"
             />

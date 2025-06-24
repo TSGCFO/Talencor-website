@@ -18,19 +18,19 @@ export default function Employers() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy to-corporate-blue text-white py-20">
+      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
-                Find Your Perfect <span className="text-energetic-orange">Hire</span>
+                Find Your Perfect <span className="text-talencor-gold">Hire</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
                 Partner with Talencor to access top talent and streamline your hiring process. Our comprehensive staffing solutions are designed to meet your unique business needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/contact">
-                  <Button className="bg-energetic-orange hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
+                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
                     Post a Job
                   </Button>
                 </Link>

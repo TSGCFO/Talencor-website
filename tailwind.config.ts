@@ -65,6 +65,7 @@ export default {
         "talencor-gold": "var(--talencor-gold)",
         "talencor-orange": "var(--talencor-orange)",
         "talencor-light": "var(--talencor-light)",
+        "navy": "var(--navy)",
         "charcoal": "var(--charcoal)",
         "light-grey": "var(--light-grey)",
       },

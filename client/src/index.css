@@ -26,10 +26,11 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
-  /* Custom colors for Talencor - Based on logo */
-  --talencor-gold: hsl(39, 77%, 70%);
-  --talencor-orange: hsl(30, 85%, 65%);
-  --talencor-light: hsl(45, 65%, 85%);
+  /* Custom colors for Talencor - Based on hexagonal logo */
+  --talencor-gold: hsl(37, 88%, 55%);
+  --talencor-orange: hsl(28, 95%, 58%);
+  --talencor-light: hsl(45, 75%, 85%);
+  --navy: hsl(218, 54%, 20%);
   --charcoal: hsl(0, 0%, 18%);
   --light-grey: hsl(45, 20%, 98%);
   --white: hsl(0, 0%, 100%);
@@ -110,5 +111,13 @@
   
   .bg-light-grey {
     background-color: var(--light-grey);
+  }
+  
+  .navy {
+    color: var(--navy);
+  }
+  
+  .bg-navy {
+    background-color: var(--navy);
   }
 }

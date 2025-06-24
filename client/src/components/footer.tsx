@@ -26,7 +26,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center mb-4">
               <img 
-                src="/attached_assets/Talencor Staffing 1_1750449443470.jpg" 
+                src="/attached_assets/IMG-20250624-WA0000_1750785633629.jpg" 
                 alt="Talencor Staffing" 
                 className="h-10 w-auto"
               />
