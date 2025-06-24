@@ -118,7 +118,7 @@ export default function About() {
             ].map((step, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                 <CardContent className="p-8">
-                  <div className="text-corporate-blue mb-6 flex justify-center">
+                  <div className="text-talencor-gold mb-6 flex justify-center">
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-bold font-montserrat text-navy mb-4">{step.title}</h3>

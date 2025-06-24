@@ -25,7 +25,7 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
-                Advance Your <span className="text-energetic-orange">Career</span>
+                Advance Your <span className="text-talencor-gold">Career</span>
               </h2>
               <p className="text-xl text-charcoal mb-8 leading-relaxed">
                 Whether you're seeking your first opportunity, making a career change, or looking to advance to the next level, our expert recruiters are here to guide you every step of the way.
@@ -47,7 +47,7 @@ export default function Home() {
                   }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start">
-                    <div className="flex-shrink-0 w-8 h-8 bg-corporate-blue rounded-full flex items-center justify-center mr-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-talencor-gold rounded-full flex items-center justify-center mr-4">
                       <Check size={16} className="text-white" />
                     </div>
                     <div>

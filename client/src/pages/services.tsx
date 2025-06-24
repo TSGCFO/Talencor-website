@@ -28,10 +28,10 @@ export default function Services() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy to-corporate-blue text-white py-20">
+      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
-            Our <span className="text-energetic-orange">Services</span>
+            Our <span className="text-talencor-gold">Services</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
             Comprehensive staffing solutions designed to meet the unique needs of modern businesses and career-focused professionals
@@ -45,8 +45,8 @@ export default function Services() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {SERVICES.map((service, index) => {
               const IconComponent = iconMap[service.icon as keyof typeof iconMap];
-              const borderColors = ["border-corporate-blue", "border-energetic-orange", "border-navy"];
-              const iconColors = ["text-corporate-blue", "text-energetic-orange", "text-navy"];
+              const borderColors = ["border-talencor-gold", "border-talencor-orange", "border-navy"];
+              const iconColors = ["text-talencor-gold", "text-talencor-orange", "text-navy"];
               
               return (
                 <Card 
@@ -104,7 +104,7 @@ export default function Services() {
             ].map((feature, index) => (
               <Card key={index} className="text-center p-8">
                 <CardContent className="pt-6">
-                  <div className="text-4xl font-bold font-montserrat text-energetic-orange mb-4">
+                  <div className="text-4xl font-bold font-montserrat text-talencor-gold mb-4">
                     {feature.stat}
                   </div>
                   <h3 className="text-xl font-bold font-montserrat text-navy mb-4">{feature.title}</h3>
