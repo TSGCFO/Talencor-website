@@ -173,7 +173,7 @@ export default function Employers() {
             ].map((solution, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-8 text-center">
-                  <div className="text-corporate-blue mb-6 flex justify-center">
+                  <div className="text-talencor-gold mb-6 flex justify-center">
                     {solution.icon}
                   </div>
                   <h3 className="text-2xl font-bold font-montserrat text-navy mb-4">{solution.title}</h3>
@@ -181,7 +181,7 @@ export default function Employers() {
                   <ul className="space-y-2 text-sm text-charcoal">
                     {solution.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center justify-center">
-                        <Star size={16} className="text-energetic-orange mr-2" />
+                        <Star size={16} className="text-talencor-gold mr-2" />
                         {feature}
                       </li>
                     ))}

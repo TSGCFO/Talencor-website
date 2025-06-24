@@ -26,8 +26,8 @@ export default function ServicesOverview() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {SERVICES.map((service, index) => {
             const IconComponent = iconMap[service.icon as keyof typeof iconMap];
-            const borderColors = ["border-talencor-gold", "border-talencor-orange", "border-charcoal"];
-            const iconColors = ["text-talencor-gold", "text-talencor-orange", "text-charcoal"];
+            const borderColors = ["border-talencor-gold", "border-talencor-orange", "border-navy"];
+            const iconColors = ["text-talencor-gold", "text-talencor-orange", "text-navy"];
             
             return (
               <Card 
