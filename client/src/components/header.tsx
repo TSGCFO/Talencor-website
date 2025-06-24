@@ -29,14 +29,15 @@ export default function Header() {
         <div className="hexagon-pattern h-full w-full"></div>
       </div>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex justify-between items-center h-24">
-          {/* Logo */}
+        <div className="flex justify-between items-center h-20 sm:h-22 lg:h-24">
+          {/* Logo - Responsive Design */}
           <Link href="/" className="flex-shrink-0 flex items-center group">
-            <div className="bg-white rounded-lg p-3 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold group-hover:border-talencor-orange">
+            {/* Mobile Logo (xs to sm) */}
+            <div className="sm:hidden bg-white rounded-lg p-2 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold group-hover:border-talencor-orange">
               <img 
                 src="/talencor-logo-alt.png" 
                 alt="Talencor Staffing" 
-                className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
+                className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   e.currentTarget.src = '/talencor-logo-backup.png';
                   e.currentTarget.onerror = () => {
@@ -45,9 +46,41 @@ export default function Header() {
                 }}
               />
             </div>
-            <div className="ml-4 hidden sm:block">
-              <div className="text-white logo-font text-xl tracking-wider">TALENCOR</div>
-              <div className="text-talencor-gold brand-text text-xs tracking-[0.2em]">STAFFING</div>
+            
+            {/* Tablet Logo (sm to lg) */}
+            <div className="hidden sm:block lg:hidden bg-white rounded-lg p-2.5 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold group-hover:border-talencor-orange">
+              <img 
+                src="/talencor-logo-alt.png" 
+                alt="Talencor Staffing" 
+                className="h-9 w-auto group-hover:scale-105 transition-transform duration-300"
+                onError={(e) => {
+                  e.currentTarget.src = '/talencor-logo-backup.png';
+                  e.currentTarget.onerror = () => {
+                    e.currentTarget.src = '/logo-fallback.svg';
+                  };
+                }}
+              />
+            </div>
+            
+            {/* Desktop Logo (lg and above) */}
+            <div className="hidden lg:block bg-white rounded-lg p-3 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-talencor-gold group-hover:border-talencor-orange">
+              <img 
+                src="/talencor-logo-alt.png" 
+                alt="Talencor Staffing" 
+                className="h-12 w-auto group-hover:scale-105 transition-transform duration-300"
+                onError={(e) => {
+                  e.currentTarget.src = '/talencor-logo-backup.png';
+                  e.currentTarget.onerror = () => {
+                    e.currentTarget.src = '/logo-fallback.svg';
+                  };
+                }}
+              />
+            </div>
+            
+            {/* Brand Text - Responsive Typography */}
+            <div className="ml-3 sm:ml-4 hidden xs:block">
+              <div className="text-white logo-font text-lg sm:text-xl lg:text-2xl tracking-wider">TALENCOR</div>
+              <div className="text-talencor-gold brand-text text-xs sm:text-xs lg:text-sm tracking-[0.2em]">STAFFING</div>
             </div>
           </Link>
           

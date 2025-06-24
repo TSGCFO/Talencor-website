@@ -88,6 +88,26 @@
     letter-spacing: 0.1em;
   }
 
+  /* Responsive Logo Utilities */
+  .logo-container {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .logo-container:hover {
+    @apply shadow-xl;
+    transform: translateY(-1px);
+  }
+
+  /* Custom responsive breakpoint for extra small devices */
+  @media (min-width: 475px) {
+    .xs\:block {
+      display: block;
+    }
+    .xs\:hidden {
+      display: none;
+    }
+  }
+
   .talencor-gold {
     color: var(--talencor-gold);
   }

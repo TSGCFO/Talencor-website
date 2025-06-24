@@ -92,6 +92,7 @@ The contact form follows this flow:
 - June 21, 2025: Updated company information to match Google listing - correct address (2985 Drew Rd #206, Airport Business Complex), phone (647) 946-2177, and business hours (Monday-Friday 10 AM-5 PM, weekends closed)
 - June 24, 2025: Complete rebranding with new hexagonal logo files - updated color scheme to match golden/orange hexagonal logo design throughout entire website
 - June 24, 2025: Converted EPS and JPEG logo files to PNG format for web compatibility, implemented proper logo display with multiple fallback options
+- June 24, 2025: Implemented dynamic logo adaptation with responsive sizing for mobile (h-8), tablet (h-9), and desktop (h-12) screen sizes
 
 ## User Preferences
 

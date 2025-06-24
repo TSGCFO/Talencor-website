@@ -25,11 +25,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div className="lg:col-span-2">
             <div className="flex items-center mb-6">
-              <div className="bg-white rounded-lg p-2 shadow-lg border-2 border-talencor-gold">
+              {/* Footer Logo - Responsive Sizing */}
+              <div className="bg-white rounded-lg shadow-lg border-2 border-talencor-gold p-2 sm:p-2.5 lg:p-3">
                 <img 
                   src="/talencor-logo-alt.png" 
                   alt="Talencor Staffing" 
-                  className="h-8 w-auto"
+                  className="h-6 sm:h-8 lg:h-10 w-auto transition-all duration-300"
                   onError={(e) => {
                     e.currentTarget.src = '/talencor-logo-backup.png';
                     e.currentTarget.onerror = () => {
@@ -38,9 +39,9 @@ export default function Footer() {
                   }}
                 />
               </div>
-              <div className="ml-3">
-                <div className="text-white logo-font text-lg tracking-wider">TALENCOR</div>
-                <div className="text-talencor-gold brand-text text-xs tracking-[0.2em]">STAFFING</div>
+              <div className="ml-3 sm:ml-4">
+                <div className="text-white logo-font text-base sm:text-lg lg:text-xl tracking-wider">TALENCOR</div>
+                <div className="text-talencor-gold brand-text text-xs sm:text-sm tracking-[0.2em]">STAFFING</div>
               </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
