@@ -63,7 +63,7 @@ export const SERVICES = [
 
 export const STATISTICS = [
   { value: "15+", label: "Years of Experience" },
-  { value: "5000+", label: "Successful Placements" },
+  { value: "5+", label: "Successful Placements" },
   { value: "500+", label: "Partner Companies" },
   { value: "95%", label: "Client Satisfaction" }
 ];
