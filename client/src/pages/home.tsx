@@ -3,10 +3,14 @@ import HeroSection from "@/components/hero-section";
 import ServicesOverview from "@/components/services-overview";
 import StatisticsSection from "@/components/statistics-section";
 import BenefitsSection from "@/components/benefits-section";
+import FAQSection from "@/components/faq-section";
+import { CoreWebVitals, initializePerformanceOptimizations } from "@/components/core-web-vitals";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Check, Star } from "lucide-react";
 import { SEO_CONFIG, generateStructuredData, generateMetaTags } from "@/lib/seo";
+import { GOOGLE_BUSINESS_PROFILE, VOICE_SEARCH_OPTIMIZATION } from "@/lib/advanced-seo";
+import { useEffect } from "react";
 
 export default function Home() {
   const seoData = generateMetaTags({
