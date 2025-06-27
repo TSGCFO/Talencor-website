@@ -19,10 +19,10 @@ export default function HeroSection() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
           <div className="mb-12 lg:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl logo-font mb-6 leading-tight">
-              Connecting <span className="text-talencor-gold">Talent</span> with Opportunity
+              Aiming to Build <span className="text-talencor-gold">Long-Lasting</span> Relationships
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
-              Professional staffing solutions that drive success for job seekers and employers across Canada
+              Our business model adapts to your company's need. We provide reliable help without any boundaries, 24-hours a day, seven-days a week.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/job-seekers">

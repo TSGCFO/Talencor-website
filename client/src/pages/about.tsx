@@ -22,10 +22,10 @@ export default function About() {
       <section className="bg-gradient-to-br from-navy to-corporate-blue text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
-            About <span className="text-energetic-orange">Talencor</span>
+            About <span className="text-talencor-gold">Talencor</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-            With over 15 years of expertise in the staffing industry, we've built a reputation for connecting exceptional talent with outstanding opportunities
+            Building everlasting relationships through quality staffing solutions. Our client success starts with the right people.
           </p>
         </div>
       </section>
@@ -42,34 +42,34 @@ export default function About() {
               />
             </div>
             <div>
-              <h2 className="text-4xl font-bold font-montserrat text-navy mb-6">Our Mission</h2>
+              <h2 className="text-4xl font-bold font-montserrat text-navy mb-6">We Believe!</h2>
               <p className="text-lg text-charcoal mb-6 leading-relaxed">
-                To bridge the gap between exceptional talent and remarkable opportunities, creating meaningful connections that drive success for both job seekers and employers across Canada.
+                Talencor Staffing strongly believes in the philosophy in which lasting client relations rest on the quality of the personnel placed within your organization and the service you receive. We acknowledge that doing it correctly the first time is critical to ensure ongoing satisfaction.
               </p>
               <p className="text-lg text-charcoal mb-8 leading-relaxed">
-                We believe that the right match can transform careers and businesses. Our dedicated team of recruitment specialists combines industry expertise with personalized service to deliver results that exceed expectations.
+                Talencor Staffing is a dedicated company our customers can trust and rely on. Tapping into our resources goes beyond finding the correct employee to complete the job; it enables our clients to effectively save both time and cost allowing them to focus on what really matters – business itself.
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="bg-light-grey">
                   <CardContent className="p-6">
-                    <h4 className="text-xl font-semibold font-montserrat text-navy mb-3">Our Values</h4>
+                    <h4 className="text-xl font-semibold font-montserrat text-navy mb-3">Our Approach</h4>
                     <ul className="text-charcoal space-y-2">
-                      <li>• Integrity & Trust</li>
-                      <li>• Excellence in Service</li>
-                      <li>• Personalized Approach</li>
-                      <li>• Long-term Partnerships</li>
+                      <li>• Profile-Matching System</li>
+                      <li>• Quality Selection Process</li>
+                      <li>• Team Leader Program</li>
+                      <li>• 24/7 Support Hotline</li>
                     </ul>
                   </CardContent>
                 </Card>
                 <Card className="bg-light-grey">
                   <CardContent className="p-6">
-                    <h4 className="text-xl font-semibold font-montserrat text-navy mb-3">Industries We Serve</h4>
+                    <h4 className="text-xl font-semibold font-montserrat text-navy mb-3">What We Manage</h4>
                     <ul className="text-charcoal space-y-2">
-                      <li>• Information Technology</li>
-                      <li>• Healthcare</li>
-                      <li>• Finance & Accounting</li>
-                      <li>• Manufacturing</li>
+                      <li>• All Administration & Costs</li>
+                      <li>• Recruitment & Training</li>
+                      <li>• Payroll & Labour Relations</li>
+                      <li>• Less Paperwork & Headaches</li>
                     </ul>
                   </CardContent>
                 </Card>

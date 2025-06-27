@@ -3,7 +3,8 @@ import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight,
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { SERVICES } from "@/lib/constants";
+import { SERVICES, JOB_POSITIONS } from "@/lib/constants";
+import BenefitsSection from "@/components/benefits-section";
 
 const iconMap = {
   Users,
@@ -76,44 +77,47 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-20 bg-light-grey">
+      {/* Benefits Section */}
+      <BenefitsSection />
+
+      {/* Available Positions */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">Why Choose Talencor?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+              Skilled, Dependable, Ready to <span className="text-talencor-gold">WORK!</span>
+            </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
-              Our commitment to excellence and personalized service sets us apart in the staffing industry
+              Talencor are proud of our constantly growing pool of skilled workers who can eagerly adapt to an extensive variety of tasks. 
+              Do you require someone for one-day? An extensive project? Our clients depend on us for both!
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Industry Expertise",
-                description: "Deep knowledge across multiple industries including IT, healthcare, finance, and manufacturing",
-                stat: "15+ Years"
-              },
-              {
-                title: "Proven Results",
-                description: "Track record of successful placements with high retention rates and client satisfaction",
-                stat: "5000+ Placements"
-              },
-              {
-                title: "Personalized Service",
-                description: "Dedicated account managers who understand your unique needs and business culture",
-                stat: "95% Satisfaction"
-              }
-            ].map((feature, index) => (
-              <Card key={index} className="text-center p-8">
-                <CardContent className="pt-6">
-                  <div className="text-4xl font-bold font-montserrat text-talencor-gold mb-4">
-                    {feature.stat}
-                  </div>
-                  <h3 className="text-xl font-bold font-montserrat text-navy mb-4">{feature.title}</h3>
-                  <p className="text-charcoal leading-relaxed">{feature.description}</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {JOB_POSITIONS.map((position, index) => (
+              <Card 
+                key={position}
+                className="hover:shadow-lg transition-shadow border-l-4 border-l-talencor-gold"
+              >
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold font-montserrat text-navy mb-2">{position}</h3>
+                  <p className="text-sm text-charcoal">
+                    Professional, screened candidates ready for immediate placement
+                  </p>
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-lg text-charcoal mb-6">
+              We encourage you to draw from our pool of talent should you want to hire someone permanently.
+            </p>
+            <Link href="/contact">
+              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+                View Available Candidates
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
