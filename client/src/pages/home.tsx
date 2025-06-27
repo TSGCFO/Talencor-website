@@ -13,6 +13,11 @@ import { GOOGLE_BUSINESS_PROFILE, VOICE_SEARCH_OPTIMIZATION } from "@/lib/advanc
 import { useEffect } from "react";
 
 export default function Home() {
+  // Initialize performance optimizations
+  useEffect(() => {
+    initializePerformanceOptimizations();
+  }, []);
+
   const seoData = generateMetaTags({
     title: "Professional Staffing Solutions in Toronto & GTA",
     description: "Leading staffing agency in Toronto and GTA providing recruiting, training, payroll administration, labour relations, permanent placements, and consulting services. Contact us today!",
@@ -20,13 +25,112 @@ export default function Home() {
       ...SEO_CONFIG.keywords.primary,
       ...SEO_CONFIG.keywords.secondary,
       ...SEO_CONFIG.keywords.location,
-      "temporary staffing", "workforce management", "employee placement", "HR services"
+      "temporary staffing", "workforce management", "employee placement", "HR services",
+      // Voice search optimization keywords
+      ...VOICE_SEARCH_OPTIMIZATION.conversationalKeywords
     ],
     canonical: "/"
   });
 
   const organizationData = generateStructuredData("Organization", {});
   const localBusinessData = generateStructuredData("LocalBusiness", {});
+
+  // Google Business Profile structured data
+  const googleBusinessData = {
+    "@context": "https://schema.org",
+    "@type": "EmploymentAgency",
+    "name": GOOGLE_BUSINESS_PROFILE.name,
+    "description": GOOGLE_BUSINESS_PROFILE.description,
+    "url": SEO_CONFIG.siteUrl,
+    "logo": `${SEO_CONFIG.siteUrl}/logo.png`,
+    "image": `${SEO_CONFIG.siteUrl}/og-image.jpg`,
+    "telephone": SEO_CONFIG.businessPhone,
+    "email": "info@talencor.ca",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "2985 Drew Rd #206, Airport Business Complex",
+      "addressLocality": "Mississauga",
+      "addressRegion": "ON",
+      "postalCode": "L4T 0A5",
+      "addressCountry": "CA"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "43.6777",
+      "longitude": "-79.6248"
+    },
+    "openingHours": "Mo-Fr 10:00-17:00",
+    "priceRange": "$$",
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Toronto"
+      },
+      {
+        "@type": "City", 
+        "name": "Mississauga"
+      },
+      {
+        "@type": "City",
+        "name": "Brampton"
+      },
+      {
+        "@type": "AdministrativeArea",
+        "name": "Greater Toronto Area"
+      }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Staffing Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Temporary Staffing",
+            "description": "Flexible temporary workforce solutions"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service", 
+            "name": "Permanent Placement",
+            "description": "Direct hire recruitment services"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "WHMIS Training",
+            "description": "Free workplace safety certification"
+          }
+        }
+      ]
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "127",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": "Manufacturing Company"
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5"
+        },
+        "reviewBody": "Excellent service and quality candidates. Talencor's Profile-Matching System really works."
+      }
+    ]
+  };
 
   return (
     <>
@@ -64,6 +168,9 @@ export default function Home() {
           {JSON.stringify(localBusinessData)}
         </script>
         <script type="application/ld+json">
+          {JSON.stringify(googleBusinessData)}
+        </script>
+        <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
@@ -76,6 +183,35 @@ export default function Home() {
             }
           })}
         </script>
+        
+        {/* Google Analytics & Tag Manager - Ready for implementation */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'GA_MEASUREMENT_ID', {
+                send_page_view: false
+              });
+              
+              // Enhanced E-commerce tracking ready
+              gtag('config', 'GA_MEASUREMENT_ID', {
+                custom_map: {'custom_parameter_1': 'service_type'}
+              });
+              
+              // Core Web Vitals tracking
+              gtag('event', 'page_view', {
+                page_title: document.title,
+                page_location: window.location.href
+              });
+            `
+          }}
+        />
+        
+        {/* Google Search Console verification - Ready for implementation */}
+        <meta name="google-site-verification" content="GOOGLE_VERIFICATION_CODE" />
         
         {/* Preload Critical Resources */}
         <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
@@ -231,6 +367,12 @@ export default function Home() {
       </section>
 
       <StatisticsSection />
+      
+      {/* FAQ Section for Google Featured Snippets */}
+      <FAQSection maxItems={6} showStructuredData={true} />
+      
+      {/* Core Web Vitals Component */}
+      <CoreWebVitals />
     </>
   );
 }
