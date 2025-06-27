@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight } from "lucide-react";
+import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight, Calculator, Building } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { SERVICES } from "@/lib/constants";
 
@@ -10,6 +10,8 @@ const iconMap = {
   Search,
   GraduationCap,
   TrendingUp,
+  Calculator,
+  Building,
 };
 
 export default function ServicesOverview() {

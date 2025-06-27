@@ -1,6 +1,6 @@
 export const COMPANY_INFO = {
   name: "Talencor Staffing",
-  tagline: "Professional Employment Solutions",
+  tagline: "Our business model adapts to your company's need",
   phone: "(647) 946-2177",
   email: "info@talencor.com",
   address: {
@@ -24,39 +24,39 @@ export const COMPANY_INFO = {
 
 export const SERVICES = [
   {
-    id: "permanent-placement",
-    title: "Permanent Placement",
-    description: "Connect with top-tier permanent positions across various industries with our expert recruitment team",
+    id: "recruiting",
+    title: "Recruiting",
+    description: "Our staffing operations team continuously recruits new talent to join your team, providing the right people the first time",
     icon: "Users"
   },
   {
-    id: "temporary-staffing",
-    title: "Temporary Staffing",
-    description: "Flexible staffing solutions for short-term projects and seasonal workforce needs",
-    icon: "Clock"
-  },
-  {
-    id: "contract-to-hire",
-    title: "Contract-to-Hire",
-    description: "Evaluate potential employees through temporary contracts before permanent placement",
-    icon: "Handshake"
-  },
-  {
-    id: "executive-search",
-    title: "Executive Search",
-    description: "Specialized recruitment for senior leadership and executive-level positions",
-    icon: "Search"
-  },
-  {
-    id: "training-programs",
-    title: "Training Programs",
-    description: "Professional development and skills training to enhance career prospects",
+    id: "training",
+    title: "Training",
+    description: "Comprehensive training programs for all placed employees to ensure they meet your specific requirements and standards",
     icon: "GraduationCap"
   },
   {
-    id: "workforce-consulting",
-    title: "Workforce Consulting",
-    description: "Strategic workforce planning and HR consulting services for growing businesses",
+    id: "payroll-administration",
+    title: "Payroll & Administration",
+    description: "Complete payroll management including vacation pay, severance, sick leave, and all administrative tasks",
+    icon: "Calculator"
+  },
+  {
+    id: "labour-relations",
+    title: "Labour & Human Relations",
+    description: "Professional labour relations consulting and management services for your permanent and temporary staff",
+    icon: "Handshake"
+  },
+  {
+    id: "full-time-placements",
+    title: "Full-time Placements",
+    description: "Permanent staffing solutions with carefully screened candidates who fit your company's unique culture",
+    icon: "Building"
+  },
+  {
+    id: "consulting",
+    title: "Consulting",
+    description: "Expert workforce management consulting and specialized training services for valued clients",
     icon: "TrendingUp"
   }
 ];
@@ -73,4 +73,49 @@ export const INQUIRY_TYPES = [
   "I need to hire talent",
   "General inquiry",
   "Partnership opportunity"
+];
+
+// Job positions available as mentioned in the Talencor services document
+export const JOB_POSITIONS = [
+  "Shipper/Receiver",
+  "Order Picker", 
+  "Manufacturer/Light Assembler",
+  "Forklift/Material Handler",
+  "Food & Beverage Associate",
+  "Sorter",
+  "Packager",
+  "Inventory Associate",
+  "Press Operator",
+  "Production Welder",
+  "G-class Drivers",
+  "Clerical/Administration Workers"
+];
+
+// Benefits as described in the Talencor document
+export const BENEFITS = [
+  {
+    title: "Save Time",
+    description: "We interview and recruit applicants - one phone call is all that is required to supply the right person. We also install our state-of-the-art finger scanner at every job site for time and attendance.",
+    icon: "Clock"
+  },
+  {
+    title: "Save Money", 
+    description: "Pay nothing extra for our employees: no payroll, deductions, incentives, WSIB-claims, benefits or severance costs of any kind.",
+    icon: "DollarSign"
+  },
+  {
+    title: "Flexibility",
+    description: "Adapt to market demands within your specific industry. Qualified workers are a phone call away; able to expand your company's operations with ease.",
+    icon: "Zap"
+  },
+  {
+    title: "Guaranteed Quality",
+    description: "Each Talencor employee is carefully screened and tested. If one of our employees does not meet your standards we will quickly resolve the issue.",
+    icon: "Shield"
+  },
+  {
+    title: "Peace of Mind",
+    description: "Our 24/7-employer hotline ensures we continue to provide excellent services. 24-hours-a-day, 7-days-a-week we are ready with skilled, talented individuals.",
+    icon: "Heart"
+  }
 ];

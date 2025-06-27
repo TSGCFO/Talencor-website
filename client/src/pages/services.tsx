@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight } from "lucide-react";
+import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight, Calculator, Building } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -12,6 +12,8 @@ const iconMap = {
   Search,
   GraduationCap,
   TrendingUp,
+  Calculator,
+  Building,
 };
 
 export default function Services() {
