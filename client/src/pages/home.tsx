@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import HeroSection from "@/components/hero-section";
 import ServicesOverview from "@/components/services-overview";
 import StatisticsSection from "@/components/statistics-section";
@@ -5,10 +6,81 @@ import BenefitsSection from "@/components/benefits-section";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Check, Star } from "lucide-react";
+import { SEO_CONFIG, generateStructuredData, generateMetaTags } from "@/lib/seo";
 
 export default function Home() {
+  const seoData = generateMetaTags({
+    title: "Professional Staffing Solutions in Toronto & GTA",
+    description: "Leading staffing agency in Toronto and GTA providing recruiting, training, payroll administration, labour relations, permanent placements, and consulting services. Contact us today!",
+    keywords: [
+      ...SEO_CONFIG.keywords.primary,
+      ...SEO_CONFIG.keywords.secondary,
+      ...SEO_CONFIG.keywords.location,
+      "temporary staffing", "workforce management", "employee placement", "HR services"
+    ],
+    canonical: "/"
+  });
+
+  const organizationData = generateStructuredData("Organization", {});
+  const localBusinessData = generateStructuredData("LocalBusiness", {});
+
   return (
     <>
+      <Helmet>
+        <title>{seoData.title}</title>
+        <meta name="description" content={seoData.description} />
+        <meta name="keywords" content={seoData.keywords} />
+        <meta name="robots" content={seoData.robots} />
+        <link rel="canonical" href={seoData.canonical} />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={seoData.ogTitle} />
+        <meta property="og:description" content={seoData.ogDescription} />
+        <meta property="og:type" content={seoData.ogType} />
+        <meta property="og:url" content={seoData.ogUrl} />
+        <meta property="og:site_name" content={SEO_CONFIG.siteName} />
+        <meta property="og:locale" content="en_CA" />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content={seoData.twitterCard} />
+        <meta name="twitter:title" content={seoData.twitterTitle} />
+        <meta name="twitter:description" content={seoData.twitterDescription} />
+        
+        {/* Local SEO */}
+        <meta name="geo.region" content="CA-ON" />
+        <meta name="geo.placename" content="Toronto" />
+        <meta name="geo.position" content="43.6532;-79.3832" />
+        <meta name="ICBM" content="43.6532, -79.3832" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(organizationData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(localBusinessData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": SEO_CONFIG.siteName,
+            "url": SEO_CONFIG.siteUrl,
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": `${SEO_CONFIG.siteUrl}/search?q={search_term_string}`,
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
+        
+        {/* Preload Critical Resources */}
+        <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/montserrat.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+      </Helmet>
 
       <HeroSection />
       <ServicesOverview />

@@ -8,6 +8,12 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Home from "@/pages/home";
 import Services from "@/pages/services";
+import RecruitingService from "@/pages/services/recruiting";
+import TrainingService from "@/pages/services/training";
+import PayrollAdministrationService from "@/pages/services/payroll-administration";
+import LabourRelationsService from "@/pages/services/labour-relations";
+import FullTimePlacementsService from "@/pages/services/full-time-placements";
+import ConsultingService from "@/pages/services/consulting";
 import JobSeekers from "@/pages/job-seekers";
 import Employers from "@/pages/employers";
 import About from "@/pages/about";
@@ -23,6 +29,12 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/services" component={Services} />
+          <Route path="/services/recruiting" component={RecruitingService} />
+          <Route path="/services/training" component={TrainingService} />
+          <Route path="/services/payroll-administration" component={PayrollAdministrationService} />
+          <Route path="/services/labour-relations" component={LabourRelationsService} />
+          <Route path="/services/full-time-placements" component={FullTimePlacementsService} />
+          <Route path="/services/consulting" component={ConsultingService} />
           <Route path="/job-seekers" component={JobSeekers} />
           <Route path="/employers" component={Employers} />
           <Route path="/about" component={About} />

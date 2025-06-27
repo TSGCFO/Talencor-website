@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertContactSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
+import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
