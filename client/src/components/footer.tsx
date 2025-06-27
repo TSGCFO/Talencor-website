@@ -12,11 +12,12 @@ export default function Footer() {
   ];
 
   const services = [
-    "Permanent Placement",
-    "Temporary Staffing", 
-    "Contract-to-Hire",
-    "Executive Search",
-    "Training Programs"
+    "Recruiting",
+    "Training", 
+    "Payroll & Administration",
+    "Labour & Human Relations",
+    "Full-time Placements",
+    "Consulting"
   ];
 
   return (
