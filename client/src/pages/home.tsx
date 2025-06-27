@@ -1,6 +1,7 @@
 import HeroSection from "@/components/hero-section";
 import ServicesOverview from "@/components/services-overview";
 import StatisticsSection from "@/components/statistics-section";
+import BenefitsSection from "@/components/benefits-section";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Check, Star } from "lucide-react";
@@ -11,6 +12,7 @@ export default function Home() {
 
       <HeroSection />
       <ServicesOverview />
+      <BenefitsSection />
 
       {/* Job Seekers Section */}
       <section className="py-20 bg-gradient-to-br from-white to-light-grey relative overflow-hidden">
@@ -29,25 +31,25 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
-                Advance Your <span className="text-talencor-gold">Career</span>
+                Our client success' start with the <span className="text-talencor-gold">right people</span>
               </h2>
               <p className="text-xl text-charcoal mb-8 leading-relaxed">
-                Whether you're seeking your first opportunity, making a career change, or looking to advance to the next level, our expert recruiters are here to guide you every step of the way.
+                Talencor consultants are well-trained staffing professionals, ready to provide you with labour on a seasonal, contingent, or ongoing basis in a variety of employment categories. Each of our unique employees has been handpicked to fit your company's unique culture.
               </p>
               
               <div className="space-y-6 mb-8">
                 {[
                   {
-                    title: "Personalized Career Guidance",
-                    description: "One-on-one consultations to understand your goals and match you with the right opportunities"
+                    title: "Carefully Screened & Tested",
+                    description: "We pride ourselves on screening each individual cautiously, based on your requirements with skill examinations and specific tests"
                   },
                   {
-                    title: "Exclusive Job Opportunities", 
-                    description: "Access to hidden job market and exclusive positions from our extensive employer network"
+                    title: "Ready to Work", 
+                    description: "Our constantly growing pool of skilled workers can eagerly adapt to an extensive variety of tasks - one day or extensive projects"
                   },
                   {
-                    title: "Professional Development",
-                    description: "Skills training and professional development programs to enhance your marketability"
+                    title: "Quality & Work Ethic",
+                    description: "Each applicant is judged based on attitude, references and past performance to ensure strong work-ethic while representing our clients"
                   }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start">
@@ -63,17 +65,17 @@ export default function Home() {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/job-seekers">
+                <Link href="/contact">
                   <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
-                    Browse Jobs
+                    Request Talent
                   </Button>
                 </Link>
-                <Link href="/contact">
+                <Link href="/services">
                   <Button 
                     variant="outline" 
                     className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-white text-talencor-gold px-8 py-4 text-lg font-semibold w-full sm:w-auto"
                   >
-                    Submit Resume
+                    View Services
                   </Button>
                 </Link>
               </div>

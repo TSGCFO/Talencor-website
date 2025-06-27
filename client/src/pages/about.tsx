@@ -86,46 +86,49 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
-              Our Approach
+              Profile-Matching System
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
-              We combine proven methodologies with innovative solutions to deliver exceptional results
+              With the implementation of our client-profile matching system our goal is to maintain our quality to you at exceptional levels
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                icon: <Users size={48} />,
-                title: "Understanding",
-                description: "We take time to understand your unique needs, culture, and goals"
-              },
-              {
-                icon: <Target size={48} />,
-                title: "Targeting",
-                description: "We identify and target the right candidates for your specific requirements"
-              },
-              {
-                icon: <Award size={48} />,
-                title: "Matching",
-                description: "We carefully match candidates based on skills, experience, and cultural fit"
-              },
-              {
-                icon: <Heart size={48} />,
-                title: "Supporting",
-                description: "We provide ongoing support to ensure long-term success for all parties"
-              }
-            ].map((step, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                <CardContent className="p-8">
-                  <div className="text-talencor-gold mb-6 flex justify-center">
-                    {step.icon}
-                  </div>
-                  <h3 className="text-xl font-bold font-montserrat text-navy mb-4">{step.title}</h3>
-                  <p className="text-charcoal leading-relaxed">{step.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
+            <Card className="text-center hover:shadow-lg transition-shadow border-t-4 border-t-talencor-gold">
+              <CardContent className="p-8">
+                <div className="text-talencor-gold mb-4 flex justify-center">
+                  <Users size={48} />
+                </div>
+                <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Client Profiling</h3>
+                <p className="text-charcoal leading-relaxed">
+                  Talencor creates an employer-profile for each of our clients to ensure the ideal match between the employee and employer. By qualifying the job-requirements we are able to provide the greatest level of satisfaction.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow border-t-4 border-t-talencor-orange">
+              <CardContent className="p-8">
+                <div className="text-talencor-orange mb-4 flex justify-center">
+                  <Award size={48} />
+                </div>
+                <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Selection Process</h3>
+                <p className="text-charcoal leading-relaxed">
+                  All our applicants must undertake general skill examination, along with specific tests for certain positions before they are able to become a member of the Talencor team. We confirm our talent will deliver quality services.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow border-t-4 border-t-navy">
+              <CardContent className="p-8">
+                <div className="text-navy mb-4 flex justify-center">
+                  <Target size={48} />
+                </div>
+                <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Team Leader Program</h3>
+                <p className="text-charcoal leading-relaxed">
+                  When more than 10-employees on any single-shift work at the same company location we select one team member as "Team Leader". Our Team Leaders are motivated and rewarded premium rates.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

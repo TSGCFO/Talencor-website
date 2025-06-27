@@ -45,7 +45,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Connecting exceptional talent with outstanding opportunities across Canada. Your trusted partner for all staffing needs.
+              Talencor Staffing is a dedicated company our customers can trust and rely on. Our business model adapts to your company's need.
             </p>
             <div className="flex space-x-4">
               <a 
