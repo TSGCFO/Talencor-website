@@ -93,6 +93,7 @@ The contact form follows this flow:
 - June 24, 2025: Complete rebranding with new hexagonal logo files - updated color scheme to match golden/orange hexagonal logo design throughout entire website
 - June 24, 2025: Converted EPS and JPEG logo files to PNG format for web compatibility, implemented proper logo display with multiple fallback options
 - June 24, 2025: Implemented dynamic logo adaptation with responsive sizing for mobile (h-8), tablet (h-9), and desktop (h-12) screen sizes
+- June 27, 2025: Removed employee application form containing sensitive information (SIN numbers) for security compliance - replaced with secure application info page directing users to contact recruiters for secure application links
 
 ## User Preferences
 

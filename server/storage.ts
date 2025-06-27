@@ -40,23 +40,6 @@ export class DatabaseStorage implements IStorage {
   async getContactSubmissions(): Promise<ContactSubmission[]> {
     return await db.select().from(contactSubmissions).orderBy(desc(contactSubmissions.createdAt));
   }
-
-  async createJobApplication(insertApplication: InsertJobApplication): Promise<JobApplication> {
-    const [application] = await db
-      .insert(jobApplications)
-      .values(insertApplication)
-      .returning();
-    return application;
-  }
-
-  async getJobApplications(): Promise<JobApplication[]> {
-    return await db.select().from(jobApplications).orderBy(desc(jobApplications.createdAt));
-  }
-
-  async getJobApplication(id: number): Promise<JobApplication | undefined> {
-    const [application] = await db.select().from(jobApplications).where(eq(jobApplications.id, id));
-    return application || undefined;
-  }
 }
 
 export const storage = new DatabaseStorage();
