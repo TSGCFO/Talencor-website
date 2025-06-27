@@ -12,12 +12,12 @@ export default function Footer() {
   ];
 
   const services = [
-    "Recruiting",
-    "Training", 
-    "Payroll & Administration",
-    "Labour & Human Relations",
-    "Full-time Placements",
-    "Consulting"
+    { name: "Recruiting", href: "/services/recruiting" },
+    { name: "Training", href: "/services/training" }, 
+    { name: "Payroll & Administration", href: "/services/payroll-administration" },
+    { name: "Labour & Human Relations", href: "/services/labour-relations" },
+    { name: "Full-time Placements", href: "/services/full-time-placements" },
+    { name: "Consulting", href: "/services/consulting" }
   ];
 
   return (
@@ -90,12 +90,12 @@ export default function Footer() {
             <h4 className="text-lg font-semibold font-montserrat mb-4">Services</h4>
             <ul className="space-y-2">
               {services.map((service) => (
-                <li key={service}>
+                <li key={service.name}>
                   <Link 
-                    href="/services"
+                    href={service.href}
                     className="text-gray-300 hover:text-talencor-gold transition-colors"
                   >
-                    {service}
+                    {service.name}
                   </Link>
                 </li>
               ))}
