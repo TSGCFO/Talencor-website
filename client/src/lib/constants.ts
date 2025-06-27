@@ -32,7 +32,7 @@ export const SERVICES = [
   {
     id: "training",
     title: "Training",
-    description: "Comprehensive training programs for all placed employees to ensure they meet your specific requirements and standards",
+    description: "Comprehensive training programs including WHMIS certification and workplace safety training to ensure all employees meet your specific requirements and standards",
     icon: "GraduationCap"
   },
   {

@@ -122,6 +122,75 @@ export default function Services() {
         </div>
       </section>
 
+      {/* WHMIS Training Section */}
+      <section className="py-20 bg-gradient-to-br from-light-grey to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+              Free <span className="text-talencor-gold">WHMIS Training</span> & Certification
+            </h2>
+            <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed mb-8">
+              Workplace Hazardous Materials Information System (WHMIS) training is essential for workplace safety. 
+              We provide access to free WHMIS certification to ensure all our employees meet safety requirements.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <Card className="text-center hover:shadow-lg transition-shadow border-t-4 border-t-talencor-gold">
+              <CardContent className="p-8">
+                <div className="text-talencor-gold mb-4 flex justify-center">
+                  <GraduationCap size={48} />
+                </div>
+                <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Free Certification</h3>
+                <p className="text-charcoal leading-relaxed">
+                  Access comprehensive WHMIS training and receive your certification at no cost through our training partner.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow border-t-4 border-t-talencor-orange">
+              <CardContent className="p-8">
+                <div className="text-talencor-orange mb-4 flex justify-center">
+                  <Users size={48} />
+                </div>
+                <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Workplace Safety</h3>
+                <p className="text-charcoal leading-relaxed">
+                  Learn to identify hazardous materials, understand safety data sheets, and maintain a safe work environment.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow border-t-4 border-t-navy">
+              <CardContent className="p-8">
+                <div className="text-navy mb-4 flex justify-center">
+                  <Building size={48} />
+                </div>
+                <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Compliance Ready</h3>
+                <p className="text-charcoal leading-relaxed">
+                  Ensure your workplace meets all Canadian safety standards and regulatory requirements.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <a 
+              href="https://aixsafety.com/wp-content/uploads/articulate_uploads/WHS-Apr2025Aix/story.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block"
+            >
+              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+                Start Free WHMIS Training
+              </Button>
+            </a>
+            <p className="text-sm text-charcoal mt-4">
+              Training provided by AIX Safety - Opens in new window
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-navy text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
