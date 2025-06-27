@@ -41,7 +41,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // SEO Routes
+  app.get("/sitemap.xml", (req, res) => {
+    try {
+      const sitemap = generateSitemap(sitemapEntries);
+      res.set('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error) {
+      res.status(500).send("Error generating sitemap");
+    }
+  });
 
+  app.get("/robots.txt", (req, res) => {
+    try {
+      const robotsTxt = generateRobotsTxt();
+      res.set('Content-Type', 'text/plain');
+      res.send(robotsTxt);
+    } catch (error) {
+      res.status(500).send("Error generating robots.txt");
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { SERVICES, JOB_POSITIONS } from "@/lib/constants";
 import BenefitsSection from "@/components/benefits-section";
+import { SEO_CONFIG, generateMetaTags, generateBreadcrumbStructuredData } from "@/lib/seo";
 
 const iconMap = {
   Users,
@@ -18,16 +19,70 @@ const iconMap = {
 };
 
 export default function Services() {
+  const seoData = generateMetaTags({
+    title: "Professional Staffing Services | Toronto & GTA",
+    description: "Comprehensive staffing services including recruiting, training, payroll administration, labour relations, permanent placements, and consulting in Toronto and GTA.",
+    keywords: [
+      "staffing services Toronto", "recruiting services GTA", "employee training", "payroll services", 
+      "labour relations", "permanent placement", "workforce consulting", "temporary staffing",
+      "WHMIS certification", "HR services Toronto", "employment agency GTA"
+    ],
+    canonical: "/services"
+  });
+
+  const breadcrumbData = generateBreadcrumbStructuredData([
+    { name: "Home", url: "/" },
+    { name: "Services", url: "/services" }
+  ]);
+
+  const servicesStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Staffing Services",
+    "itemListElement": SERVICES.map((service, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Service",
+        "name": service.title,
+        "description": service.description,
+        "url": `${SEO_CONFIG.siteUrl}/services/${service.id}`,
+        "provider": {
+          "@type": "Organization",
+          "name": SEO_CONFIG.businessName
+        }
+      }
+    }))
+  };
+
   return (
     <>
       <Helmet>
-        <title>Professional Staffing Services | Talencor Staffing Solutions</title>
-        <meta 
-          name="description" 
-          content="Comprehensive staffing services including permanent placement, temporary staffing, contract-to-hire, executive search, training programs, and workforce consulting." 
-        />
-        <meta property="og:title" content="Professional Staffing Services | Talencor" />
-        <meta property="og:description" content="Comprehensive staffing services for businesses and job seekers across Canada." />
+        <title>{seoData.title}</title>
+        <meta name="description" content={seoData.description} />
+        <meta name="keywords" content={seoData.keywords} />
+        <meta name="robots" content={seoData.robots} />
+        <link rel="canonical" href={seoData.canonical} />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={seoData.ogTitle} />
+        <meta property="og:description" content={seoData.ogDescription} />
+        <meta property="og:type" content={seoData.ogType} />
+        <meta property="og:url" content={seoData.ogUrl} />
+        <meta property="og:site_name" content={SEO_CONFIG.siteName} />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content={seoData.twitterCard} />
+        <meta name="twitter:title" content={seoData.twitterTitle} />
+        <meta name="twitter:description" content={seoData.twitterDescription} />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(servicesStructuredData)}
+        </script>
       </Helmet>
 
       {/* Hero Section */}

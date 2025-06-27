@@ -4,18 +4,50 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import StatisticsSection from "@/components/statistics-section";
+import { SEO_CONFIG, generateMetaTags, generateBreadcrumbStructuredData } from "@/lib/seo";
 
 export default function About() {
+  const seoData = generateMetaTags({
+    title: "About Talencor Staffing | Professional Employment Solutions Toronto",
+    description: "Learn about Talencor Staffing's Profile-Matching System and Team Leader Program. Professional staffing solutions in Toronto and GTA with a focus on quality selection and 24/7 support.",
+    keywords: [
+      "about Talencor Staffing", "staffing company Toronto", "employment agency history", 
+      "Profile-Matching System", "Team Leader Program", "professional staffing GTA",
+      "We Believe philosophy", "staffing expertise Toronto", "employment solutions"
+    ],
+    canonical: "/about"
+  });
+
+  const breadcrumbData = generateBreadcrumbStructuredData([
+    { name: "Home", url: "/" },
+    { name: "About", url: "/about" }
+  ]);
+
   return (
     <>
       <Helmet>
-        <title>About Talencor Staffing | 15+ Years of Employment Excellence</title>
-        <meta 
-          name="description" 
-          content="Learn about Talencor Staffing's 15+ years of expertise connecting talent with opportunity across Canada. Our mission, values, and commitment to excellence in professional staffing." 
-        />
-        <meta property="og:title" content="About Talencor Staffing | Employment Excellence" />
-        <meta property="og:description" content="15+ years of expertise in professional staffing solutions across Canada." />
+        <title>{seoData.title}</title>
+        <meta name="description" content={seoData.description} />
+        <meta name="keywords" content={seoData.keywords} />
+        <meta name="robots" content={seoData.robots} />
+        <link rel="canonical" href={seoData.canonical} />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={seoData.ogTitle} />
+        <meta property="og:description" content={seoData.ogDescription} />
+        <meta property="og:type" content={seoData.ogType} />
+        <meta property="og:url" content={seoData.ogUrl} />
+        <meta property="og:site_name" content={SEO_CONFIG.siteName} />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content={seoData.twitterCard} />
+        <meta name="twitter:title" content={seoData.twitterTitle} />
+        <meta name="twitter:description" content={seoData.twitterDescription} />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbData)}
+        </script>
       </Helmet>
 
       {/* Hero Section */}
