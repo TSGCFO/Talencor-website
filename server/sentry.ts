@@ -103,7 +103,6 @@ export function initSentry() {
     // Advanced configuration
     sendDefaultPii: false, // Privacy compliance - no personally identifiable information
     attachStacktrace: true,
-    enableTracing: true,
     
     // Debug mode for development
     debug: process.env.NODE_ENV === "development",
