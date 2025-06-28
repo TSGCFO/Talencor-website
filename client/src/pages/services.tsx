@@ -120,7 +120,7 @@ export default function Services() {
                       {service.description}
                     </p>
                     <Link href={`/services/${service.id}`}>
-                      <span className="text-corporate-blue hover:text-navy font-semibold font-montserrat cursor-pointer inline-flex items-center">
+                      <span className="text-talencor-gold hover:text-talencor-orange font-semibold font-montserrat cursor-pointer inline-flex items-center">
                         Learn More <ArrowRight size={16} className="ml-1" />
                       </span>
                     </Link>
