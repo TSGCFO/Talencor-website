@@ -64,7 +64,7 @@ export function initSentry() {
           architecture: process.arch,
           uptime: process.uptime(),
           memoryUsage: process.memoryUsage(),
-          loadAverage: typeof process.loadavg === 'function' ? process.loadavg() : undefined,
+          cpuUsage: process.cpuUsage(),
         };
       }
       

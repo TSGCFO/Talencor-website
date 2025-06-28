@@ -100,37 +100,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Sentry test endpoint (only in development)
-  if (process.env.NODE_ENV === 'development') {
-    app.get("/api/test-sentry", (req, res) => {
-      try {
-        captureEvent('Sentry test endpoint accessed', {
-          timestamp: new Date().toISOString(),
-          userAgent: req.get('User-Agent'),
-        });
-        
-        // Optionally test error capture
-        if (req.query.error === 'true') {
-          throw new Error('Test error for Sentry integration');
-        }
-        
-        res.json({ 
-          success: true, 
-          message: "Sentry test endpoint working",
-          sentryEnabled: !!process.env.SENTRY_DSN 
-        });
-      } catch (error) {
-        captureError(error as Error, {
-          action: 'sentry_test_endpoint',
-          requestQuery: req.query,
-        });
-        res.status(500).json({ 
-          success: false, 
-          message: "Test error captured by Sentry" 
-        });
-      }
+  // Health check endpoint for production monitoring
+  app.get("/api/health", (req, res) => {
+    res.json({ 
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || "development",
+      version: process.env.npm_package_version || "1.0.0"
     });
-  }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
