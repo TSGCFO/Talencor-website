@@ -96,9 +96,7 @@ export default function Header() {
                       ? "text-talencor-gold bg-white/10 font-semibold"
                       : "text-white hover:text-talencor-gold hover:bg-white/10"
                   }`}
-                  onClick={(e) => {
-                    console.log(`Navigating to ${item.href}`);
-                  }}
+
                 >
                   {item.name}
                 </Link>
@@ -138,10 +136,7 @@ export default function Header() {
                     ? "text-talencor-gold bg-white/10 font-semibold"
                     : "text-white hover:text-talencor-gold hover:bg-white/10"
                 }`}
-                onClick={(e) => {
-                  console.log(`Mobile navigation to ${item.href}`);
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>

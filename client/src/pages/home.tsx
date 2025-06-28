@@ -356,7 +356,7 @@ export default function Home() {
                 <Link href="/contact">
                   <Button 
                     variant="outline" 
-                    className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
+                    className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-navy text-talencor-gold px-8 py-4 text-lg font-semibold w-full sm:w-auto backdrop-blur-sm bg-white/10"
                   >
                     Learn More
                   </Button>
