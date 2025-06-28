@@ -15,6 +15,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertContactSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
 import { COMPANY_INFO, INQUIRY_TYPES } from "@/lib/constants";
+import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "@/lib/sentry";
 
 const contactFormSchema = insertContactSubmissionSchema.extend({
   firstName: z.string().min(1, "First name is required"),

@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SentryErrorBoundary } from "./lib/sentry";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Home from "@/pages/home";
@@ -53,8 +54,33 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <SentryErrorBoundary 
+            fallback={({ error, componentStack, resetError }) => (
+              <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
+                  <h1 className="text-xl font-semibold text-red-600 mb-4">Something went wrong</h1>
+                  <p className="text-gray-600 mb-4">
+                    We're sorry, but something unexpected happened. Our team has been notified.
+                  </p>
+                  <button 
+                    onClick={resetError}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                  >
+                    Try again
+                  </button>
+                  {import.meta.env.DEV && (
+                    <details className="mt-4">
+                      <summary className="text-sm text-gray-500 cursor-pointer">Error details</summary>
+                      <pre className="text-xs text-red-500 mt-2 overflow-auto">{error?.toString()}</pre>
+                    </details>
+                  )}
+                </div>
+              </div>
+            )}
+          >
+            <Toaster />
+            <Router />
+          </SentryErrorBoundary>
         </TooltipProvider>
       </HelmetProvider>
     </QueryClientProvider>
