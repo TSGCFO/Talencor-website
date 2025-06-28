@@ -11,12 +11,38 @@ import { Check, Star } from "lucide-react";
 import { SEO_CONFIG, generateStructuredData, generateMetaTags } from "@/lib/seo";
 import { GOOGLE_BUSINESS_PROFILE, VOICE_SEARCH_OPTIMIZATION } from "@/lib/advanced-seo";
 import { useEffect } from "react";
+import { captureEvent, captureError, addBreadcrumb } from "@/lib/sentry";
 
 export default function Home() {
   // Initialize performance optimizations
   useEffect(() => {
     initializePerformanceOptimizations();
   }, []);
+
+  // Test functions for Sentry frontend integration
+  const testSentryEvent = () => {
+    addBreadcrumb('User clicked Sentry test button', 'user');
+    captureEvent('Frontend Sentry test event triggered', {
+      page: 'home',
+      timestamp: new Date().toISOString(),
+      testType: 'manual_event'
+    });
+    alert('Sentry event sent! Check your Sentry React dashboard.');
+  };
+
+  const testSentryError = () => {
+    addBreadcrumb('User clicked error test button', 'user');
+    try {
+      throw new Error('Test frontend error for Sentry integration');
+    } catch (error) {
+      captureError(error as Error, {
+        page: 'home',
+        action: 'manual_error_test',
+        timestamp: new Date().toISOString()
+      });
+      alert('Sentry error captured! Check your Sentry React dashboard.');
+    }
+  };
 
   const seoData = generateMetaTags({
     title: "Professional Staffing Solutions in Toronto & GTA",
@@ -223,6 +249,39 @@ export default function Home() {
       </Helmet>
 
       <HeroSection />
+      
+      {/* Temporary Sentry Test Section - Development Only */}
+      {import.meta.env.DEV && (
+        <section className="py-8 bg-red-50 border-l-4 border-red-400">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-red-800 mb-4">
+                🧪 Sentry Frontend Integration Test (Development Only)
+              </h3>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button 
+                  onClick={testSentryEvent}
+                  variant="outline"
+                  className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-300"
+                >
+                  Test Sentry Event
+                </Button>
+                <Button 
+                  onClick={testSentryError}
+                  variant="outline" 
+                  className="bg-red-50 hover:bg-red-100 text-red-700 border-red-300"
+                >
+                  Test Sentry Error
+                </Button>
+              </div>
+              <p className="text-sm text-red-600 mt-2">
+                Click these buttons to test frontend Sentry integration. Check your React project dashboard.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+      
       <ServicesOverview />
       <BenefitsSection />
 
