@@ -25,10 +25,10 @@ export default function Header() {
   return (
     <header className="bg-gradient-to-r from-navy via-charcoal to-navy shadow-2xl sticky top-0 z-50 border-b-4 border-talencor-gold relative">
       {/* Subtle hexagonal pattern overlay */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="hexagon-pattern h-full w-full"></div>
       </div>
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex justify-between items-center h-20 sm:h-22 lg:h-24">
           {/* Logo - Responsive Design */}
           <Link href="/" className="flex-shrink-0 flex items-center group">
@@ -91,11 +91,14 @@ export default function Header() {
                 <Link 
                   key={item.name}
                   href={item.href}
-                  className={`px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-lg ${
+                  className={`px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-lg cursor-pointer ${
                     isActive(item.href)
                       ? "text-talencor-gold bg-white/10 font-semibold"
                       : "text-white hover:text-talencor-gold hover:bg-white/10"
                   }`}
+                  onClick={(e) => {
+                    console.log(`Navigating to ${item.href}`);
+                  }}
                 >
                   {item.name}
                 </Link>
@@ -130,12 +133,15 @@ export default function Header() {
               <Link 
                 key={item.name}
                 href={item.href}
-                className={`block px-4 py-3 font-medium rounded-lg transition-all duration-300 ${
+                className={`block px-4 py-3 font-medium rounded-lg transition-all duration-300 cursor-pointer ${
                   isActive(item.href)
                     ? "text-talencor-gold bg-white/10 font-semibold"
                     : "text-white hover:text-talencor-gold hover:bg-white/10"
                 }`}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  console.log(`Mobile navigation to ${item.href}`);
+                  setMobileMenuOpen(false);
+                }}
               >
                 {item.name}
               </Link>
