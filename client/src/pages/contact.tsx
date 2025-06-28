@@ -46,10 +46,30 @@ export default function Contact() {
 
   const submitContact = useMutation({
     mutationFn: async (data: ContactFormData) => {
+      // Add breadcrumb for form submission attempt
+      addBreadcrumb('Contact form submission started', 'user', {
+        inquiryType: data.inquiryType,
+        hasPhone: !!data.phone,
+      });
+
       const response = await apiRequest("POST", "/api/contact", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, data) => {
+      // Track successful form submission
+      captureEvent('Contact form submitted successfully', {
+        inquiryType: data.inquiryType,
+        userEmail: data.email,
+        hasPhone: !!data.phone,
+      });
+
+      // Set user context for future errors
+      setSentryUser({
+        id: data.email,
+        email: data.email,
+        username: `${data.firstName} ${data.lastName}`,
+      });
+
       setIsSubmitted(true);
       form.reset();
       toast({
@@ -57,7 +77,15 @@ export default function Contact() {
         description: "Thank you for contacting us. We'll get back to you soon.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: any, data) => {
+      // Capture the error with context
+      captureError(error, {
+        action: 'contact_form_submission',
+        inquiryType: data?.inquiryType,
+        userEmail: data?.email,
+        errorMessage: error.message,
+      });
+
       toast({
         title: "Error",
         description: error.message || "Failed to send message. Please try again.",
@@ -67,6 +95,11 @@ export default function Contact() {
   });
 
   const onSubmit = (data: ContactFormData) => {
+    // Add breadcrumb for form validation success
+    addBreadcrumb('Contact form validation passed', 'user', {
+      inquiryType: data.inquiryType,
+    });
+
     submitContact.mutate(data);
   };
 

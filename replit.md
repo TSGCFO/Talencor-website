@@ -59,6 +59,11 @@ The contact form follows this flow:
 - **@radix-ui/***: Accessible UI component primitives
 - **tailwindcss**: Utility-first CSS framework
 
+### Monitoring and Error Tracking
+- **@sentry/node**: Backend error monitoring and performance tracking
+- **@sentry/react**: Frontend error monitoring with React integration
+- **@sentry/vite-plugin**: Vite plugin for enhanced source maps and release tracking
+
 ### Development Dependencies
 - **vite**: Frontend build tool and development server
 - **tsx**: TypeScript execution for development
@@ -110,6 +115,14 @@ The contact form follows this flow:
   * Technical SEO audit system for ongoing optimization monitoring
   * Advanced structured data including EmploymentAgency, OfferCatalog, and AggregateRating schemas
   * Local SEO optimization with geo-coordinates, area served markup, and Google My Business preparation
+- June 28, 2025: Integrated comprehensive Sentry error monitoring and performance tracking system:
+  * Full-stack error tracking for both React frontend and Express backend
+  * React Error Boundary with user-friendly fallback UI for unhandled client errors
+  * Enhanced contact form with detailed error tracking, user context, and breadcrumbs
+  * Backend API error monitoring with context capture for debugging
+  * Performance monitoring and session replay capabilities (configurable)
+  * Development test endpoints for Sentry integration verification
+  * Comprehensive documentation and setup guide for environment configuration
 
 ## User Preferences
 
