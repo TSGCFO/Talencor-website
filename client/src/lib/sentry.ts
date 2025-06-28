@@ -1,56 +1,115 @@
 import * as Sentry from "@sentry/react";
 import React from "react";
 
-// Initialize Sentry for React frontend
+// Initialize Sentry for React frontend with production-optimized configuration
 export function initSentry() {
   const dsn = import.meta.env.VITE_SENTRY_DSN;
   
   if (!dsn) {
-    console.warn("VITE_SENTRY_DSN environment variable not found. Sentry will not be initialized.");
+    if (import.meta.env.DEV) {
+      console.warn("VITE_SENTRY_DSN environment variable not found. Sentry will not be initialized.");
+    }
     return;
   }
 
   Sentry.init({
     dsn,
     integrations: [
-      // Browser tracing for performance monitoring
-      Sentry.browserTracingIntegration(),
-      // Replay integration for session recordings (optional)
+      // Performance monitoring with route tracking
+      Sentry.browserTracingIntegration({
+        enableLongTask: true,
+        enableInp: true,
+      }),
+      // Session replay for debugging (production optimized)
       Sentry.replayIntegration({
         maskAllText: false,
-        blockAllMedia: false,
+        blockAllMedia: true,
+        maskAllInputs: true,
+        // Capture console logs and network requests
+        networkDetailAllowUrls: [window.location.origin],
+        networkCaptureBodies: false,
+      }),
+      // Browser profiling for performance insights
+      Sentry.browserProfilingIntegration(),
+      // Feedback integration for user reports
+      Sentry.feedbackIntegration({
+        colorScheme: "system",
+        showBranding: false,
       }),
     ],
-    // Performance Monitoring
-    tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
-    // Session Replay (optional)
-    replaysSessionSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
-    replaysOnErrorSampleRate: 1.0,
-    // Environment
+    // Performance monitoring rates
+    tracesSampleRate: import.meta.env.PROD ? 0.2 : 1.0,
+    profilesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
+    
+    // Environment and release tracking
     environment: import.meta.env.MODE,
-    // Release tracking
-    release: import.meta.env.VITE_APP_VERSION,
-    // Enhanced error context
-    beforeSend(event) {
-      // Filter out development errors
-      if (import.meta.env.DEV && event.exception) {
+    release: `talencor-frontend@${import.meta.env.VITE_APP_VERSION || "1.0.0"}`,
+    
+    // Enhanced error filtering and context
+    beforeSend(event, hint) {
+      // Filter out common development and browser errors
+      if (event.exception) {
         const error = event.exception.values?.[0];
-        if (error?.value?.includes('ResizeObserver') || 
-            error?.value?.includes('Non-Error promise rejection')) {
+        const errorMessage = error?.value || "";
+        
+        // Skip common browser/dev errors
+        if (
+          errorMessage.includes('ResizeObserver') ||
+          errorMessage.includes('Non-Error promise rejection') ||
+          errorMessage.includes('Script error') ||
+          errorMessage.includes('ChunkLoadError') ||
+          (import.meta.env.DEV && errorMessage.includes('HMR'))
+        ) {
           return null;
         }
       }
+      
+      // Add additional context for production errors
+      if (import.meta.env.PROD && event.request) {
+        event.extra = {
+          ...event.extra,
+          buildVersion: import.meta.env.VITE_APP_VERSION,
+          deploymentTime: import.meta.env.VITE_DEPLOYMENT_TIME,
+        };
+      }
+      
       return event;
     },
-    // User context
+    
+    // Initial scope configuration
     initialScope: {
       tags: {
         component: "frontend",
+        version: import.meta.env.VITE_APP_VERSION || "1.0.0",
+        deployment: import.meta.env.PROD ? "production" : "development",
+      },
+      contexts: {
+        app: {
+          name: "Talencor Staffing Website",
+          version: import.meta.env.VITE_APP_VERSION || "1.0.0",
+        },
       },
     },
+
+    // Advanced configuration
+    sendDefaultPii: false, // Privacy compliance
+    attachStacktrace: true,
+    
+    // Debug mode for development
+    debug: import.meta.env.DEV,
   });
 
-  console.log("Sentry initialized for frontend");
+  // Set additional context
+  Sentry.setContext("browser", {
+    name: navigator.userAgent,
+    language: navigator.language,
+    cookieEnabled: navigator.cookieEnabled,
+    onLine: navigator.onLine,
+  });
+
+  if (import.meta.env.DEV) {
+    console.log("Sentry initialized for frontend with enhanced configuration");
+  }
 }
 
 // React Error Boundary component

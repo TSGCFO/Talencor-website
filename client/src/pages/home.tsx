@@ -18,24 +18,12 @@ export default function Home() {
   useEffect(() => {
     initializePerformanceOptimizations();
     
-    // Test Sentry frontend integration automatically
-    if (import.meta.env.DEV) {
-      // Add breadcrumb for page load
-      addBreadcrumb('Home page loaded', 'navigation', {
-        url: window.location.href,
-        timestamp: new Date().toISOString()
-      });
-      
-      // Send a test event
-      captureEvent('Frontend Sentry integration test - Page Load', {
-        page: 'home',
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString(),
-        testType: 'automatic_page_load'
-      });
-      
-      console.log('Frontend Sentry test event sent automatically');
-    }
+    // Production-ready Sentry tracking
+    addBreadcrumb('Home page loaded', 'navigation', {
+      url: window.location.href,
+      referrer: document.referrer,
+      timestamp: new Date().toISOString()
+    });
   }, []);
 
   const seoData = generateMetaTags({
