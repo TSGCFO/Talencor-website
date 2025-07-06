@@ -25,20 +25,22 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <div className="flex items-center mb-6">
+            <div className="flex items-center gap-3 sm:gap-4 mb-6">
               {/* Footer Logo - Responsive Sizing */}
-              <div>
-                <img 
-                  src="/talencor-logo-new.png" 
-                  alt="Talencor Staffing" 
-                  className="h-10 sm:h-12 lg:h-14 w-auto transition-all duration-300"
-                  onError={(e) => {
-                    e.currentTarget.src = '/talencor-logo-alt.png';
-                    e.currentTarget.onerror = () => {
-                      e.currentTarget.src = '/logo-fallback.svg';
-                    };
-                  }}
-                />
+              <img 
+                src="/talencor-logo-new.png" 
+                alt="Talencor Staffing Logo" 
+                className="h-10 sm:h-12 lg:h-14 w-auto transition-all duration-300"
+                onError={(e) => {
+                  e.currentTarget.src = '/talencor-logo-alt.png';
+                  e.currentTarget.onerror = () => {
+                    e.currentTarget.src = '/logo-fallback.svg';
+                  };
+                }}
+              />
+              <div className="text-talencor-gold" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
+                <div className="text-2xl sm:text-3xl lg:text-4xl leading-none">TALENCOR</div>
+                <div className="text-sm sm:text-base lg:text-lg tracking-[0.3em]">STAFFING</div>
               </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">

@@ -59,13 +59,19 @@ export default function ResponsiveLogo({
   };
 
   return (
-    <div className={`flex items-center ${className}`}>
+    <div className={`flex items-center gap-3 ${className}`}>
       <img 
         src={getImageSrc()}
-        alt="Talencor Staffing" 
+        alt="Talencor Staffing Logo" 
         className={`${sizeClasses[size]} w-auto hover:scale-105 transition-transform duration-300`}
         onError={handleImageError}
       />
+      {showText && (
+        <div className="text-talencor-gold" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
+          <div className={`${textSizes[size]} leading-none`}>TALENCOR</div>
+          <div className={`${subtextSizes[size]} tracking-[0.3em]`}>STAFFING</div>
+        </div>
+      )}
     </div>
   );
 }
