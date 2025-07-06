@@ -45,15 +45,10 @@ export default function Header() {
                   };
                 }}
               />
-              <img 
-                src="/talencor-logo-flat.png" 
-                alt="Talencor Staffing Text" 
-                className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  e.currentTarget.src = '';
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+              <div className="text-talencor-gold font-bold tracking-wider group-hover:scale-105 transition-transform duration-300">
+                <div className="text-2xl leading-none">TALENCOR</div>
+                <div className="text-sm tracking-widest">STAFFING</div>
+              </div>
             </div>
             
             {/* Tablet Logo (sm to lg) */}
@@ -69,15 +64,10 @@ export default function Header() {
                   };
                 }}
               />
-              <img 
-                src="/talencor-logo-flat.png" 
-                alt="Talencor Staffing Text" 
-                className="h-9 w-auto group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  e.currentTarget.src = '';
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+              <div className="text-talencor-gold font-bold tracking-wider group-hover:scale-105 transition-transform duration-300">
+                <div className="text-3xl leading-none">TALENCOR</div>
+                <div className="text-base tracking-widest">STAFFING</div>
+              </div>
             </div>
             
             {/* Desktop Logo (lg and above) */}
@@ -93,15 +83,10 @@ export default function Header() {
                   };
                 }}
               />
-              <img 
-                src="/talencor-logo-flat.png" 
-                alt="Talencor Staffing Text" 
-                className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  e.currentTarget.src = '';
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+              <div className="text-talencor-gold font-bold tracking-wider group-hover:scale-105 transition-transform duration-300">
+                <div className="text-4xl leading-none">TALENCOR</div>
+                <div className="text-lg tracking-widest">STAFFING</div>
+              </div>
             </div>
             
 
