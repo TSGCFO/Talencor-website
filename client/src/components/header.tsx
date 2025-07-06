@@ -35,11 +35,11 @@ export default function Header() {
             {/* Mobile Logo (xs to sm) */}
             <div className="sm:hidden">
               <img 
-                src="/talencor-logo-new.png" 
+                src="/talencor-logo-flat.png" 
                 alt="Talencor Staffing" 
-                className="h-12 w-auto group-hover:scale-105 transition-transform duration-300"
+                className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
+                  e.currentTarget.src = '/talencor-logo-new.png';
                   e.currentTarget.onerror = () => {
                     e.currentTarget.src = '/logo-fallback.svg';
                   };
@@ -50,11 +50,11 @@ export default function Header() {
             {/* Tablet Logo (sm to lg) */}
             <div className="hidden sm:block lg:hidden">
               <img 
-                src="/talencor-logo-new.png" 
+                src="/talencor-logo-flat.png" 
                 alt="Talencor Staffing" 
-                className="h-14 w-auto group-hover:scale-105 transition-transform duration-300"
+                className="h-11 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
+                  e.currentTarget.src = '/talencor-logo-new.png';
                   e.currentTarget.onerror = () => {
                     e.currentTarget.src = '/logo-fallback.svg';
                   };
@@ -65,11 +65,11 @@ export default function Header() {
             {/* Desktop Logo (lg and above) */}
             <div className="hidden lg:block">
               <img 
-                src="/talencor-logo-new.png" 
+                src="/talencor-logo-flat.png" 
                 alt="Talencor Staffing" 
-                className="h-16 w-auto group-hover:scale-105 transition-transform duration-300"
+                className="h-12 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
+                  e.currentTarget.src = '/talencor-logo-new.png';
                   e.currentTarget.onerror = () => {
                     e.currentTarget.src = '/logo-fallback.svg';
                   };

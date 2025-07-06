@@ -132,6 +132,8 @@ The contact form follows this flow:
   * Modified responsive-logo component to use new logo with fallback mechanism
   * Removed redundant text elements as new logo includes "TALENCOR STAFFING" text within design
   * New logo file: talencor-logo-new.png with golden/orange hexagonal design
+  * Updated header to use flat logo design (talencor-logo-flat.png) with clean text layout
+  * Adjusted logo sizes for better visibility: mobile (h-10), tablet (h-11), desktop (h-12)
 
 ## User Preferences
 
