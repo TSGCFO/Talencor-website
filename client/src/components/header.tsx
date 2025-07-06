@@ -65,7 +65,7 @@ export default function Header() {
                 }}
               />
               <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
-                <div className="text-3xl leading-none">TALENCOR</div>
+                <div className="text-3xl leading-none text-center">TALENCOR</div>
                 <div className="text-base tracking-[0.3em]">STAFFING</div>
               </div>
             </div>
@@ -130,7 +130,6 @@ export default function Header() {
           </div>
         </div>
       </nav>
-      
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-gradient-to-b from-navy to-charcoal border-t border-talencor-gold">
