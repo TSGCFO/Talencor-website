@@ -134,6 +134,8 @@ The contact form follows this flow:
   * New logo file: talencor-logo-new.png with golden/orange hexagonal design
   * Updated header to use flat logo design (talencor-logo-flat.png) with clean text layout
   * Adjusted logo sizes for better visibility: mobile (h-10), tablet (h-11), desktop (h-12)
+  * Modified header to display both logos side by side - hexagonal 3D logo alongside flat text logo
+  * Implemented responsive sizing for dual logo display: mobile (h-10/h-8), tablet (h-12/h-9), desktop (h-14/h-10)
 
 ## User Preferences
 
