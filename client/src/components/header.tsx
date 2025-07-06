@@ -66,7 +66,7 @@ export default function Header() {
               />
               <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
                 <div className="text-3xl leading-none text-center">TALENCOR</div>
-                <div className="text-base tracking-[0.3em]">STAFFING</div>
+                <div className="text-base tracking-[0.3em] text-center">STAFFING</div>
               </div>
             </div>
             
