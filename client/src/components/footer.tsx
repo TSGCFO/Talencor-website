@@ -27,22 +27,18 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center mb-6">
               {/* Footer Logo - Responsive Sizing */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-talencor-gold p-2 sm:p-2.5 lg:p-3">
+              <div>
                 <img 
-                  src="/talencor-logo-alt.png" 
+                  src="/talencor-logo-new.png" 
                   alt="Talencor Staffing" 
-                  className="h-6 sm:h-8 lg:h-10 w-auto transition-all duration-300"
+                  className="h-10 sm:h-12 lg:h-14 w-auto transition-all duration-300"
                   onError={(e) => {
-                    e.currentTarget.src = '/talencor-logo-backup.png';
+                    e.currentTarget.src = '/talencor-logo-alt.png';
                     e.currentTarget.onerror = () => {
                       e.currentTarget.src = '/logo-fallback.svg';
                     };
                   }}
                 />
-              </div>
-              <div className="ml-3 sm:ml-4">
-                <div className="text-white logo-font text-base sm:text-lg lg:text-xl tracking-wider">TALENCOR</div>
-                <div className="text-talencor-gold brand-text text-xs sm:text-sm tracking-[0.2em]">STAFFING</div>
               </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">

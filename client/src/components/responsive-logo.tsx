@@ -53,32 +53,19 @@ export default function ResponsiveLogo({
   };
 
   const getImageSrc = () => {
-    if (!imageError) return '/talencor-logo-alt.png';
-    if (!fallbackError) return '/talencor-logo-backup.png';
+    if (!imageError) return '/talencor-logo-new.png';
+    if (!fallbackError) return '/talencor-logo-alt.png';
     return '/logo-fallback.svg';
   };
 
   return (
     <div className={`flex items-center ${className}`}>
-      <div className={`bg-white rounded-lg shadow-lg border-2 border-talencor-gold hover:border-talencor-orange hover:shadow-xl transition-all duration-300 logo-container ${containerPadding[size]}`}>
-        <img 
-          src={getImageSrc()}
-          alt="Talencor Staffing" 
-          className={`${sizeClasses[size]} w-auto hover:scale-105 transition-transform duration-300`}
-          onError={handleImageError}
-        />
-      </div>
-      
-      {showText && (
-        <div className="ml-3 sm:ml-4 hidden xs:block">
-          <div className={`text-white logo-font tracking-wider ${textSizes[size]} ${variant === 'footer' ? 'text-white' : 'text-white'}`}>
-            TALENCOR
-          </div>
-          <div className={`text-talencor-gold brand-text tracking-[0.2em] ${subtextSizes[size]}`}>
-            STAFFING
-          </div>
-        </div>
-      )}
+      <img 
+        src={getImageSrc()}
+        alt="Talencor Staffing" 
+        className={`${sizeClasses[size]} w-auto hover:scale-105 transition-transform duration-300`}
+        onError={handleImageError}
+      />
     </div>
   );
 }
