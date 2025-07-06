@@ -45,9 +45,9 @@ export default function Header() {
                   };
                 }}
               />
-              <div className="text-talencor-gold font-bold tracking-wider group-hover:scale-105 transition-transform duration-300">
+              <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
                 <div className="text-2xl leading-none">TALENCOR</div>
-                <div className="text-sm tracking-widest">STAFFING</div>
+                <div className="text-sm tracking-[0.3em]">STAFFING</div>
               </div>
             </div>
             
@@ -64,9 +64,9 @@ export default function Header() {
                   };
                 }}
               />
-              <div className="text-talencor-gold font-bold tracking-wider group-hover:scale-105 transition-transform duration-300">
+              <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
                 <div className="text-3xl leading-none">TALENCOR</div>
-                <div className="text-base tracking-widest">STAFFING</div>
+                <div className="text-base tracking-[0.3em]">STAFFING</div>
               </div>
             </div>
             
@@ -83,9 +83,9 @@ export default function Header() {
                   };
                 }}
               />
-              <div className="text-talencor-gold font-bold tracking-wider group-hover:scale-105 transition-transform duration-300">
+              <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
                 <div className="text-4xl leading-none">TALENCOR</div>
-                <div className="text-lg tracking-widest">STAFFING</div>
+                <div className="text-lg tracking-[0.3em]">STAFFING</div>
               </div>
             </div>
             

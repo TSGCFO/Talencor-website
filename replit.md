@@ -137,6 +137,8 @@ The contact form follows this flow:
   * Modified header to display both logos side by side - hexagonal 3D logo alongside flat text logo
   * Implemented responsive sizing for dual logo display: mobile (h-10/h-8), tablet (h-12/h-9), desktop (h-14/h-10)
   * Replaced flat logo image with text elements to remove white background - now displays "TALENCOR STAFFING" as styled text in golden color
+  * Added custom font "AmbiguityThrift-Inline" for TALENCOR STAFFING text display
+  * Set up @font-face declaration and applied custom font to all header text elements
 
 ## User Preferences
 

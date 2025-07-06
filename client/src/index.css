@@ -4,6 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Font */
+@font-face {
+  font-family: 'AmbiguityThrift';
+  src: url('/fonts/AmbiguityThrift-Inline.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);
