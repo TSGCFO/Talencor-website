@@ -271,7 +271,7 @@ export default function Home() {
                   },
                   {
                     title: "Quality & Work Ethic",
-                    description: "Each applicant is judged based on attitude, references and past performance to ensure strong work-ethic while representing our clients"
+                    description: "Each applicant is judged based on attitude, references and past performance to ensure strong work ethic while representing our clients"
                   }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start">

@@ -59,7 +59,7 @@ export default function BenefitsSection() {
         <div className="mt-16 text-center bg-gradient-to-r from-navy to-charcoal rounded-2xl p-8 text-white">
           <h3 className="text-3xl font-bold font-montserrat mb-4">Our Promise</h3>
           <p className="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
-            Our clients can rest-assured Talencor will provide the right people the first time – this is our promise. 
+            Our clients can rest assured Talencor will provide the right people the first time – this is our promise. 
             Our Staffing Operations team continuously recruits new talent to join your team.
           </p>
         </div>
