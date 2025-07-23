@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight, Calculator, Building } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { AnimatedCard } from "@/components/ui/animated-card";
 import { SERVICES } from "@/lib/constants";
 
 const iconMap = {
@@ -39,11 +40,13 @@ export default function ServicesOverview() {
             const iconColors = ["text-talencor-gold", "text-talencor-orange", "text-navy"];
             
             return (
-              <Card 
+              <AnimatedCard 
                 key={service.id}
-                className={`hover:shadow-xl transition-shadow border-t-4 ${borderColors[index % 3]}`}
+                hoverEffect="lift"
+                delay={index * 100}
+                className={`border-t-4 ${borderColors[index % 3]}`}
               >
-                <CardContent className="p-8">
+                <div className="p-8">
                   <div className={`mb-4 ${iconColors[index % 3]}`}>
                     <IconComponent size={32} />
                   </div>
@@ -56,8 +59,8 @@ export default function ServicesOverview() {
                       Learn More <ArrowRight size={16} className="ml-1" />
                     </span>
                   </Link>
-                </CardContent>
-              </Card>
+                </div>
+              </AnimatedCard>
             );
           })}
         </div>

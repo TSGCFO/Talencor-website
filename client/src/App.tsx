@@ -20,6 +20,7 @@ import Employers from "@/pages/employers";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import ApplicationInfo from "@/pages/application-info";
+import Demo from "@/pages/demo";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -41,6 +42,7 @@ function Router() {
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
           <Route path="/apply" component={ApplicationInfo} />
+          <Route path="/demo" component={Demo} />
           <Route component={NotFound} />
         </Switch>
       </main>

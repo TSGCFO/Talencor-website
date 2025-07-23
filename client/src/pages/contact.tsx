@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Phone, Mail, Clock, Linkedin, Twitter, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/animated-button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -324,13 +326,15 @@ export default function Contact() {
                           )}
                         />
                         
-                        <Button 
-                          type="submit" 
+                        <AnimatedButton
+                          onClick={() => form.handleSubmit(onSubmit)()}
+                          loading={submitContact.isPending}
+                          loadingText="Sending Message..."
+                          successText="Message Sent!"
                           className="w-full bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold font-montserrat"
-                          disabled={submitContact.isPending}
                         >
-                          {submitContact.isPending ? "Sending..." : "Send Message"}
-                        </Button>
+                          Send Message
+                        </AnimatedButton>
                       </form>
                     </Form>
                   )}

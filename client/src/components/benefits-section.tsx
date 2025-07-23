@@ -1,5 +1,6 @@
 import { Clock, DollarSign, Zap, Shield, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { AnimatedCard } from "@/components/ui/animated-card";
 import { BENEFITS } from "@/lib/constants";
 
 const iconMap = {
@@ -37,11 +38,13 @@ export default function BenefitsSection() {
             const iconColors = ["text-talencor-gold", "text-talencor-orange", "text-navy"];
             
             return (
-              <Card 
+              <AnimatedCard 
                 key={benefit.title}
-                className={`hover:shadow-xl transition-shadow border-t-4 ${borderColors[index % 3]}`}
+                hoverEffect="glow"
+                delay={index * 150}
+                className={`border-t-4 ${borderColors[index % 3]}`}
               >
-                <CardContent className="p-8">
+                <div className="p-8">
                   <div className={`mb-4 ${iconColors[index % 3]}`}>
                     <IconComponent size={32} />
                   </div>
@@ -49,8 +52,8 @@ export default function BenefitsSection() {
                   <p className="text-charcoal leading-relaxed">
                     {benefit.description}
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </AnimatedCard>
             );
           })}
         </div>

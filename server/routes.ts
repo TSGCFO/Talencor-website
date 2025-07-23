@@ -5,6 +5,7 @@ import { insertContactSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sentry";
+import { getSentryIssues, resolveSentryIssue, bulkResolveSentryIssues } from "./sentry-api";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -168,6 +169,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Failed to fetch Sentry feedback" });
     }
   });
+
+  // Sentry Issues Management API endpoints
+  app.get("/api/sentry/issues", getSentryIssues);
+  app.patch("/api/sentry/issues/:issueId/resolve", resolveSentryIssue);
+  app.post("/api/sentry/issues/bulk-resolve", bulkResolveSentryIssues);
 
   const httpServer = createServer(app);
   return httpServer;
