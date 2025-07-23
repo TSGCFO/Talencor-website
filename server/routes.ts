@@ -6,6 +6,7 @@ import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sentry";
 import { getSentryIssues, resolveSentryIssue, bulkResolveSentryIssues } from "./sentry-api";
+import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentryIssues, addCommentToSentryIssue } from "./sentry-integration";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -174,6 +175,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/sentry/issues", getSentryIssues);
   app.patch("/api/sentry/issues/:issueId/resolve", resolveSentryIssue);
   app.post("/api/sentry/issues/bulk-resolve", bulkResolveSentryIssues);
+  
+  // Real Sentry API integration endpoints
+  app.get("/api/sentry/actual/issues", getActualSentryIssues);
+  app.patch("/api/sentry/actual/issues/:issueId/resolve", resolveActualSentryIssue);
+  app.post("/api/sentry/actual/issues/bulk-resolve", bulkResolveActualSentryIssues);
+  app.post("/api/sentry/actual/issues/:issueId/comment", addCommentToSentryIssue);
 
   const httpServer = createServer(app);
   return httpServer;
