@@ -157,7 +157,7 @@ export default function About() {
                 </div>
                 <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Team Leader Program</h3>
                 <p className="text-charcoal leading-relaxed">
-                  When more than 10-employees on any single-shift work at the same company location we select one team member as "Team Leader". Our Team Leaders are motivated and rewarded premium rates.
+                  When more than 10 employees work on any single shift at the same company location, we select one team member as a Team Leader. Our Team Leaders are motivated and rewarded premium rates.
                 </p>
               </CardContent>
             </Card>

@@ -107,15 +107,15 @@ export default function Footer() {
               © 2024 Talencor Staffing. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-300 hover:text-talencor-gold text-sm transition-colors">
+              <Link to="/contact" className="text-gray-300 hover:text-talencor-gold text-sm transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-gray-300 hover:text-talencor-gold text-sm transition-colors">
+              </Link>
+              <Link to="/contact" className="text-gray-300 hover:text-talencor-gold text-sm transition-colors">
                 Terms of Service
-              </a>
-              <a href="#" className="text-gray-300 hover:text-talencor-gold text-sm transition-colors">
+              </Link>
+              <Link to="/contact" className="text-gray-300 hover:text-talencor-gold text-sm transition-colors">
                 Accessibility
-              </a>
+              </Link>
             </div>
           </div>
         </div>
