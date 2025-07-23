@@ -95,12 +95,12 @@ export const JOB_POSITIONS = [
 export const BENEFITS = [
   {
     title: "Save Time",
-    description: "We interview and recruit applicants - one phone call is all that is required to supply the right person. We also install our state-of-the-art finger scanner at every job site for time and attendance.",
+    description: "We interview and recruit applicants—one phone call is all that is required to supply the right person. We also install our state-of-the-art finger scanner at every job site for time and attendance.",
     icon: "Clock"
   },
   {
     title: "Save Money", 
-    description: "Pay nothing extra for our employees: no payroll, deductions, incentives, WSIB-claims, benefits or severance costs of any kind.",
+    description: "Pay nothing extra for our employees: no payroll, deductions, incentives, WSIB claims, benefits or severance costs of any kind.",
     icon: "DollarSign"
   },
   {
@@ -115,7 +115,7 @@ export const BENEFITS = [
   },
   {
     title: "Peace of Mind",
-    description: "Our 24/7-employer hotline ensures we continue to provide excellent services. 24-hours-a-day, 7-days-a-week we are ready with skilled, talented individuals.",
+    description: "Our 24/7 employer hotline ensures we continue to provide excellent services. 24 hours a day, 7 days a week we are ready with skilled, talented individuals.",
     icon: "Heart"
   }
 ];

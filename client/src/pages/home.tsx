@@ -253,7 +253,7 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
-                Our client success' start with the <span className="text-talencor-gold">right people</span>
+                Our clients' success starts with the <span className="text-talencor-gold">right people</span>
               </h2>
               <p className="text-xl text-charcoal mb-8 leading-relaxed">
                 Talencor consultants are well-trained staffing professionals, ready to provide you with labour on a seasonal, contingent, or ongoing basis in a variety of employment categories. Each of our unique employees has been handpicked to fit your company's unique culture.

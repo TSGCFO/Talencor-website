@@ -109,7 +109,7 @@ export default function Contact() {
         <title>Contact Talencor Staffing | Get in Touch for Staffing Solutions</title>
         <meta 
           name="description" 
-          content="Contact Talencor Staffing for professional employment solutions. Located in Mississauga, ON. Call (905) 555-0123 or email info@talencor.com for staffing needs." 
+          content="Contact Talencor Staffing for professional employment solutions. Located in Mississauga, ON. Call (647) 946-2177 or visit us at 2985 Drew Rd #206 for staffing needs." 
         />
         <meta property="og:title" content="Contact Talencor Staffing | Professional Employment Solutions" />
         <meta property="og:description" content="Get in touch with Talencor for all your staffing needs in Mississauga, ON." />
