@@ -110,6 +110,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Sentry user feedback endpoint
+  app.get("/api/sentry-feedback", async (req, res) => {
+    try {
+      const authToken = process.env.SENTRY_AUTH_TOKEN || "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";
+      const org = process.env.SENTRY_ORG || "tsg-fulfillment";
+      const project = process.env.SENTRY_PROJECT || "talencor-frontend";
+
+      // Fetch user feedback from Sentry
+      const feedbackResponse = await fetch(
+        `https://sentry.io/api/0/projects/${org}/${project}/user-feedback/`,
+        {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!feedbackResponse.ok) {
+        throw new Error(`Sentry API error: ${feedbackResponse.status} ${feedbackResponse.statusText}`);
+      }
+
+      const feedback = await feedbackResponse.json();
+
+      // Also fetch issues that might be reported
+      const issuesResponse = await fetch(
+        `https://sentry.io/api/0/projects/${org}/${project}/issues/?query=is:unresolved`,
+        {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!issuesResponse.ok) {
+        throw new Error(`Sentry Issues API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+      }
+
+      const issues = await issuesResponse.json();
+
+      // Combine and format the data
+      const response = {
+        userFeedback: feedback,
+        unresolvedIssues: issues,
+        summary: {
+          totalFeedback: Array.isArray(feedback) ? feedback.length : 0,
+          totalIssues: Array.isArray(issues) ? issues.length : 0
+        }
+      };
+
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching Sentry feedback:", error);
+      captureError(error as Error, { endpoint: '/api/sentry-feedback' });
+      res.status(500).json({ error: "Failed to fetch Sentry feedback" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
