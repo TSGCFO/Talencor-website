@@ -192,7 +192,7 @@ export default function Home() {
           })}
         </script>
         
-        {/* Google Analytics & Tag Manager - Ready for implementation */}
+        {/* Google Analytics & Tag Manager - Commented out until actual ID is provided 
         <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
         <script
           dangerouslySetInnerHTML={{
@@ -217,9 +217,11 @@ export default function Home() {
             `
           }}
         />
+        */}
         
-        {/* Google Search Console verification - Ready for implementation */}
+        {/* Google Search Console verification - Commented out until actual code is provided
         <meta name="google-site-verification" content="GOOGLE_VERIFICATION_CODE" />
+        */}
         
         {/* Preload Critical Resources */}
         <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />

@@ -15,9 +15,9 @@ export function CoreWebVitals() {
           console.log('LCP:', metric.value);
         });
       }
-      if (webVitals.onFID) {
-        webVitals.onFID((metric: any) => {
-          console.log('FID:', metric.value);
+      if (webVitals.onINP) {
+        webVitals.onINP((metric: any) => {
+          console.log('INP:', metric.value);
         });
       }
       if (webVitals.onFCP) {
@@ -64,8 +64,9 @@ function measurePerformance() {
   let clsValue = 0;
   const clsObserver = new PerformanceObserver((list) => {
     for (const entry of list.getEntries()) {
-      if (!entry.hadRecentInput) {
-        clsValue += entry.value;
+      const layoutShiftEntry = entry as any; // Type assertion for layout shift specific properties
+      if (!layoutShiftEntry.hadRecentInput) {
+        clsValue += layoutShiftEntry.value;
       }
     }
     console.log('CLS:', clsValue);

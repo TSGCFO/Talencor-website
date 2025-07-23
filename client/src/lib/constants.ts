@@ -16,9 +16,9 @@ export const COMPANY_INFO = {
     sunday: "Sunday: Closed"
   },
   socialMedia: {
-    linkedin: "#",
-    twitter: "#",
-    facebook: "#"
+    linkedin: "https://www.linkedin.com/company/talencor-staffing",
+    twitter: "https://twitter.com/talencor",
+    facebook: "https://www.facebook.com/talencor"
   }
 };
 
