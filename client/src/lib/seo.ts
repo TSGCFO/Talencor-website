@@ -41,7 +41,7 @@ export const generateStructuredData = (type: string, data: any) => {
         streetAddress: "2985 Drew Rd #206, Airport Business Complex",
         addressLocality: "Mississauga",
         addressRegion: "ON",
-        postalCode: "L4T 0A5",
+        postalCode: "L4T 0A4",
         addressCountry: "CA"
       },
       geo: {
@@ -69,7 +69,7 @@ export const generateStructuredData = (type: string, data: any) => {
         streetAddress: "2985 Drew Rd #206, Airport Business Complex",
         addressLocality: "Mississauga",
         addressRegion: "ON",
-        postalCode: "L4T 0A5",
+        postalCode: "L4T 0A4",
         addressCountry: "CA"
       },
       geo: {

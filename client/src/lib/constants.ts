@@ -1,6 +1,6 @@
 export const COMPANY_INFO = {
   name: "Talencor Staffing",
-  tagline: "Our business model adapts to your company's need",
+  tagline: "Our business model adapts to your company's needs",
   phone: "(647) 946-2177",
   email: "info@talencor.com",
   address: {
