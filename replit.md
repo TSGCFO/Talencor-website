@@ -161,6 +161,12 @@ The contact form follows this flow:
   * Added comprehensive comment detailing all grammar and content fixes
   * Issues included: Team Leader Program grammar, footer links, postal codes, hyphenation corrections
   * All user-reported feedback issues and technical errors now resolved in production
+- July 24, 2025: Fixed 7 new user feedback issues and marked as resolved in Sentry:
+  * Fixed service card links on home page - now correctly route to /services/{service-id} instead of contact page
+  * Added search bar with placeholder text "Search for jobs..." to Job Seekers page hero section
+  * Fixed excessive white space on Job Seekers page CTA section by reducing padding from py-20 to py-8
+  * Fixed excessive white space on Employers page CTA section by reducing padding from py-20 to py-8
+  * All 7 reported UI/UX issues resolved and marked as fixed in Sentry dashboard
 
 ## User Preferences
 

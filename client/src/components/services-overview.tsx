@@ -54,7 +54,7 @@ export default function ServicesOverview() {
                   <p className="text-charcoal mb-6 leading-relaxed">
                     {service.description}
                   </p>
-                  <Link href="/contact">
+                  <Link href={`/services/${service.id}`}>
                     <span className="text-talencor-gold hover:text-charcoal font-semibold font-montserrat cursor-pointer inline-flex items-center">
                       Learn More <ArrowRight size={16} className="ml-1" />
                     </span>
