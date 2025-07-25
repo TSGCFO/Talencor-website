@@ -173,6 +173,7 @@ The contact form follows this flow:
   * Fixed "Browse Jobs" button to navigate to /jobs instead of /contact page
   * Updated search input to redirect to /jobs when pressing Enter
   * All 3 navigation issues resolved and marked as fixed in Sentry dashboard
+  * Additional fix: Resolved pointer-events blocking issue in AnimatedCard component that was preventing service card clicks
 
 ## User Preferences
 
