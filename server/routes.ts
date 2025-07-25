@@ -8,6 +8,7 @@ import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sent
 import { getSentryIssues, resolveSentryIssue, bulkResolveSentryIssues } from "./sentry-api";
 import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentryIssues, addCommentToSentryIssue } from "./sentry-integration";
 import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
+import { generateInterviewQuestion, evaluateInterviewResponse, generateInterviewTips } from "./ai/interviewSimulator";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -257,6 +258,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false, 
         message: "Failed to generate keywords" 
+      });
+    }
+  });
+
+  // Interview Simulator API endpoints
+  app.post("/api/interview/generate-question", async (req, res) => {
+    try {
+      const schema = z.object({
+        jobCategory: z.string(),
+        experienceLevel: z.string(),
+        questionNumber: z.number().min(1).max(10),
+        previousQuestions: z.array(z.string()).optional()
+      });
+
+      const validatedData = schema.parse(req.body);
+
+      addBreadcrumb('Interview question generation requested', 'http', {
+        jobCategory: validatedData.jobCategory,
+        experienceLevel: validatedData.experienceLevel,
+        questionNumber: validatedData.questionNumber,
+      });
+
+      const result = await generateInterviewQuestion(validatedData);
+
+      captureEvent('Interview question generated successfully', {
+        jobCategory: validatedData.jobCategory,
+        experienceLevel: validatedData.experienceLevel,
+        questionNumber: validatedData.questionNumber,
+      });
+
+      res.json({ success: true, ...result });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        captureError(error, {
+          action: 'interview_question_validation',
+          validationErrors: error.errors,
+        });
+        res.status(400).json({ 
+          success: false, 
+          message: "Invalid request data", 
+          errors: error.errors 
+        });
+      } else {
+        captureError(error as Error, {
+          action: 'interview_question_generation',
+          jobCategory: req.body.jobCategory,
+        });
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to generate interview question. Please try again." 
+        });
+      }
+    }
+  });
+
+  // Evaluate interview response
+  app.post("/api/interview/evaluate-response", async (req, res) => {
+    try {
+      const schema = z.object({
+        question: z.string().min(1),
+        response: z.string().min(1),
+        jobCategory: z.string(),
+        experienceLevel: z.string()
+      });
+
+      const validatedData = schema.parse(req.body);
+
+      addBreadcrumb('Interview response evaluation requested', 'http', {
+        jobCategory: validatedData.jobCategory,
+        experienceLevel: validatedData.experienceLevel,
+        responseLength: validatedData.response.length,
+      });
+
+      const feedback = await evaluateInterviewResponse(
+        validatedData.question,
+        validatedData.response,
+        validatedData.jobCategory,
+        validatedData.experienceLevel
+      );
+
+      captureEvent('Interview response evaluated successfully', {
+        jobCategory: validatedData.jobCategory,
+        experienceLevel: validatedData.experienceLevel,
+        score: feedback.score,
+      });
+
+      res.json({ success: true, feedback });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        captureError(error, {
+          action: 'interview_response_validation',
+          validationErrors: error.errors,
+        });
+        res.status(400).json({ 
+          success: false, 
+          message: "Invalid request data", 
+          errors: error.errors 
+        });
+      } else {
+        captureError(error as Error, {
+          action: 'interview_response_evaluation',
+          jobCategory: req.body.jobCategory,
+        });
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to evaluate response. Please try again." 
+        });
+      }
+    }
+  });
+
+  // Get interview tips
+  app.get("/api/interview/tips/:jobCategory", async (req, res) => {
+    try {
+      const { jobCategory } = req.params;
+      const tips = await generateInterviewTips(jobCategory);
+      res.json({ success: true, tips });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'interview_tips_generation',
+        jobCategory: req.params.jobCategory,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to generate interview tips" 
       });
     }
   });

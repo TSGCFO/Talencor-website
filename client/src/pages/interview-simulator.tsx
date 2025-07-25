@@ -12,78 +12,23 @@ import { Mic, MicOff, Play, Pause, RotateCcw, CheckCircle, AlertCircle, Clock, S
 import { Link } from "wouter";
 import { AnimatedCard } from "@/components/ui/animated-card";
 import { LoadingSpinner } from "@/components/ui/micro-interactions";
+import { useToast } from "@/hooks/use-toast";
 
 interface InterviewQuestion {
-  id: string;
-  category: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
   question: string;
   tips: string[];
-  sampleAnswer: string;
+  expectedElements: string[];
 }
 
-const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
-  {
-    id: '1',
-    category: 'General',
-    difficulty: 'beginner',
-    question: "Tell me about yourself.",
-    tips: [
-      "Keep it professional and relevant to the job",
-      "Structure: Present situation, past experience, future goals",
-      "Limit to 2-3 minutes"
-    ],
-    sampleAnswer: "I'm a dedicated professional with [X years] of experience in [field]. Currently, I work as [current role] where I've successfully [key achievement]. I'm passionate about [relevant skill/interest] and I'm looking to grow my career by [future goal related to the position]."
-  },
-  {
-    id: '2',
-    category: 'Behavioral',
-    difficulty: 'intermediate',
-    question: "Describe a time when you had to work with a difficult team member.",
-    tips: [
-      "Use the STAR method (Situation, Task, Action, Result)",
-      "Focus on your problem-solving approach",
-      "Show emotional intelligence and professionalism"
-    ],
-    sampleAnswer: "In my previous role, I worked with a colleague who was often unresponsive to emails and missed deadlines. I arranged a one-on-one meeting to understand their challenges and found they were overwhelmed. I helped them prioritize tasks and established regular check-ins. This improved our collaboration and project delivery by 30%."
-  },
-  {
-    id: '3',
-    category: 'Technical',
-    difficulty: 'intermediate',
-    question: "How do you stay updated with industry trends and technologies?",
-    tips: [
-      "Show your commitment to continuous learning",
-      "Mention specific resources you use",
-      "Connect learning to practical application"
-    ],
-    sampleAnswer: "I stay current through a combination of industry publications, online courses, and professional networks. I follow key industry leaders on LinkedIn, attend monthly webinars, and dedicate time each week to learning new skills. Recently, I completed a certification in [relevant skill] which I've already applied to improve our team's workflow."
-  },
-  {
-    id: '4',
-    category: 'Situational',
-    difficulty: 'advanced',
-    question: "If you noticed a major error in a project that was about to be delivered to a client, what would you do?",
-    tips: [
-      "Show integrity and responsibility",
-      "Demonstrate problem-solving skills",
-      "Consider all stakeholders"
-    ],
-    sampleAnswer: "I would immediately assess the severity and impact of the error. First, I'd document the issue and potential solutions. Then I'd inform my supervisor and the project team immediately, presenting both the problem and proposed solutions. Even if it means delaying delivery, client trust is paramount. I'd work with the team to fix the error quickly and implement processes to prevent similar issues."
-  },
-  {
-    id: '5',
-    category: 'Career Goals',
-    difficulty: 'beginner',
-    question: "Where do you see yourself in 5 years?",
-    tips: [
-      "Align your goals with the company's growth",
-      "Show ambition but be realistic",
-      "Focus on skill development and contribution"
-    ],
-    sampleAnswer: "In five years, I see myself having grown significantly in my expertise and taking on more leadership responsibilities. I'd like to be mentoring junior team members and contributing to strategic decisions. I'm excited about the possibility of specializing in [relevant area] and helping the company achieve its long-term goals."
-  }
-];
+interface InterviewFeedback {
+  score: number;
+  strengths: string[];
+  improvements: string[];
+  suggestions: string[];
+  overallFeedback: string;
+}
+
+// Removed hardcoded questions - using dynamic AI-generated questions instead
 
 const JOB_CATEGORIES = [
   'Administrative',
@@ -97,17 +42,19 @@ const JOB_CATEGORIES = [
 ];
 
 export default function InterviewSimulator() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [difficulty, setDifficulty] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Information Technology');
+  const [experienceLevel, setExperienceLevel] = useState<string>('mid');
   const [currentQuestion, setCurrentQuestion] = useState<InterviewQuestion | null>(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [feedback, setFeedback] = useState<string>('');
+  const [feedback, setFeedback] = useState<InterviewFeedback | null>(null);
   const [sessionStarted, setSessionStarted] = useState(false);
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [score, setScore] = useState<number | null>(null);
+  const [questionNumber, setQuestionNumber] = useState(1);
+  const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [previousQuestions, setPreviousQuestions] = useState<string[]>([]);
+  const { toast } = useToast();
   
   const recordingInterval = useRef<NodeJS.Timeout | null>(null);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
@@ -130,39 +77,101 @@ export default function InterviewSimulator() {
     };
   }, [isRecording]);
 
-  const startInterview = () => {
-    const filteredQuestions = INTERVIEW_QUESTIONS.filter(q => 
-      (selectedCategory === '' || q.category.toLowerCase().includes(selectedCategory.toLowerCase())) &&
-      q.difficulty === difficulty
-    );
+  const startInterview = async () => {
+    setSessionStarted(true);
+    setIsGeneratingQuestion(true);
+    setPreviousQuestions([]);
+    setQuestionNumber(1);
     
-    if (filteredQuestions.length > 0) {
-      setCurrentQuestion(filteredQuestions[0]);
-      setSessionStarted(true);
-      setQuestionIndex(0);
-      setUserAnswer('');
-      setFeedback('');
-      setScore(null);
+    try {
+      const response = await fetch("/api/interview/generate-question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jobCategory: selectedCategory,
+          experienceLevel: experienceLevel,
+          questionNumber: 1,
+          previousQuestions: []
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to generate question");
+      }
+
+      setCurrentQuestion({
+        question: data.question,
+        tips: data.tips,
+        expectedElements: data.expectedElements
+      });
+      setPreviousQuestions([data.question]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to start interview",
+        variant: "destructive",
+      });
+      setSessionStarted(false);
+    } finally {
+      setIsGeneratingQuestion(false);
     }
   };
 
-  const nextQuestion = () => {
-    const filteredQuestions = INTERVIEW_QUESTIONS.filter(q => 
-      (selectedCategory === '' || q.category.toLowerCase().includes(selectedCategory.toLowerCase())) &&
-      q.difficulty === difficulty
-    );
-    
-    const nextIndex = questionIndex + 1;
-    if (nextIndex < filteredQuestions.length) {
-      setCurrentQuestion(filteredQuestions[nextIndex]);
-      setQuestionIndex(nextIndex);
-      setUserAnswer('');
-      setFeedback('');
-      setScore(null);
-    } else {
-      // End of session
-      setCurrentQuestion(null);
+  const nextQuestion = async () => {
+    if (questionNumber >= 10) {
+      toast({
+        title: "Interview Complete",
+        description: "You've completed 10 questions. Great job!",
+      });
       setSessionStarted(false);
+      return;
+    }
+
+    setIsGeneratingQuestion(true);
+    setUserAnswer('');
+    setFeedback(null);
+    setRecordingTime(0);
+    setIsRecording(false);
+    
+    try {
+      const response = await fetch("/api/interview/generate-question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jobCategory: selectedCategory,
+          experienceLevel: experienceLevel,
+          questionNumber: questionNumber + 1,
+          previousQuestions: previousQuestions
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to generate question");
+      }
+
+      setCurrentQuestion({
+        question: data.question,
+        tips: data.tips,
+        expectedElements: data.expectedElements
+      });
+      setPreviousQuestions([...previousQuestions, data.question]);
+      setQuestionNumber(questionNumber + 1);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to generate next question",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingQuestion(false);
     }
   };
 
@@ -170,9 +179,9 @@ export default function InterviewSimulator() {
     setSessionStarted(false);
     setCurrentQuestion(null);
     setUserAnswer('');
-    setFeedback('');
-    setScore(null);
-    setQuestionIndex(0);
+    setFeedback(null);
+    setQuestionNumber(1);
+    setPreviousQuestions([]);
     setRecordingTime(0);
     setIsRecording(false);
   };
@@ -204,38 +213,41 @@ export default function InterviewSimulator() {
     }
   };
 
-  const analyzeAnswer = () => {
-    if (!userAnswer.trim()) return;
+  const analyzeAnswer = async () => {
+    if (!userAnswer.trim() || !currentQuestion) return;
     
     setIsAnalyzing(true);
     
-    // Simulate AI analysis (in real implementation, this would call an AI API)
-    setTimeout(() => {
-      const wordCount = userAnswer.trim().split(/\s+/).length;
-      let analysisScore = 3; // Base score
-      let analysisText = "Your answer shows good effort. ";
+    try {
+      const response = await fetch("/api/interview/evaluate-response", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: currentQuestion.question,
+          response: userAnswer,
+          jobCategory: selectedCategory,
+          experienceLevel: experienceLevel
+        }),
+      });
+
+      const data = await response.json();
       
-      if (wordCount > 50) {
-        analysisScore += 1;
-        analysisText += "Good detail and depth. ";
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to evaluate response");
       }
-      
-      if (userAnswer.toLowerCase().includes('example') || userAnswer.toLowerCase().includes('experience')) {
-        analysisScore += 1;
-        analysisText += "Great use of specific examples. ";
-      }
-      
-      if (wordCount < 20) {
-        analysisScore -= 1;
-        analysisText += "Consider providing more detail and examples. ";
-      }
-      
-      analysisText += `Key areas to improve: ${currentQuestion?.tips.slice(0, 2).join(', ')}.`;
-      
-      setScore(Math.min(5, Math.max(1, analysisScore)));
-      setFeedback(analysisText);
+
+      setFeedback(data.feedback);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to analyze answer",
+        variant: "destructive",
+      });
+    } finally {
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -292,17 +304,18 @@ export default function InterviewSimulator() {
                   </div>
 
                   <div>
-                    <Label htmlFor="difficulty" className="text-sm font-semibold text-charcoal mb-2 block">
-                      Difficulty Level
+                    <Label htmlFor="experience" className="text-sm font-semibold text-charcoal mb-2 block">
+                      Experience Level
                     </Label>
-                    <Select value={difficulty} onValueChange={(value: 'beginner' | 'intermediate' | 'advanced') => setDifficulty(value)}>
+                    <Select value={experienceLevel} onValueChange={setExperienceLevel}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="beginner">Beginner</SelectItem>
-                        <SelectItem value="intermediate">Intermediate</SelectItem>
-                        <SelectItem value="advanced">Advanced</SelectItem>
+                        <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
+                        <SelectItem value="mid">Mid Level (3-5 years)</SelectItem>
+                        <SelectItem value="senior">Senior Level (6+ years)</SelectItem>
+                        <SelectItem value="executive">Executive/Leadership</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -312,10 +325,6 @@ export default function InterviewSimulator() {
                   <Button 
                     onClick={startInterview} 
                     className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold"
-                    disabled={INTERVIEW_QUESTIONS.filter(q => 
-                      (selectedCategory === '' || q.category.toLowerCase().includes(selectedCategory.toLowerCase())) &&
-                      q.difficulty === difficulty
-                    ).length === 0}
                   >
                     <Play className="mr-2" size={20} />
                     Start Interview Practice
@@ -380,7 +389,7 @@ export default function InterviewSimulator() {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold font-montserrat text-navy">Interview Practice Session</h1>
-              <p className="text-charcoal">Question {questionIndex + 1} • {difficulty} level</p>
+              <p className="text-charcoal">Question {questionNumber} of 10 • {experienceLevel === 'entry' ? 'Entry' : experienceLevel === 'mid' ? 'Mid' : experienceLevel === 'senior' ? 'Senior' : 'Executive'} Level</p>
             </div>
             <Button 
               onClick={restartSession} 
@@ -392,27 +401,23 @@ export default function InterviewSimulator() {
             </Button>
           </div>
 
-          {currentQuestion && (
+          {isGeneratingQuestion ? (
+            <div className="flex justify-center items-center py-20">
+              <LoadingSpinner size="lg" className="text-talencor-gold" />
+              <span className="ml-3 text-charcoal">Generating your interview question...</span>
+            </div>
+          ) : currentQuestion && (
             <div className="space-y-6">
               {/* Question Card */}
               <Card>
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <div>
-                      <Badge variant="secondary" className="mb-2">{currentQuestion.category}</Badge>
+                    <div className="flex-1">
+                      <Badge variant="secondary" className="mb-2">{selectedCategory}</Badge>
                       <CardTitle className="text-xl font-montserrat text-navy">
                         {currentQuestion.question}
                       </CardTitle>
                     </div>
-                    <Badge 
-                      className={`
-                        ${currentQuestion.difficulty === 'beginner' ? 'bg-green-100 text-green-800' : 
-                          currentQuestion.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-red-100 text-red-800'}
-                      `}
-                    >
-                      {currentQuestion.difficulty}
-                    </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -495,38 +500,80 @@ export default function InterviewSimulator() {
               </Card>
 
               {/* Feedback */}
-              {(feedback || score !== null) && (
+              {feedback && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg font-montserrat text-navy flex items-center">
-                      Feedback & Analysis
-                      {score !== null && (
-                        <div className="ml-auto flex items-center">
-                          <span className="text-sm text-charcoal mr-2">Score:</span>
-                          <div className="flex">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Star
-                                key={star}
-                                size={20}
-                                className={star <= score ? 'text-talencor-gold fill-current' : 'text-gray-300'}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      AI Feedback & Analysis
+                      <div className="ml-auto flex items-center">
+                        <span className="text-sm text-charcoal mr-2">Score:</span>
+                        <Badge className="bg-talencor-gold text-white">
+                          {feedback.score}/100
+                        </Badge>
+                      </div>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-charcoal mb-4">{feedback}</p>
-                    
-                    <Separator className="my-4" />
-                    
+                  <CardContent className="space-y-4">
+                    {/* Overall Feedback */}
                     <div>
-                      <h4 className="font-semibold text-charcoal mb-2">Sample Answer:</h4>
-                      <p className="text-sm text-charcoal bg-gray-50 p-3 rounded border-l-4 border-talencor-gold">
-                        {currentQuestion.sampleAnswer}
-                      </p>
+                      <p className="text-charcoal">{feedback.overallFeedback}</p>
                     </div>
+
+                    <Separator />
+
+                    {/* Strengths */}
+                    {feedback.strengths.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-navy mb-2 flex items-center">
+                          <CheckCircle size={16} className="mr-2 text-green-600" />
+                          Strengths
+                        </h4>
+                        <ul className="list-disc list-inside text-sm text-charcoal space-y-1 ml-6">
+                          {feedback.strengths.map((strength, index) => (
+                            <li key={index}>{strength}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Areas for Improvement */}
+                    {feedback.improvements.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-navy mb-2 flex items-center">
+                          <AlertCircle size={16} className="mr-2 text-talencor-orange" />
+                          Areas for Improvement
+                        </h4>
+                        <ul className="list-disc list-inside text-sm text-charcoal space-y-1 ml-6">
+                          {feedback.improvements.map((improvement, index) => (
+                            <li key={index}>{improvement}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Suggestions */}
+                    {feedback.suggestions.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-navy mb-2">💡 Suggestions for Next Time</h4>
+                        <ul className="list-disc list-inside text-sm text-charcoal space-y-1 ml-6">
+                          {feedback.suggestions.map((suggestion, index) => (
+                            <li key={index}>{suggestion}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Expected Elements */}
+                    {currentQuestion && (
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-semibold text-charcoal mb-2">Key Elements to Include:</h4>
+                        <ul className="list-check list-inside text-sm text-charcoal space-y-1">
+                          {currentQuestion.expectedElements.map((element, index) => (
+                            <li key={index}>✓ {element}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                     
                     <div className="flex justify-between mt-6">
                       <Button 
@@ -539,9 +586,17 @@ export default function InterviewSimulator() {
                       
                       <Button 
                         onClick={nextQuestion}
+                        disabled={isGeneratingQuestion}
                         className="bg-talencor-gold hover:bg-talencor-orange text-white"
                       >
-                        Next Question
+                        {isGeneratingQuestion ? (
+                          <>
+                            <LoadingSpinner size="sm" className="mr-2" />
+                            Generating...
+                          </>
+                        ) : (
+                          'Next Question'
+                        )}
                       </Button>
                     </div>
                   </CardContent>
