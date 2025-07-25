@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Check, Search, Users, BookOpen, TrendingUp, Play } from "lucide-react";
+import { Check, Search, Users, BookOpen, TrendingUp, Play, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -152,6 +152,56 @@ export default function JobSeekers() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Career Tools Section */}
+      <section className="py-20 bg-gradient-to-br from-talencor-gold/10 to-talencor-orange/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+              AI-Powered Career Tools
+            </h2>
+            <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
+              Leverage cutting-edge technology to accelerate your career journey
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <Card className="overflow-hidden hover:shadow-xl transition-shadow">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-br from-corporate-blue to-navy p-8 text-white">
+                  <Play className="h-12 w-12 mb-4" />
+                  <h3 className="text-2xl font-bold font-montserrat mb-2">Interview Simulator</h3>
+                  <p className="mb-6 text-gray-200">
+                    Practice with AI-generated questions tailored to your industry and experience level
+                  </p>
+                  <Link href="/interview-simulator">
+                    <Button className="bg-white text-corporate-blue hover:bg-gray-100">
+                      Start Practicing
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden hover:shadow-xl transition-shadow">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-br from-talencor-gold to-talencor-orange p-8 text-white">
+                  <FileText className="h-12 w-12 mb-4" />
+                  <h3 className="text-2xl font-bold font-montserrat mb-2">Resume Enhancement</h3>
+                  <p className="mb-6 text-gray-100">
+                    Transform your resume with AI-powered optimization for ATS systems
+                  </p>
+                  <Link href="/resume-wizard">
+                    <Button className="bg-white text-talencor-orange hover:bg-gray-100">
+                      Enhance Resume
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

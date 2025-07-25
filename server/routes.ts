@@ -7,6 +7,7 @@ import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sentry";
 import { getSentryIssues, resolveSentryIssue, bulkResolveSentryIssues } from "./sentry-api";
 import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentryIssues, addCommentToSentryIssue } from "./sentry-integration";
+import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -181,6 +182,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/sentry/actual/issues/:issueId/resolve", resolveActualSentryIssue);
   app.post("/api/sentry/actual/issues/bulk-resolve", bulkResolveActualSentryIssues);
   app.post("/api/sentry/actual/issues/:issueId/comment", addCommentToSentryIssue);
+
+  // Resume Enhancement API endpoint
+  app.post("/api/enhance-resume", async (req, res) => {
+    try {
+      const schema = z.object({
+        resumeText: z.string().min(1, "Resume text is required"),
+        jobCategory: z.string(),
+        options: z.object({
+          formatting: z.boolean(),
+          keywords: z.boolean(),
+          achievements: z.boolean(),
+          skills: z.boolean(),
+          summary: z.boolean(),
+        })
+      });
+
+      const validatedData = schema.parse(req.body);
+
+      // Track resume enhancement request
+      addBreadcrumb('Resume enhancement requested', 'http', {
+        jobCategory: validatedData.jobCategory,
+        options: validatedData.options,
+      });
+
+      const result = await enhanceResume(
+        validatedData.resumeText,
+        validatedData.jobCategory,
+        validatedData.options
+      );
+
+      // Track successful enhancement
+      captureEvent('Resume enhanced successfully', {
+        jobCategory: validatedData.jobCategory,
+        optionsEnabled: Object.keys(validatedData.options).filter(k => validatedData.options[k as keyof EnhancementOptions]),
+      });
+
+      res.json({ success: true, ...result });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        captureError(error, {
+          action: 'resume_enhancement_validation',
+          validationErrors: error.errors,
+        });
+        res.status(400).json({ 
+          success: false, 
+          message: "Invalid request data", 
+          errors: error.errors 
+        });
+      } else {
+        captureError(error as Error, {
+          action: 'resume_enhancement_ai_processing',
+          jobCategory: req.body.jobCategory,
+        });
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to enhance resume. Please try again." 
+        });
+      }
+    }
+  });
+
+  // Get industry keywords API endpoint
+  app.get("/api/industry-keywords/:industry", async (req, res) => {
+    try {
+      const { industry } = req.params;
+      const keywords = await generateIndustryKeywords(industry);
+      res.json({ success: true, keywords });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'industry_keywords_generation',
+        industry: req.params.industry,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to generate keywords" 
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

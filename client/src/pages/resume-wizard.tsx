@@ -73,37 +73,26 @@ export default function ResumeWizard() {
   const handleEnhance = async () => {
     setIsProcessing(true);
     
-    // Simulate AI processing
-    setTimeout(() => {
-      // For now, provide a sample enhanced resume
-      const sampleEnhanced = `ENHANCED RESUME
+    try {
+      const response = await fetch("/api/enhance-resume", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resumeText,
+          jobCategory,
+          options: enhancementOptions,
+        }),
+      });
 
-PROFESSIONAL SUMMARY
-Dynamic professional with proven expertise in delivering results and driving organizational success. Demonstrated ability to leverage industry best practices and innovative solutions to exceed performance targets.
+      const data = await response.json();
 
-CORE COMPETENCIES
-• Strategic Planning & Execution
-• Team Leadership & Development  
-• Process Optimization
-• Data-Driven Decision Making
-• Stakeholder Management
-• Project Management
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to enhance resume");
+      }
 
-PROFESSIONAL EXPERIENCE
-
-[Your enhanced experience with quantified achievements and action verbs]
-
-• Spearheaded initiatives that resulted in 25% improvement in efficiency
-• Collaborated with cross-functional teams to deliver projects on time and under budget
-• Implemented best practices that enhanced team productivity by 30%
-
-EDUCATION
-[Your education details formatted for maximum impact]
-
-CERTIFICATIONS & SKILLS
-[Industry-relevant certifications and in-demand skills based on ${jobCategory} sector]`;
-
-      setEnhancedResume(sampleEnhanced);
+      setEnhancedResume(data.enhancedResume);
       setIsProcessing(false);
       setCurrentStep(3);
       
@@ -111,7 +100,19 @@ CERTIFICATIONS & SKILLS
         title: "Resume enhanced!",
         description: "Your resume has been optimized with AI-powered improvements.",
       });
-    }, 3000);
+
+      // Show additional suggestions if available
+      if (data.suggestions && data.suggestions.length > 0) {
+        console.log("Additional suggestions:", data.suggestions);
+      }
+    } catch (error) {
+      setIsProcessing(false);
+      toast({
+        title: "Enhancement failed",
+        description: error instanceof Error ? error.message : "Failed to enhance resume. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCopy = () => {
@@ -529,7 +530,7 @@ CERTIFICATIONS & SKILLS
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <AnimatedCard animationType="lift">
+            <AnimatedCard>
               <Card className="h-full">
                 <CardContent className="pt-6">
                   <div className="bg-talencor-gold/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
@@ -543,7 +544,7 @@ CERTIFICATIONS & SKILLS
               </Card>
             </AnimatedCard>
 
-            <AnimatedCard animationType="lift" delay={100}>
+            <AnimatedCard>
               <Card className="h-full">
                 <CardContent className="pt-6">
                   <div className="bg-talencor-gold/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
@@ -557,7 +558,7 @@ CERTIFICATIONS & SKILLS
               </Card>
             </AnimatedCard>
 
-            <AnimatedCard animationType="lift" delay={200}>
+            <AnimatedCard>
               <Card className="h-full">
                 <CardContent className="pt-6">
                   <div className="bg-talencor-gold/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">

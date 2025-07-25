@@ -23,6 +23,7 @@ import ApplicationInfo from "@/pages/application-info";
 import Demo from "@/pages/demo";
 import Jobs from "@/pages/jobs";
 import InterviewSimulator from "@/pages/interview-simulator";
+import ResumeWizard from "@/pages/resume-wizard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -46,6 +47,7 @@ function Router() {
           <Route path="/apply" component={ApplicationInfo} />
           <Route path="/jobs" component={Jobs} />
           <Route path="/interview-simulator" component={InterviewSimulator} />
+          <Route path="/resume-wizard" component={ResumeWizard} />
           <Route path="/demo" component={Demo} />
           <Route component={NotFound} />
         </Switch>
