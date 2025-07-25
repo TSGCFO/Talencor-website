@@ -36,11 +36,11 @@ export default function JobSeekers() {
                     className="px-4 py-2 rounded-lg text-charcoal bg-white flex-1 sm:w-64"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
-                        window.location.href = '/contact';
+                        window.location.href = '/jobs';
                       }
                     }}
                   />
-                  <Link href="/contact">
+                  <Link href="/jobs">
                     <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
                       Browse Jobs
                     </Button>

@@ -167,6 +167,12 @@ The contact form follows this flow:
   * Fixed excessive white space on Job Seekers page CTA section by reducing padding from py-20 to py-8
   * Fixed excessive white space on Employers page CTA section by reducing padding from py-20 to py-8
   * All 7 reported UI/UX issues resolved and marked as fixed in Sentry dashboard
+- July 25, 2025: Fixed 3 additional navigation issues and created jobs listing page:
+  * Fixed service card "Learn More" links that weren't working - applied className directly to Link component
+  * Created new /jobs page with job listings featuring search functionality and sample job postings
+  * Fixed "Browse Jobs" button to navigate to /jobs instead of /contact page
+  * Updated search input to redirect to /jobs when pressing Enter
+  * All 3 navigation issues resolved and marked as fixed in Sentry dashboard
 
 ## User Preferences
 
