@@ -71,7 +71,7 @@ export function AnimatedCard({
 
         {/* Animated border effect */}
         <div className={cn(
-          "absolute inset-0 border-2 border-transparent transition-all duration-300",
+          "absolute inset-0 border-2 border-transparent transition-all duration-300 pointer-events-none",
           isHovered && "border-talencor-gold/50"
         )} />
       </Card>

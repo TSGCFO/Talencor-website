@@ -44,7 +44,7 @@ export default function ServicesOverview() {
                 key={service.id}
                 hoverEffect="lift"
                 delay={index * 100}
-                className={`border-t-4 ${borderColors[index % 3]}`}
+                className={`border-t-4 ${borderColors[index % 3]} cursor-pointer`}
               >
                 <div className="p-8">
                   <div className={`mb-4 ${iconColors[index % 3]}`}>
@@ -54,8 +54,11 @@ export default function ServicesOverview() {
                   <p className="text-charcoal mb-6 leading-relaxed">
                     {service.description}
                   </p>
-                  <Link href={`/services/${service.id}`} className="text-talencor-gold hover:text-charcoal font-semibold font-montserrat cursor-pointer inline-flex items-center">
-                    Learn More <ArrowRight size={16} className="ml-1" />
+                  <Link 
+                    href={`/services/${service.id}`}
+                    className="text-talencor-gold hover:text-charcoal font-semibold font-montserrat inline-flex items-center group transition-colors relative z-10"
+                  >
+                    Learn More <ArrowRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </div>
               </AnimatedCard>
