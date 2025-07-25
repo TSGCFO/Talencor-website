@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Check, Search, Users, BookOpen, TrendingUp } from "lucide-react";
+import { Check, Search, Users, BookOpen, TrendingUp, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -46,14 +46,26 @@ export default function JobSeekers() {
                     </Button>
                   </Link>
                 </div>
-                <Link href="/contact">
-                  <Button 
-                    variant="outline" 
-                    className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
-                  >
-                    Submit Resume
-                  </Button>
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link href="/interview-simulator">
+                    <Button 
+                      size="lg" 
+                      variant="outline"
+                      className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
+                    >
+                      <Play className="mr-2" size={20} />
+                      Practice Interview
+                    </Button>
+                  </Link>
+                  <Link href="/contact">
+                    <Button 
+                      variant="outline" 
+                      className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
+                    >
+                      Submit Resume
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
             <div className="hidden lg:block mt-12 lg:mt-0">

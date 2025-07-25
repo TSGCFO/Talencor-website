@@ -22,6 +22,7 @@ import Contact from "@/pages/contact";
 import ApplicationInfo from "@/pages/application-info";
 import Demo from "@/pages/demo";
 import Jobs from "@/pages/jobs";
+import InterviewSimulator from "@/pages/interview-simulator";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -44,6 +45,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/apply" component={ApplicationInfo} />
           <Route path="/jobs" component={Jobs} />
+          <Route path="/interview-simulator" component={InterviewSimulator} />
           <Route path="/demo" component={Demo} />
           <Route component={NotFound} />
         </Switch>
