@@ -1,7 +1,12 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSubmissionSchema } from "@shared/schema";
+import { 
+  insertContactSubmissionSchema,
+  insertQuestionCategorySchema,
+  insertCustomInterviewQuestionSchema,
+  insertQuestionTagSchema
+} from "@shared/schema";
 import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sentry";
@@ -80,6 +85,192 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: false, 
         message: "Failed to retrieve contact submissions" 
       });
+    }
+  });
+
+  // Question Bank API Routes
+
+  // Categories
+  app.get("/api/question-bank/categories", async (req, res) => {
+    try {
+      const categories = await storage.getQuestionCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.post("/api/question-bank/categories", async (req, res) => {
+    try {
+      const validatedData = insertQuestionCategorySchema.parse(req.body);
+      const category = await storage.createQuestionCategory(validatedData);
+      res.json(category);
+    } catch (error) {
+      console.error("Error creating category:", error);
+      res.status(400).json({ error: "Failed to create category" });
+    }
+  });
+
+  app.put("/api/question-bank/categories/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertQuestionCategorySchema.partial().parse(req.body);
+      const category = await storage.updateQuestionCategory(id, validatedData);
+      res.json(category);
+    } catch (error) {
+      console.error("Error updating category:", error);
+      res.status(400).json({ error: "Failed to update category" });
+    }
+  });
+
+  app.delete("/api/question-bank/categories/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteQuestionCategory(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      res.status(500).json({ error: "Failed to delete category" });
+    }
+  });
+
+  // Tags
+  app.get("/api/question-bank/tags", async (req, res) => {
+    try {
+      const tags = await storage.getQuestionTags();
+      res.json(tags);
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+      res.status(500).json({ error: "Failed to fetch tags" });
+    }
+  });
+
+  app.post("/api/question-bank/tags", async (req, res) => {
+    try {
+      const validatedData = insertQuestionTagSchema.parse(req.body);
+      const tag = await storage.createQuestionTag(validatedData);
+      res.json(tag);
+    } catch (error) {
+      console.error("Error creating tag:", error);
+      res.status(400).json({ error: "Failed to create tag" });
+    }
+  });
+
+  app.put("/api/question-bank/tags/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertQuestionTagSchema.partial().parse(req.body);
+      const tag = await storage.updateQuestionTag(id, validatedData);
+      res.json(tag);
+    } catch (error) {
+      console.error("Error updating tag:", error);
+      res.status(400).json({ error: "Failed to update tag" });
+    }
+  });
+
+  app.delete("/api/question-bank/tags/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteQuestionTag(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting tag:", error);
+      res.status(500).json({ error: "Failed to delete tag" });
+    }
+  });
+
+  // Questions
+  app.get("/api/question-bank/questions", async (req, res) => {
+    try {
+      const {
+        search,
+        category,
+        difficulty,
+        tags,
+        favoritesOnly
+      } = req.query;
+
+      const filters: any = {};
+
+      if (search && typeof search === 'string') {
+        filters.search = search;
+      }
+
+      if (category && category !== 'all') {
+        filters.categoryId = parseInt(category as string);
+      }
+
+      if (difficulty && difficulty !== 'all') {
+        filters.difficulty = difficulty;
+      }
+
+      if (tags) {
+        const tagIds = Array.isArray(tags) 
+          ? tags.map(id => parseInt(id as string))
+          : [parseInt(tags as string)];
+        filters.tagIds = tagIds;
+      }
+
+      if (favoritesOnly === 'true') {
+        filters.favoritesOnly = true;
+        filters.userId = 1; // For now, using a default user ID
+      }
+
+      const questions = await storage.getCustomInterviewQuestions(filters);
+      res.json(questions);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      res.status(500).json({ error: "Failed to fetch questions" });
+    }
+  });
+
+  app.post("/api/question-bank/questions", async (req, res) => {
+    try {
+      const validatedData = insertCustomInterviewQuestionSchema.parse({
+        ...req.body,
+        createdBy: 'user' // For now, using a default creator
+      });
+      const question = await storage.createCustomInterviewQuestion(validatedData);
+      res.json(question);
+    } catch (error) {
+      console.error("Error creating question:", error);
+      res.status(400).json({ error: "Failed to create question" });
+    }
+  });
+
+  app.put("/api/question-bank/questions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertCustomInterviewQuestionSchema.partial().parse(req.body);
+      const question = await storage.updateCustomInterviewQuestion(id, validatedData);
+      res.json(question);
+    } catch (error) {
+      console.error("Error updating question:", error);
+      res.status(400).json({ error: "Failed to update question" });
+    }
+  });
+
+  app.delete("/api/question-bank/questions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteCustomInterviewQuestion(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      res.status(500).json({ error: "Failed to delete question" });
+    }
+  });
+
+  app.post("/api/question-bank/questions/:id/favorite", async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      const userId = 1; // For now, using a default user ID
+      const result = await storage.toggleQuestionFavorite(userId, questionId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      res.status(500).json({ error: "Failed to toggle favorite" });
     }
   });
 

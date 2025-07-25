@@ -168,7 +168,7 @@ export default function JobSeekers() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8">
             <Card className="overflow-hidden hover:shadow-xl transition-shadow">
               <CardContent className="p-0">
                 <div className="bg-gradient-to-br from-corporate-blue to-navy p-8 text-white">
@@ -197,6 +197,23 @@ export default function JobSeekers() {
                   <Link href="/resume-wizard">
                     <Button className="bg-white text-talencor-orange hover:bg-gray-100">
                       Enhance Resume
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden hover:shadow-xl transition-shadow">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-br from-navy to-charcoal p-8 text-white">
+                  <BookOpen className="h-12 w-12 mb-4" />
+                  <h3 className="text-2xl font-bold font-montserrat mb-2">Question Bank</h3>
+                  <p className="mb-6 text-gray-200">
+                    Create and organize your custom interview questions for targeted preparation
+                  </p>
+                  <Link href="/question-bank">
+                    <Button className="bg-white text-navy hover:bg-gray-100">
+                      Manage Questions
                     </Button>
                   </Link>
                 </div>
