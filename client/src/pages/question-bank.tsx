@@ -94,14 +94,22 @@ export default function QuestionBank() {
   const queryClient = useQueryClient();
 
   // Form state for creating/editing questions
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    categoryId: string;
+    question: string;
+    difficulty: 'entry' | 'mid' | 'senior' | 'executive';
+    tips: string[];
+    expectedElements: string[];
+    isPublic: boolean;
+    tagIds: number[];
+  }>({
     categoryId: '',
     question: '',
-    difficulty: 'mid' as const,
+    difficulty: 'mid',
     tips: [''],
     expectedElements: [''],
     isPublic: false,
-    tagIds: [] as number[],
+    tagIds: [],
   });
 
   // Fetch questions

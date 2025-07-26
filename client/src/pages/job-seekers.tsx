@@ -246,15 +246,21 @@ export default function JobSeekers() {
               { name: "Engineering", icon: <Search size={32} />, jobs: "180+ Jobs" },
               { name: "Customer Service", icon: <BookOpen size={32} />, jobs: "220+ Jobs" }
             ].map((industry, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="text-talencor-gold mb-4 flex justify-center">
-                    {industry.icon}
-                  </div>
-                  <h3 className="text-lg font-semibold font-montserrat text-navy mb-2">{industry.name}</h3>
-                  <p className="text-talencor-gold font-medium">{industry.jobs}</p>
-                </CardContent>
-              </Card>
+              <Link 
+                key={index} 
+                href={`/jobs?industry=${encodeURIComponent(industry.name)}`}
+                className="block transform transition-all duration-200 hover:scale-105"
+              >
+                <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="text-talencor-gold mb-4 flex justify-center">
+                      {industry.icon}
+                    </div>
+                    <h3 className="text-lg font-semibold font-montserrat text-navy mb-2">{industry.name}</h3>
+                    <p className="text-talencor-gold font-medium">{industry.jobs}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
