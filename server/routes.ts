@@ -12,6 +12,7 @@ import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sentry";
 import { getSentryIssues, resolveSentryIssue, bulkResolveSentryIssues } from "./sentry-api";
 import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentryIssues, addCommentToSentryIssue } from "./sentry-integration";
+import { getSentryFeedbackSummary } from "./sentry-feedback-summary";
 import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
 import { generateInterviewQuestion, evaluateInterviewResponse, generateInterviewTips } from "./ai/interviewSimulator";
 
@@ -311,52 +312,145 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const authToken = process.env.SENTRY_AUTH_TOKEN || "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";
       const org = process.env.SENTRY_ORG || "tsg-fulfillment";
       const project = process.env.SENTRY_PROJECT || "talencor-frontend";
+      const projectId = "4509575724613632"; // From screenshot
 
-      // Fetch user feedback from Sentry
-      console.log(`Fetching feedback from: https://sentry.io/api/0/projects/${org}/${project}/user-feedback/`);
-      const feedbackResponse = await fetch(
-        `https://sentry.io/api/0/projects/${org}/${project}/user-feedback/`,
-        {
+      // Fetch user feedback from Sentry - try multiple endpoints
+      console.log(`Fetching feedback from organization: ${org}, project: ${project}`);
+      
+      // Try multiple endpoints for user feedback
+      let allUserFeedback = [];
+      let feedbackStats = {
+        open: 0,
+        resolved: 0,
+        total: 0
+      };
+
+      // 1. Try user-reports endpoint  
+      try {
+        const userReportsUrl = `https://sentry.io/api/0/projects/${org}/${project}/user-reports/?statsPeriod=90d`;
+        console.log(`Trying user-reports endpoint: ${userReportsUrl}`);
+        
+        const feedbackResponse = await fetch(userReportsUrl, {
           headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
           }
-        }
-      );
+        });
 
-      if (!feedbackResponse.ok) {
-        throw new Error(`Sentry API error: ${feedbackResponse.status} ${feedbackResponse.statusText}`);
+        if (feedbackResponse.ok) {
+          const feedback = await feedbackResponse.json();
+          console.log(`User reports response:`, JSON.stringify(feedback).substring(0, 500));
+          if (Array.isArray(feedback)) {
+            allUserFeedback = [...allUserFeedback, ...feedback];
+          }
+        } else {
+          console.log(`User reports API error: ${feedbackResponse.status} ${feedbackResponse.statusText}`);
+        }
+      } catch (error) {
+        console.error("Error fetching user reports:", error);
       }
 
-      const feedback = await feedbackResponse.json();
-
-      // Also fetch issues that might be reported
-      const issuesResponse = await fetch(
-        `https://sentry.io/api/0/projects/${org}/${project}/issues/?query=is:unresolved`,
-        {
+      // 2. Try organization-level feedback endpoint
+      try {
+        const orgFeedbackUrl = `https://sentry.io/api/0/organizations/${org}/user-feedback/?project=${projectId}&statsPeriod=90d`;
+        console.log(`Trying org feedback endpoint with project ID: ${orgFeedbackUrl}`);
+        
+        const orgFeedbackResponse = await fetch(orgFeedbackUrl, {
           headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
           }
+        });
+        
+        if (orgFeedbackResponse.ok) {
+          const orgFeedback = await orgFeedbackResponse.json();
+          console.log(`Org feedback response:`, JSON.stringify(orgFeedback).substring(0, 500));
+          if (Array.isArray(orgFeedback)) {
+            allUserFeedback = [...allUserFeedback, ...orgFeedback];
+          }
+        } else {
+          console.log(`Org feedback API error: ${orgFeedbackResponse.status} ${orgFeedbackResponse.statusText}`);
         }
-      );
-
-      if (!issuesResponse.ok) {
-        throw new Error(`Sentry Issues API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+      } catch (error) {
+        console.error("Error fetching org feedback:", error);
       }
 
-      const issues = await issuesResponse.json();
+      // 3. Fetch ALL issues to check for user feedback
+      let issues: any[] = [];
+      let issuesWithFeedback = 0;
+      let resolvedIssues = 0;
+      let unresolvedIssues = 0;
+      
+      try {
+        const allIssuesUrl = `https://sentry.io/api/0/projects/${org}/${project}/issues/`;
+        console.log(`Fetching all issues from: ${allIssuesUrl}`);
+        
+        const issuesResponse = await fetch(allIssuesUrl, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (issuesResponse.ok) {
+          issues = await issuesResponse.json();
+          console.log(`Total issues found: ${Array.isArray(issues) ? issues.length : 0}`);
+          
+          // Count feedback in issues
+          if (Array.isArray(issues)) {
+            issues.forEach((issue: any) => {
+              if (issue.userReportCount && issue.userReportCount > 0) {
+                issuesWithFeedback++;
+              }
+              if (issue.status === 'resolved') {
+                resolvedIssues++;
+              } else {
+                unresolvedIssues++;
+              }
+            });
+          }
+        } else {
+          console.log(`Issues API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+        }
+      } catch (error) {
+        console.error("Error fetching issues:", error);
+      }
+
+      // Count open vs resolved feedback
+      if (Array.isArray(allUserFeedback)) {
+        allUserFeedback.forEach((feedback: any) => {
+          feedbackStats.total++;
+          if (feedback.status === 'resolved' || feedback.issue?.status === 'resolved') {
+            feedbackStats.resolved++;
+          } else {
+            feedbackStats.open++;
+          }
+        });
+      }
 
       // Combine and format the data
       const response = {
-        userFeedback: feedback,
-        unresolvedIssues: issues,
+        userFeedback: allUserFeedback,
+        unresolvedIssues: issues.filter((i: any) => i.status !== 'resolved'),
+        allIssues: issues,
         summary: {
-          totalFeedback: Array.isArray(feedback) ? feedback.length : 0,
-          totalIssues: Array.isArray(issues) ? issues.length : 0
+          totalFeedback: allUserFeedback.length,
+          openFeedback: feedbackStats.open,
+          resolvedFeedback: feedbackStats.resolved,
+          totalIssues: issues.length,
+          issuesWithFeedback,
+          resolvedIssues,
+          unresolvedIssues
         }
       };
 
+      console.log("Final response summary:", {
+        totalFeedback: response.summary.totalFeedback,
+        openFeedback: response.summary.openFeedback,
+        resolvedFeedback: response.summary.resolvedFeedback,
+        totalIssues: response.summary.totalIssues
+      });
+      
       res.json(response);
     } catch (error) {
       console.error("Error fetching Sentry feedback:", error);
@@ -375,6 +469,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/sentry/actual/issues/:issueId/resolve", resolveActualSentryIssue);
   app.post("/api/sentry/actual/issues/bulk-resolve", bulkResolveActualSentryIssues);
   app.post("/api/sentry/actual/issues/:issueId/comment", addCommentToSentryIssue);
+  
+  // Sentry feedback summary endpoint
+  app.get("/api/sentry/feedback-summary", getSentryFeedbackSummary);
 
   // Resume Enhancement API endpoint
   app.post("/api/enhance-resume", async (req, res) => {
