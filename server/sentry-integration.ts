@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 const SENTRY_AUTH_TOKEN = "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";
 const SENTRY_ORG = "tsg-fulfillment";
-const SENTRY_PROJECT = "talencor-frontend";
+const SENTRY_PROJECT = process.env.SENTRY_PROJECT_SLUG || "talencor-frontend";
 
 interface SentryIssue {
   id: string;
@@ -17,8 +17,16 @@ interface SentryIssue {
 // Get actual Sentry issues
 export async function getActualSentryIssues(req: Request, res: Response) {
   try {
+    // Build query parameters to fetch unresolved issues
+    const queryParams = new URLSearchParams({
+      query: 'is:unresolved', // Only fetch unresolved issues
+      limit: '100', // Fetch up to 100 issues
+      sort: 'date', // Sort by most recent
+      statsPeriod: '14d' // Last 14 days
+    });
+
     const response = await fetch(
-      `https://sentry.io/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/issues/`,
+      `https://sentry.io/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/issues/?${queryParams}`,
       {
         headers: {
           'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
@@ -28,7 +36,9 @@ export async function getActualSentryIssues(req: Request, res: Response) {
     );
 
     if (!response.ok) {
-      throw new Error(`Sentry API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Sentry API Error Response:', errorText);
+      throw new Error(`Sentry API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const issues = await response.json();
