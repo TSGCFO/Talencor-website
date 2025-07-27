@@ -313,6 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const project = process.env.SENTRY_PROJECT || "talencor-frontend";
 
       // Fetch user feedback from Sentry
+      console.log(`Fetching feedback from: https://sentry.io/api/0/projects/${org}/${project}/user-feedback/`);
       const feedbackResponse = await fetch(
         `https://sentry.io/api/0/projects/${org}/${project}/user-feedback/`,
         {
