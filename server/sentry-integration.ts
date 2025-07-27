@@ -22,7 +22,8 @@ export async function getActualSentryIssues(req: Request, res: Response) {
       query: 'is:unresolved', // Only fetch unresolved issues
       limit: '100', // Fetch up to 100 issues
       sort: 'date', // Sort by most recent
-      statsPeriod: '14d' // Last 14 days
+      statsPeriod: '14d', // Last 14 days
+      expand: 'stats' // Include statistics
     });
 
     const response = await fetch(
