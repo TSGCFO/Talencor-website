@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`Fetching feedback from organization: ${org}, project: ${project}`);
       
       // Try multiple endpoints for user feedback
-      let allUserFeedback = [];
+      let allUserFeedback: any[] = [];
       let feedbackStats = {
         open: 0,
         resolved: 0,
