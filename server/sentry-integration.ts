@@ -147,7 +147,7 @@ export async function bulkResolveActualSentryIssues(req: Request, res: Response)
         if (comment) {
           try {
             const commentResponse = await fetch(
-              `https://sentry.io/api/0/issues/${issueId}/notes/`,
+              `https://sentry.io/api/0/organizations/${SENTRY_ORG}/issues/${issueId}/notes/`,
               {
                 method: 'POST',
                 headers: {
@@ -168,9 +168,9 @@ export async function bulkResolveActualSentryIssues(req: Request, res: Response)
           }
         }
 
-        // Try to resolve the issue
+        // Try to resolve the issue using organization-based endpoint
         const response = await fetch(
-          `https://sentry.io/api/0/issues/${issueId}/`,
+          `https://sentry.io/api/0/organizations/${SENTRY_ORG}/issues/${issueId}/`,
           {
             method: 'PUT',
             headers: {
@@ -348,7 +348,7 @@ export async function addCommentToSentryIssue(req: Request, res: Response) {
     }
 
     const response = await fetch(
-      `https://sentry.io/api/0/issues/${issueId}/notes/`,
+      `https://sentry.io/api/0/organizations/${SENTRY_ORG}/issues/${issueId}/notes/`,
       {
         method: 'POST',
         headers: {
