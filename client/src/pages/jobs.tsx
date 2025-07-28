@@ -191,7 +191,7 @@ export default function Jobs() {
                         <p className="text-lg font-semibold text-talencor-gold">{job.salary}</p>
                       </div>
                       <div className="mt-4 md:mt-0 md:ml-6">
-                        <Link href="/contact">
+                        <Link href="/apply">
                           <Button className="bg-talencor-gold hover:bg-talencor-orange text-white w-full md:w-auto">
                             Apply Now
                           </Button>

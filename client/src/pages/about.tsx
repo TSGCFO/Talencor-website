@@ -133,7 +133,7 @@ export default function About() {
                 </div>
                 <h3 className="text-xl font-bold font-montserrat text-navy mb-4">Client Profiling</h3>
                 <p className="text-charcoal leading-relaxed">
-                  Talencor creates an employer-profile for each of our clients to ensure the ideal match between the employee and employer. By qualifying the job-requirements we are able to provide the greatest level of satisfaction.
+                  Talencor creates an employer-profile for each of our clients to ensure the ideal match between the employee and employer. By qualifying the job requirements we are able to provide the greatest level of satisfaction.
                 </p>
               </CardContent>
             </Card>

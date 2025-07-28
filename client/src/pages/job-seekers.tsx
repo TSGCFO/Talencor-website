@@ -171,14 +171,14 @@ export default function JobSeekers() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="overflow-hidden hover:shadow-xl transition-shadow">
               <CardContent className="p-0">
-                <div className="bg-gradient-to-br from-corporate-blue to-navy p-8 text-white">
+                <div className="bg-gradient-to-br from-navy to-charcoal p-8 text-white">
                   <Play className="h-12 w-12 mb-4" />
                   <h3 className="text-2xl font-bold font-montserrat mb-2">Interview Simulator</h3>
                   <p className="mb-6 text-gray-200">
                     Practice with AI-generated questions tailored to your industry and experience level
                   </p>
                   <Link href="/interview-simulator">
-                    <Button className="bg-white text-corporate-blue hover:bg-gray-100">
+                    <Button className="bg-white text-navy hover:bg-gray-100">
                       Start Practicing
                     </Button>
                   </Link>

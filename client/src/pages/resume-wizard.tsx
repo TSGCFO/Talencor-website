@@ -268,8 +268,19 @@ export default function ResumeWizard() {
                   
                   <div className="flex justify-end">
                     <Button
-                      onClick={() => setCurrentStep(2)}
-                      disabled={!resumeText}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (resumeText && resumeText.trim().length > 0) {
+                          setCurrentStep(2);
+                        } else {
+                          toast({
+                            title: "Resume required",
+                            description: "Please enter or upload your resume text before proceeding.",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                      disabled={!resumeText || resumeText.trim().length === 0}
                       className="bg-talencor-gold hover:bg-talencor-orange"
                     >
                       Next Step
