@@ -177,11 +177,11 @@ export default function JobSeekers() {
                   <p className="mb-6 text-gray-200">
                     Practice with AI-generated questions tailored to your industry and experience level
                   </p>
-                  <Link href="/interview-simulator">
-                    <Button className="bg-white text-navy hover:bg-gray-100">
+                  <Button asChild className="bg-white text-navy hover:bg-gray-100">
+                    <Link href="/interview-simulator">
                       Start Practicing
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -194,11 +194,11 @@ export default function JobSeekers() {
                   <p className="mb-6 text-gray-100">
                     Transform your resume with AI-powered optimization for ATS systems
                   </p>
-                  <Link href="/resume-wizard">
-                    <Button className="bg-white text-talencor-orange hover:bg-gray-100">
+                  <Button asChild className="bg-white text-talencor-orange hover:bg-gray-100">
+                    <Link href="/resume-wizard">
                       Enhance Resume
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -211,11 +211,11 @@ export default function JobSeekers() {
                   <p className="mb-6 text-gray-200">
                     Create and organize your custom interview questions for targeted preparation
                   </p>
-                  <Link href="/question-bank">
-                    <Button className="bg-white text-navy hover:bg-gray-100">
+                  <Button asChild className="bg-white text-navy hover:bg-gray-100">
+                    <Link href="/question-bank">
                       Manage Questions
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>

@@ -244,6 +244,27 @@ export default function QuestionBank() {
     },
   });
 
+  // Delete category mutation
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/question-bank/categories/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete category');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/question-bank/categories'] });
+      toast({ title: 'Success', description: 'Category deleted successfully!' });
+    },
+    onError: (error) => {
+      toast({ 
+        title: 'Error', 
+        description: error instanceof Error ? error.message : 'Failed to delete category',
+        variant: 'destructive' 
+      });
+    },
+  });
+
   const resetForm = () => {
     setFormData({
       categoryId: '',
@@ -806,16 +827,16 @@ export default function QuestionBank() {
           {/* Quick Actions */}
           <div className="mt-12 text-center">
             <div className="flex justify-center gap-4">
-              <Link href="/interview-simulator">
-                <Button variant="outline" className="border-talencor-gold text-talencor-gold hover:bg-talencor-gold hover:text-white">
+              <Button asChild variant="outline" className="border-talencor-gold text-talencor-gold hover:bg-talencor-gold hover:text-white">
+                <Link href="/interview-simulator">
                   Practice with AI Simulator
-                </Button>
-              </Link>
-              <Link href="/resume-wizard">
-                <Button variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white">
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white">
+                <Link href="/resume-wizard">
                   Enhance Your Resume
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
