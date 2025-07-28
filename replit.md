@@ -204,6 +204,12 @@ The contact form follows this flow:
   * Features include: question search, favorites system, public/private questions, multi-step creation wizard
   * Backend API endpoints for questions, categories, tags, and favorites management
   * Database includes 8 sample questions and 5 categories with proper relationships
+- July 28, 2025: Resolved Sentry error monitoring issues and API limitations:
+  * Fixed all non-user reported system errors (SentryIssues not defined, contact form success logs)
+  * Discovered limitation: User feedback issues cannot be resolved via Sentry API (return 403/405 errors)
+  * Updated Sentry integration to handle feedback issues gracefully with informative error messages
+  * Documented API limitation in SENTRY_DEVELOPER_ACCESS.md with workaround instructions
+  * Key finding: Feedback issues must be manually closed in Sentry UI, but underlying bugs are fixed in codebase
 
 ## User Preferences
 

@@ -4,6 +4,20 @@
 
 The Sentry integration is configured for developer-only access to monitor project issues, errors, and user feedback. This integration provides real-time error tracking and performance monitoring for both frontend and backend.
 
+## Important Limitations
+
+### User Feedback Issues
+**Note:** User feedback issues in Sentry cannot be resolved programmatically through the API due to Sentry's API limitations. These issues:
+- Return 403 Forbidden or 405 Method Not Allowed errors when attempting to resolve via API
+- Must be handled manually in the Sentry UI
+- Can have comments added but cannot be marked as resolved through API calls
+
+**Workaround:** When fixing bugs reported through user feedback:
+1. Fix the underlying issue in the codebase
+2. Add a comment to the Sentry issue documenting the fix
+3. The issue will remain open in Sentry but the actual bug is resolved
+4. Manually close the feedback in Sentry UI if needed
+
 ## API Endpoints Available
 
 ### 1. Get All Issues and Feedback

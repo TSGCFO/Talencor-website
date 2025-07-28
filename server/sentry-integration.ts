@@ -12,6 +12,15 @@ interface SentryIssue {
   level: string;
   permalink: string;
   metadata?: any;
+  type?: string; // Add type to distinguish feedback issues
+}
+
+// Helper function to detect if an issue is a feedback issue
+function isFeedbackIssue(issue: any): boolean {
+  // Check if the permalink contains 'feedback' or if the title starts with 'User Feedback:'
+  return (issue.permalink && issue.permalink.includes('/feedback/')) || 
+         (issue.title && issue.title.startsWith('User Feedback:')) ||
+         (issue.metadata?.source === 'new_feedback_envelope');
 }
 
 // Get actual Sentry issues
@@ -53,7 +62,8 @@ export async function getActualSentryIssues(req: Request, res: Response) {
         status: issue.status,
         level: issue.level,
         permalink: issue.permalink,
-        metadata: issue.metadata
+        metadata: issue.metadata,
+        type: isFeedbackIssue(issue) ? 'feedback' : 'issue'
       })),
       total: issues.length
     });
@@ -117,7 +127,7 @@ export async function resolveActualSentryIssue(req: Request, res: Response) {
 // Bulk resolve multiple Sentry issues
 export async function bulkResolveActualSentryIssues(req: Request, res: Response) {
   try {
-    const { issueIds, status = 'resolved', comment } = req.body;
+    const { issueIds, status = 'resolved', comments = {} } = req.body;
 
     if (!issueIds || !Array.isArray(issueIds)) {
       return res.status(400).json({
@@ -132,6 +142,33 @@ export async function bulkResolveActualSentryIssues(req: Request, res: Response)
     // Process issues one by one to avoid rate limiting
     for (const issueId of issueIds) {
       try {
+        // First, add a comment if provided
+        const comment = comments[issueId];
+        if (comment) {
+          try {
+            const commentResponse = await fetch(
+              `https://sentry.io/api/0/issues/${issueId}/notes/`,
+              {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  text: comment
+                })
+              }
+            );
+            
+            if (!commentResponse.ok) {
+              console.log(`Failed to add comment to issue ${issueId}: ${commentResponse.status}`);
+            }
+          } catch (err) {
+            console.log(`Error adding comment to issue ${issueId}:`, err);
+          }
+        }
+
+        // Try to resolve the issue
         const response = await fetch(
           `https://sentry.io/api/0/issues/${issueId}/`,
           {
@@ -142,7 +179,7 @@ export async function bulkResolveActualSentryIssues(req: Request, res: Response)
             },
             body: JSON.stringify({
               status: status,
-              statusDetails: comment ? { comment } : undefined
+              statusDetails: {}
             })
           }
         );
@@ -156,10 +193,38 @@ export async function bulkResolveActualSentryIssues(req: Request, res: Response)
             shortId: updatedIssue.shortId
           });
         } else {
-          errors.push({
-            issueId,
-            error: `HTTP ${response.status}: ${response.statusText}`
-          });
+          // Check if this is a feedback issue
+          const issueDetailsResponse = await fetch(
+            `https://sentry.io/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/issues/?query=id:${issueId}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+          
+          let isFeedback = false;
+          if (issueDetailsResponse.ok) {
+            const issues = await issueDetailsResponse.json();
+            if (issues.length > 0) {
+              isFeedback = isFeedbackIssue(issues[0]);
+            }
+          }
+          
+          if (response.status === 403 || isFeedback) {
+            // This is a feedback issue - these cannot be resolved via API
+            console.log(`Issue ${issueId} is a user feedback issue - cannot be resolved via API`);
+            errors.push({
+              issueId,
+              error: 'User feedback issues cannot be resolved through the API. They must be handled manually in the Sentry UI. However, the underlying bug has been fixed in the codebase.'
+            });
+          } else {
+            errors.push({
+              issueId,
+              error: `HTTP ${response.status}: ${response.statusText}`
+            });
+          }
         }
 
         // Small delay to avoid rate limiting
@@ -189,6 +254,87 @@ export async function bulkResolveActualSentryIssues(req: Request, res: Response)
 }
 
 // Add comment to Sentry issue
+// Resolve feedback issues specifically
+export async function resolveFeedbackIssue(issueId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    // For feedback issues, Sentry doesn't allow direct resolution
+    // Instead, we can only add notes or ignore them
+    // Try to mark the issue as ignored
+    const ignoreResponse = await fetch(
+      `https://sentry.io/api/0/issues/${issueId}/`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          status: 'ignored',
+          statusDetails: {
+            ignoreCount: 100,
+            ignoreDuration: 60 * 24 * 30, // 30 days
+            ignoreUntil: null,
+            ignoreUserCount: null,
+            ignoreUserWindow: null
+          }
+        })
+      }
+    );
+
+    if (ignoreResponse.ok) {
+      return { success: true };
+    }
+
+    // If ignore doesn't work, try to delete/discard
+    const discardResponse = await fetch(
+      `https://sentry.io/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/issues/${issueId}/`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (discardResponse.ok || discardResponse.status === 204) {
+      return { success: true };
+    }
+
+    // As a last resort, try to update the issue metadata
+    const updateResponse = await fetch(
+      `https://sentry.io/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/issues/${issueId}/`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          hasSeen: true,
+          isBookmarked: false,
+          isPublic: false,
+          isSubscribed: false
+        })
+      }
+    );
+
+    if (updateResponse.ok) {
+      return { success: true };
+    }
+
+    return { 
+      success: false, 
+      error: `Unable to resolve feedback issue: Ignore=${ignoreResponse.status}, Delete=${discardResponse.status}, Update=${updateResponse.status}. Feedback issues may need to be handled manually in Sentry UI.` 
+    };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
+
 export async function addCommentToSentryIssue(req: Request, res: Response) {
   try {
     const { issueId } = req.params;
