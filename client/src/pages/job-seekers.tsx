@@ -28,43 +28,48 @@ export default function JobSeekers() {
               <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
                 Whether you're seeking your first opportunity, making a career change, or looking to advance to the next level, our expert recruiters are here to guide you every step of the way.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex gap-2 w-full sm:w-auto">
+              <div className="space-y-4">
+                {/* Search Bar Row */}
+                <div className="flex gap-2 max-w-xl">
                   <input
                     type="text"
                     placeholder="Search for jobs..."
-                    className="px-4 py-2 rounded-lg text-charcoal bg-white flex-1 sm:w-64"
+                    className="px-4 py-3 rounded-lg text-charcoal bg-white flex-1"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         window.location.href = '/jobs';
                       }
                     }}
                   />
-                  <Link href="/jobs">
-                    <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+                  <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-6">
+                    <Link href="/jobs">
                       Browse Jobs
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/interview-simulator">
-                    <Button 
-                      size="lg" 
-                      variant="outline"
-                      className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
-                    >
+                
+                {/* Action Buttons Row */}
+                <div className="flex flex-col sm:flex-row gap-4 max-w-xl">
+                  <Button 
+                    asChild
+                    size="lg" 
+                    variant="outline"
+                    className="border-2 border-white hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
+                  >
+                    <Link href="/interview-simulator">
                       <Play className="mr-2" size={20} />
                       Practice Interview
-                    </Button>
-                  </Link>
-                  <Link href="/contact">
-                    <Button 
-                      variant="outline" 
-                      className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
-                    >
+                    </Link>
+                  </Button>
+                  <Button 
+                    asChild
+                    variant="outline" 
+                    className="border-2 border-white hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
+                  >
+                    <Link href="/contact">
                       Submit Resume
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -276,19 +281,20 @@ export default function JobSeekers() {
             Let us help you find the perfect opportunity that matches your skills and career goals
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
-              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+            <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+              <Link href="/contact">
                 Submit Your Resume
-              </Button>
-            </Link>
-            <Link href="/contact">
-              <Button 
-                variant="outline"
-                className="border-2 border-white hover:bg-white hover:text-corporate-blue text-white px-8 py-4 text-lg font-semibold"
-              >
-                Schedule Consultation  
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button 
+              asChild
+              variant="outline"
+              className="border-2 border-white hover:bg-white hover:text-corporate-blue text-white px-8 py-4 text-lg font-semibold"
+            >
+              <Link href="/contact">
+                Schedule Consultation
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
