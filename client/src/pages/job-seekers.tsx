@@ -54,7 +54,7 @@ export default function JobSeekers() {
                     asChild
                     size="lg" 
                     variant="outline"
-                    className="border-2 border-white hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
+                    className="border-2 border-white bg-transparent hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
                   >
                     <Link href="/interview-simulator">
                       <Play className="mr-2" size={20} />
@@ -64,7 +64,7 @@ export default function JobSeekers() {
                   <Button 
                     asChild
                     variant="outline" 
-                    className="border-2 border-white hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
+                    className="border-2 border-white bg-transparent hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
                   >
                     <Link href="/contact">
                       Submit Resume
@@ -289,7 +289,7 @@ export default function JobSeekers() {
             <Button 
               asChild
               variant="outline"
-              className="border-2 border-white hover:bg-white hover:text-corporate-blue text-white px-8 py-4 text-lg font-semibold"
+              className="border-2 border-white bg-transparent hover:bg-white hover:text-corporate-blue text-white px-8 py-4 text-lg font-semibold"
             >
               <Link href="/contact">
                 Schedule Consultation
