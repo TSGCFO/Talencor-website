@@ -38,8 +38,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const submission = await storage.createContactSubmission(validatedData);
 
-      // Track successful submission
-      captureEvent('Contact form submission saved to database', {
+      // Log successful submission
+      console.log('Contact form submission saved to database', {
         submissionId: submission.id,
         inquiryType: validatedData.inquiryType,
         userEmail: validatedData.email,
@@ -502,8 +502,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.options
       );
 
-      // Track successful enhancement
-      captureEvent('Resume enhanced successfully', {
+      // Log successful enhancement
+      console.log('Resume enhanced successfully', {
         jobCategory: validatedData.jobCategory,
         optionsEnabled: Object.keys(validatedData.options).filter(k => validatedData.options[k as keyof EnhancementOptions]),
       });
@@ -571,7 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const result = await generateInterviewQuestion(validatedData);
 
-      captureEvent('Interview question generated successfully', {
+      console.log('Interview question generated successfully', {
         jobCategory: validatedData.jobCategory,
         experienceLevel: validatedData.experienceLevel,
         questionNumber: validatedData.questionNumber,
@@ -627,7 +627,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.experienceLevel
       );
 
-      captureEvent('Interview response evaluated successfully', {
+      console.log('Interview response evaluated successfully', {
         jobCategory: validatedData.jobCategory,
         experienceLevel: validatedData.experienceLevel,
         score: feedback.score,
