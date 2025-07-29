@@ -218,6 +218,12 @@ The contact form follows this flow:
   * Achieved responsive design score of 8/10 with significant improvements in mobile experience
   * Fixed button overlap issues and image display problems on Job Seekers page
   * All responsive improvements tested and confirmed working by user
+- July 29, 2025: Configured separate Sentry projects for frontend and backend monitoring:
+  * Created two distinct Sentry projects: talencor-frontend (ID: 4509576772452352) and talencor-backend (ID: 4509576795521024)
+  * Updated backend configuration to use dedicated SENTRY_BACKEND_DSN environment variable
+  * Backend Sentry integration successfully tested and verified with events appearing in correct project dashboard
+  * Maintains same comprehensive error tracking features as frontend: performance monitoring, context capture, and production optimizations
+  * Both projects now have independent error tracking for better separation of concerns
 
 ## User Preferences
 

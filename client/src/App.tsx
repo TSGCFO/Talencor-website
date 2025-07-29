@@ -25,7 +25,6 @@ import Jobs from "@/pages/jobs";
 import InterviewSimulator from "@/pages/interview-simulator";
 import ResumeWizard from "@/pages/resume-wizard";
 import QuestionBank from "@/pages/question-bank";
-import SentryBackendTest from "@/pages/sentry-backend-test";
 import NotFound from "@/pages/not-found";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
@@ -55,7 +54,6 @@ function Router() {
           <Route path="/resume-wizard" component={ResumeWizard} />
           <Route path="/question-bank" component={QuestionBank} />
           <Route path="/demo" component={Demo} />
-          <Route path="/sentry-backend-test" component={SentryBackendTest} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms-of-service" component={TermsOfService} />
           <Route path="/accessibility" component={Accessibility} />
