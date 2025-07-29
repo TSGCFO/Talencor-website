@@ -473,6 +473,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Sentry feedback summary endpoint
   app.get("/api/sentry/feedback-summary", getSentryFeedbackSummary);
 
+  // Backend Sentry integration test endpoints
+  app.get("/api/sentry/backend-test", (req, res) => {
+    try {
+      // Test successful operation
+      captureEvent("Backend Sentry integration test - success", {
+        endpoint: "/api/sentry/backend-test",
+        timestamp: new Date().toISOString(),
+        userAgent: req.headers['user-agent'],
+        ip: req.ip,
+        project: "talencor-backend"
+      });
+
+      res.json({
+        success: true,
+        message: "Backend Sentry integration is working correctly",
+        project: "talencor-backend",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      captureError(error as Error, {
+        endpoint: "/api/sentry/backend-test",
+        context: "Backend Sentry test endpoint error"
+      });
+      res.status(500).json({ 
+        success: false, 
+        error: "Backend Sentry test failed" 
+      });
+    }
+  });
+
+  app.get("/api/sentry/backend-test-error", (req, res) => {
+    try {
+      // Intentionally trigger an error for testing
+      const testError = new Error("Backend Sentry integration test error - this is intentional for testing purposes");
+      
+      captureError(testError, {
+        endpoint: "/api/sentry/backend-test-error",
+        context: "Intentional test error for Sentry backend project",
+        project: "talencor-backend",
+        severity: "test"
+      });
+
+      // Throw the error to also trigger the Express error handler
+      throw testError;
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Test error triggered successfully",
+        error: "This error was sent to talencor-backend Sentry project"
+      });
+    }
+  });
+
   // Resume Enhancement API endpoint
   app.post("/api/enhance-resume", async (req, res) => {
     try {
