@@ -51,19 +51,19 @@ export default function About() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy to-corporate-blue text-white py-20">
+      <section className="bg-gradient-to-br from-navy to-corporate-blue text-white py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-4 sm:mb-6">
             About <span className="text-talencor-gold">Talencor</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
             Building everlasting relationships through quality staffing solutions. Our client success starts with the right people.
           </p>
         </div>
       </section>
 
       {/* Mission & Story */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center mb-16">
             <div>
@@ -74,7 +74,7 @@ export default function About() {
               />
             </div>
             <div>
-              <h2 className="text-4xl font-bold font-montserrat text-navy mb-6">We Believe!</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">We Believe!</h2>
               <p className="text-lg text-charcoal mb-6 leading-relaxed">
                 Talencor Staffing strongly believes in the philosophy in which lasting client relations rest on the quality of the personnel placed within your organization and the service you receive. We acknowledge that doing it correctly the first time is critical to ensure ongoing satisfaction.
               </p>

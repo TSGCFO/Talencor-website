@@ -18,14 +18,14 @@ export default function JobSeekers() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-20">
+      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-4 sm:mb-6">
                 Advance Your <span className="text-talencor-gold">Career</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 leading-relaxed">
                 Whether you're seeking your first opportunity, making a career change, or looking to advance to the next level, our expert recruiters are here to guide you every step of the way.
               </p>
               <div className="space-y-4">
@@ -34,14 +34,14 @@ export default function JobSeekers() {
                   <input
                     type="text"
                     placeholder="Search for jobs..."
-                    className="px-4 py-3 rounded-lg text-charcoal bg-white flex-1"
+                    className="px-4 py-3 rounded-lg text-charcoal bg-white flex-1 min-h-[44px]"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         window.location.href = '/jobs';
                       }
                     }}
                   />
-                  <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-6">
+                  <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-4 sm:px-6 min-h-[44px]">
                     <Link href="/jobs">
                       Browse Jobs
                     </Link>
@@ -85,10 +85,10 @@ export default function JobSeekers() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               Why Work With Us?
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
@@ -162,10 +162,10 @@ export default function JobSeekers() {
       </section>
 
       {/* Career Tools Section */}
-      <section className="py-20 bg-gradient-to-br from-talencor-gold/10 to-talencor-orange/10">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-talencor-gold/10 to-talencor-orange/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               AI-Powered Career Tools
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
@@ -229,10 +229,10 @@ export default function JobSeekers() {
       </section>
 
       {/* Job Categories */}
-      <section className="py-20 bg-light-grey">
+      <section className="py-12 sm:py-16 md:py-20 bg-light-grey">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               Industries We Serve
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
@@ -274,7 +274,7 @@ export default function JobSeekers() {
       {/* CTA Section */}
       <section className="py-8 bg-corporate-blue text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat mb-4 sm:mb-6">
             Ready to Take the Next Step?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
