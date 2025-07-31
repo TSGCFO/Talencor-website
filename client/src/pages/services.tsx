@@ -229,18 +229,13 @@ export default function Services() {
           </div>
 
           <div className="text-center">
-            <a 
-              href="https://aixsafety.com/wp-content/uploads/articulate_uploads/WHS-Apr2025Aix/story.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block"
-            >
+            <Link href="/contact">
               <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
-                Start Free WHMIS Training
+                Request Free WHMIS Training
               </Button>
-            </a>
+            </Link>
             <p className="text-sm text-charcoal mt-4">
-              Training provided by AIX Safety - Opens in new window
+              Contact us to get access to free WHMIS certification
             </p>
           </div>
         </div>

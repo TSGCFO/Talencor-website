@@ -215,7 +215,7 @@ export default function Jobs() {
           <p className="text-xl mb-6 max-w-2xl mx-auto">
             Submit your resume and our recruiters will match you with opportunities that align with your skills and goals
           </p>
-          <Link href="/contact">
+          <Link href="/resume-wizard">
             <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
               Submit Your Resume
             </Button>
