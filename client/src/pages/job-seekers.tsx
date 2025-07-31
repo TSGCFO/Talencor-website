@@ -66,7 +66,7 @@ export default function JobSeekers() {
                     variant="outline" 
                     className="border-2 border-white bg-transparent hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
                   >
-                    <Link href="/contact">
+                    <Link href="/resume-wizard">
                       Submit Resume
                     </Link>
                   </Button>
@@ -282,7 +282,7 @@ export default function JobSeekers() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
-              <Link href="/contact">
+              <Link href="/resume-wizard">
                 Submit Your Resume
               </Link>
             </Button>
