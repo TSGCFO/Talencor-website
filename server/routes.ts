@@ -5,7 +5,8 @@ import {
   insertContactSubmissionSchema,
   insertQuestionCategorySchema,
   insertCustomInterviewQuestionSchema,
-  insertQuestionTagSchema
+  insertQuestionTagSchema,
+  insertDynamicLinkSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
@@ -672,6 +673,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false, 
         message: "Failed to generate interview tips" 
+      });
+    }
+  });
+
+  // Dynamic Links endpoints
+  // Get a specific dynamic link by key
+  app.get("/api/dynamic-links/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      const link = await storage.getDynamicLink(key);
+      
+      if (!link) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Link not found" 
+        });
+      }
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'get_dynamic_link',
+        key: req.params.key,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get dynamic link" 
+      });
+    }
+  });
+
+  // Create a new dynamic link
+  app.post("/api/dynamic-links", async (req, res) => {
+    try {
+      const validatedData = insertDynamicLinkSchema.parse(req.body);
+      const link = await storage.createDynamicLink(validatedData);
+      
+      console.log('Dynamic link created', {
+        key: link.key,
+        url: link.url,
+      });
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ 
+          success: false, 
+          message: "Invalid link data", 
+          errors: error.errors 
+        });
+      } else {
+        captureError(error as Error, {
+          action: 'create_dynamic_link',
+          data: req.body,
+        });
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to create dynamic link" 
+        });
+      }
+    }
+  });
+
+  // Update a dynamic link
+  app.put("/api/dynamic-links/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      const { url } = req.body;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "URL is required" 
+        });
+      }
+      
+      const link = await storage.updateDynamicLink(key, url);
+      
+      console.log('Dynamic link updated', {
+        key: link.key,
+        url: link.url,
+      });
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'update_dynamic_link',
+        key: req.params.key,
+        url: req.body.url,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update dynamic link" 
+      });
+    }
+  });
+
+  // Get all dynamic links
+  app.get("/api/dynamic-links", async (req, res) => {
+    try {
+      const links = await storage.getAllDynamicLinks();
+      res.json({ success: true, links });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'get_all_dynamic_links',
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get dynamic links" 
       });
     }
   });
