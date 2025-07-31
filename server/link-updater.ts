@@ -134,12 +134,12 @@ export function scheduleLinkUpdates() {
   // Update immediately on server start
   updateAllDynamicLinks().catch(console.error);
   
-  // Schedule updates every 6 hours
-  const interval = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+  // Schedule updates every week (7 days)
+  const interval = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
   
   setInterval(() => {
     updateAllDynamicLinks().catch(console.error);
   }, interval);
   
-  console.log("Dynamic link updater scheduled (every 6 hours)");
+  console.log("Dynamic link updater scheduled (every 7 days)");
 }
