@@ -39,6 +39,11 @@ The application utilizes a monorepo structure with a clear separation of concern
 - Fixed WHMIS training link 404 error by fetching dynamic links from database with automatic fallback to contact page
 - Fixed contact form submission failure by changing AnimatedButton from onClick handler to proper form submit type
 - Resolved double form handling issue that prevented proper contact form submission
+- Enhanced dynamic link system with automated updates:
+  - Created automatic link updater that fetches latest WHMIS training links from aixsafety.com every 6 hours
+  - Integrated link updater with server startup to ensure links are always current
+  - Set current WHMIS link to: https://aixsafety.com/wp-content/uploads/articulate_uploads/WMS-July27-2025Aix/story.html
+- Maintained Sentry feedback widget (Report a Bug button) functionality
 
 ## External Dependencies
 

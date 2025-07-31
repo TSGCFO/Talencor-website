@@ -16,35 +16,34 @@ const linkUpdaters: LinkUpdater[] = [
     description: "WHMIS Training - Free online training link",
     fetchLatestUrl: async () => {
       try {
-        // Fetch from WHMIS.ca official website
-        const response = await fetch("https://www.whmis.ca/");
-        if (!response.ok) return null;
-        
-        const html = await response.text();
-        
-        // Look for free training links on the page
-        // Pattern 1: Direct links to free training
-        const freeTrainingMatch = html.match(/href=["']([^"']*free[^"']*training[^"']*?)["']/i);
-        if (freeTrainingMatch && freeTrainingMatch[1]) {
-          const url = freeTrainingMatch[1];
-          // Convert relative URLs to absolute
-          if (url.startsWith('/')) {
-            return `https://www.whmis.ca${url}`;
-          } else if (url.startsWith('http')) {
-            return url;
+        // Fetch from aixsafety.com which provides free WHMIS training
+        const response = await fetch("https://aixsafety.com/free-online-whmis-training/");
+        if (!response.ok) {
+          // Try alternative URL
+          const altResponse = await fetch("https://aixsafety.com/");
+          if (!altResponse.ok) return null;
+          const html = await altResponse.text();
+          
+          // Look for WHMIS training links on aixsafety.com
+          const whmisMatch = html.match(/href=["'](https?:\/\/aixsafety\.com[^"']*whmis[^"']*?)["']/i);
+          if (whmisMatch && whmisMatch[1]) {
+            return whmisMatch[1];
           }
         }
         
-        // Pattern 2: Look for CCOHS free training link
-        const ccohsMatch = html.match(/href=["'](https?:\/\/www\.ccohs\.ca[^"']*training[^"']*?)["']/i);
-        if (ccohsMatch && ccohsMatch[1]) {
-          return ccohsMatch[1];
+        const html = await response.text();
+        
+        // Look for articulate storyline links (the format they use for training)
+        const articulateMatch = html.match(/href=["'](https?:\/\/aixsafety\.com\/wp-content\/uploads\/articulate_uploads\/[^"']+\/story\.html?)["']/i);
+        if (articulateMatch && articulateMatch[1]) {
+          return articulateMatch[1];
         }
         
-        // Pattern 3: Generic free WHMIS training patterns
+        // Look for any WHMIS training links with specific patterns
         const patterns = [
-          /href=["'](https?:\/\/[^"']*whmis[^"']*free[^"']*?)["']/i,
-          /href=["'](https?:\/\/[^"']*free[^"']*whmis[^"']*?)["']/i,
+          /href=["'](https?:\/\/aixsafety\.com[^"']*WMS[^"']*story\.html?)["']/i,
+          /href=["'](https?:\/\/aixsafety\.com[^"']*whmis[^"']*training[^"']*?)["']/i,
+          /href=["'](https?:\/\/aixsafety\.com[^"']*free[^"']*whmis[^"']*?)["']/i,
         ];
         
         for (const pattern of patterns) {
@@ -54,11 +53,12 @@ const linkUpdaters: LinkUpdater[] = [
           }
         }
         
-        // If no specific free training link found, return the main WHMIS site
-        return "https://www.whmis.ca/";
+        // Default to the known working link format
+        // This will be updated when new versions are found
+        return "https://aixsafety.com/wp-content/uploads/articulate_uploads/WMS-July27-2025Aix/story.html";
         
       } catch (error) {
-        console.error("Error fetching WHMIS training link:", error);
+        console.error("Error fetching WHMIS training link from aixsafety.com:", error);
         return null;
       }
     },
