@@ -16,6 +16,7 @@ import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentr
 import { getSentryFeedbackSummary } from "./sentry-feedback-summary";
 import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
 import { generateInterviewQuestion, evaluateInterviewResponse, generateInterviewTips } from "./ai/interviewSimulator";
+import resumeRoutes from "./routes/resume";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -785,6 +786,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Resume enhancement routes
+  app.use("/api/resume", resumeRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

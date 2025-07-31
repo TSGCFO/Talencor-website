@@ -72,8 +72,43 @@ export const dynamicLinks = pgTable("dynamic_links", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Resume Enhancement tables
+export const resumeSessions = pgTable("resume_sessions", {
+  id: serial("id").primaryKey(),
+  sessionId: text("session_id").notNull().unique(),
+  targetRole: text("target_role"),
+  industry: text("industry"),
+  overallScore: integer("overall_score"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const resumeSections = pgTable("resume_sections", {
+  id: serial("id").primaryKey(),
+  sessionId: text("session_id").references(() => resumeSessions.sessionId).notNull(),
+  sectionType: text("section_type").notNull(), // 'summary', 'experience', 'education', 'skills', 'achievements'
+  originalContent: text("original_content").notNull(),
+  enhancedContent: text("enhanced_content"),
+  feedback: text("feedback"),
+  score: integer("score"),
+  improvements: text("improvements").array(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 
 // Relations
+export const resumeSessionsRelations = relations(resumeSessions, ({ many }) => ({
+  sections: many(resumeSections),
+}));
+
+export const resumeSectionsRelations = relations(resumeSections, ({ one }) => ({
+  session: one(resumeSessions, {
+    fields: [resumeSections.sessionId],
+    references: [resumeSessions.sessionId],
+  }),
+}));
+
 export const questionCategoriesRelations = relations(questionCategories, ({ many }) => ({
   questions: many(customInterviewQuestions),
 }));
@@ -156,6 +191,18 @@ export const insertDynamicLinkSchema = createInsertSchema(dynamicLinks).omit({
   createdAt: true,
 });
 
+export const insertResumeSessionSchema = createInsertSchema(resumeSessions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertResumeSectionSchema = createInsertSchema(resumeSections).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -174,3 +221,7 @@ export type InsertUserQuestionFavorite = z.infer<typeof insertUserQuestionFavori
 export type UserQuestionFavorite = typeof userQuestionFavorites.$inferSelect;
 export type InsertDynamicLink = z.infer<typeof insertDynamicLinkSchema>;
 export type DynamicLink = typeof dynamicLinks.$inferSelect;
+export type InsertResumeSession = z.infer<typeof insertResumeSessionSchema>;
+export type ResumeSession = typeof resumeSessions.$inferSelect;
+export type InsertResumeSection = z.infer<typeof insertResumeSectionSchema>;
+export type ResumeSection = typeof resumeSections.$inferSelect;
