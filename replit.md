@@ -44,6 +44,12 @@ The application utilizes a monorepo structure with a clear separation of concern
   - Integrated link updater with server startup to ensure links are always current
   - Set current WHMIS link to: https://aixsafety.com/wp-content/uploads/articulate_uploads/WMS-July27-2025Aix/story.html
 - Maintained Sentry feedback widget (Report a Bug button) functionality
+- Implemented AI-powered Resume Enhancement Wizard with OpenAI integration:
+  - Real-time resume analysis and scoring
+  - Section-by-section enhancement suggestions
+  - ATS optimization recommendations
+  - Industry-specific keyword suggestions
+- Created comprehensive documentation for WHMIS link updater system (see WHMIS_LINK_UPDATER_DOCUMENTATION.md)
 
 ## External Dependencies
 
