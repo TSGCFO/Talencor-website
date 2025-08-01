@@ -42,7 +42,7 @@ export interface EnhancedContent {
 export async function analyzeResume(sections: ResumeSection[], targetRole?: string, industry?: string): Promise<ResumeAnalysis> {
   try {
     const prompt = `
-You are an expert resume analyst and career coach. Analyze the following resume sections and provide detailed feedback.
+Analyze the following resume sections with precision and provide actionable feedback that will significantly improve the candidate's chances of landing interviews.
 
 Target Role: ${targetRole || 'Not specified'}
 Industry: ${industry || 'Not specified'}
@@ -53,42 +53,62 @@ ${section.type.toUpperCase()}:
 ${section.content}
 `).join('\n')}
 
+ANALYSIS REQUIREMENTS:
+
+1. SCORING CRITERIA (1-100 scale):
+   - 90-100: Exceptional - Ready for executive/senior roles
+   - 80-89: Excellent - Strong competitive advantage
+   - 70-79: Good - Solid foundation with minor improvements needed
+   - 60-69: Fair - Several areas need enhancement
+   - Below 60: Needs significant work
+
+2. EVALUATION FACTORS:
+   - Impact & Results: Quantifiable achievements, metrics, ROI
+   - Relevance: Alignment with target role and industry
+   - Keywords: Industry-specific terms, skills, technologies
+   - Clarity: Concise, powerful language without jargon
+   - Structure: Logical flow, easy scanning, proper formatting
+   - Uniqueness: Differentiation from other candidates
+
+3. SECTION-SPECIFIC ANALYSIS:
+   - Summary: Hook, value proposition, unique selling points
+   - Experience: STAR format, quantified results, progression
+   - Education: Relevance, honors, coursework alignment
+   - Skills: Technical/soft balance, proficiency levels, categorization
+   - Achievements: Significance, recency, relevance
+
 Provide a comprehensive analysis in JSON format with this EXACT structure:
 {
   "overallScore": number (1-100),
   "sections": {
-    "summary": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
-    "experience": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
-    "education": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
-    "skills": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
-    "achievements": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] }
+    "summary": { "score": number (1-100), "feedback": "specific actionable feedback", "suggestions": ["concrete improvement steps"] },
+    "experience": { "score": number (1-100), "feedback": "specific actionable feedback", "suggestions": ["concrete improvement steps"] },
+    "education": { "score": number (1-100), "feedback": "specific actionable feedback", "suggestions": ["concrete improvement steps"] },
+    "skills": { "score": number (1-100), "feedback": "specific actionable feedback", "suggestions": ["concrete improvement steps"] },
+    "achievements": { "score": number (1-100), "feedback": "specific actionable feedback", "suggestions": ["concrete improvement steps"] }
   },
   "keywordOptimization": {
-    "missing": ["string"],
-    "present": ["string"],
-    "suggestions": "string"
+    "missing": ["critical keywords not found"],
+    "present": ["strong keywords already included"],
+    "suggestions": "specific advice on keyword integration"
   },
   "atsOptimization": {
     "score": number (1-100),
-    "issues": ["string"],
-    "recommendations": ["string"]
+    "issues": ["specific ATS compatibility problems"],
+    "recommendations": ["actionable ATS optimization steps"]
   },
   "industrySpecific": {
     "relevance": number (1-100),
-    "suggestions": ["string"]
+    "suggestions": ["industry-specific improvements"]
   }
 }
 
-IMPORTANT: Only include sections that were provided in the input. If a section is missing, don't include it in the analysis.
-
-Focus on:
-- Content quality and impact
-- ATS compatibility
-- Keyword optimization
-- Quantifiable achievements
-- Professional language
-- Industry relevance
-- Structure and formatting recommendations
+IMPORTANT RULES:
+- Only include sections that were provided in the input
+- Provide specific, actionable feedback - avoid generic advice
+- Focus on improvements that will have immediate impact
+- Consider both ATS scanning and human review
+- Tailor all suggestions to the specific target role and industry
 `;
 
     const response = await openai.chat.completions.create({
