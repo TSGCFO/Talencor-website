@@ -84,6 +84,74 @@ const sectionDescriptions = {
   achievements: 'Notable accomplishments, awards, and recognition'
 };
 
+const sectionPlaceholders = {
+  summary: `Example:
+Results-driven marketing professional with 5+ years of experience in digital marketing and brand management. Proven track record of increasing online engagement by 150% and generating $2M in revenue through strategic campaigns. Skilled in SEO, content marketing, and data analytics.
+
+Tips:
+• Keep it 3-4 sentences
+• Include years of experience
+• Mention 2-3 key achievements with numbers
+• Highlight relevant skills`,
+  
+  experience: `Example:
+Marketing Manager | ABC Company | June 2021 - Present
+• Led digital marketing team of 5 to execute integrated campaigns across social media, email, and web
+• Increased website traffic by 120% through SEO optimization and content strategy
+• Managed $500K annual marketing budget and achieved 25% cost reduction
+• Launched new product line that generated $1.5M in first-year revenue
+
+Tips:
+• Use bullet points for each role
+• Start with action verbs (Led, Managed, Increased)
+• Include specific numbers and results
+• Focus on achievements, not just duties`,
+  
+  skills: `Example:
+Technical Skills:
+• Google Analytics, SEMrush, HubSpot
+• HTML/CSS, WordPress
+• Adobe Creative Suite
+• SQL and Excel for data analysis
+
+Soft Skills:
+• Project Management
+• Team Leadership
+• Strategic Planning
+• Client Relations
+
+Tips:
+• Separate technical and soft skills
+• List most relevant skills first
+• Match skills to job description
+• Be specific (e.g., "Python" not just "Programming")`,
+  
+  education: `Example:
+Bachelor of Science in Marketing
+University of California, Los Angeles | 2016-2020
+• GPA: 3.8/4.0
+• Dean's List: Fall 2018, Spring 2019
+• Relevant Coursework: Digital Marketing, Consumer Behavior, Market Research
+
+Tips:
+• Include graduation year
+• Add GPA if 3.5 or higher
+• List relevant coursework
+• Include academic honors`,
+  
+  achievements: `Example:
+• Employee of the Year | ABC Company | 2023
+• Digital Marketing Excellence Award | Marketing Association | 2022
+• Led team that won "Best Campaign" at Industry Awards | 2021
+• Published article "Future of Digital Marketing" in Marketing Journal | 2022
+
+Tips:
+• Include award name, organization, and year
+• List most impressive achievements first
+• Include publications, patents, or speaking engagements
+• Quantify impact when possible`
+};
+
 export default function ResumeWizard() {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [targetRole, setTargetRole] = useState('');
@@ -264,9 +332,67 @@ export default function ResumeWizard() {
             <Sparkles className="text-orange-500" />
             AI Resume Enhancement Wizard
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
             Transform your resume with AI-powered analysis, real-time feedback, and ATS optimization
           </p>
+          
+          {/* Getting Started Guide */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 max-w-4xl mx-auto text-left">
+            <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              Quick Start Guide - How to Use This Wizard
+            </h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full text-sm flex items-center justify-center font-semibold">1</span>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Set Your Target</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Enter your desired job role and industry below</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full text-sm flex items-center justify-center font-semibold">2</span>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Fill Each Section</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Click through the tabs and add your information</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full text-sm flex items-center justify-center font-semibold">3</span>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Save Your Content</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Click "Save Section" after entering each part</p>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-orange-500 text-white rounded-full text-sm flex items-center justify-center font-semibold">4</span>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">Get AI Analysis</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Click "Analyze Resume" for instant feedback and scoring</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-orange-500 text-white rounded-full text-sm flex items-center justify-center font-semibold">5</span>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">AI Enhancement</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Use "AI Enhance" to improve any section instantly</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 bg-orange-500 text-white rounded-full text-sm flex items-center justify-center font-semibold">6</span>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">ATS Keywords</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Get keyword suggestions to pass applicant tracking systems</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Target Role & Industry */}
@@ -277,21 +403,69 @@ export default function ResumeWizard() {
               Target Position Details
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Target Role</label>
-              <Input
-                placeholder="e.g., Software Engineer, Marketing Manager"
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-              />
+          <CardContent className="space-y-4">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+              <p className="text-sm text-amber-800 dark:text-amber-200 flex items-start gap-2">
+                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                <span>Enter your desired job title and industry to get personalized AI recommendations tailored to your career goals.</span>
+              </p>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Industry</label>
-              <Input
-                placeholder="e.g., Technology, Healthcare, Finance"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Target Role <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder="e.g., Software Engineer, Marketing Manager"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Be specific: "Senior Frontend Developer" is better than "Developer"
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Industry <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder="e.g., Technology, Healthcare, Finance"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  This helps AI suggest industry-specific keywords and formats
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Progress Indicator */}
+        <Card className="mb-8">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              Your Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-400">
+                {sessionData?.session?.sections?.length || 0} of 5 sections completed
+              </span>
+              <span className="font-medium text-green-600 dark:text-green-400">
+                {Math.round(((sessionData?.session?.sections?.length || 0) / 5) * 100)}% Complete
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
+              <div 
+                className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((sessionData?.session?.sections?.length || 0) / 5) * 100}%` }}
               />
             </div>
           </CardContent>
@@ -331,8 +505,8 @@ export default function ResumeWizard() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <Textarea
-                        placeholder={`Enter your ${title.toLowerCase()} content here...`}
-                        className="min-h-[200px]"
+                        placeholder={sectionPlaceholders[sectionType as keyof typeof sectionPlaceholders]}
+                        className="min-h-[300px] font-mono text-sm"
                         value={sectionContent[sectionType] || ''}
                         onChange={(e) => setSectionContent(prev => ({
                           ...prev,
