@@ -178,6 +178,13 @@ export default function ResumeWizard() {
   // Get session data
   const { data: sessionData, isLoading: sessionLoading } = useQuery<{ session: ResumeSession }>({
     queryKey: ['/api/resume/session', sessionId],
+    queryFn: async () => {
+      const response = await fetch(`/api/resume/session?sessionId=${sessionId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch session');
+      }
+      return response.json();
+    },
     enabled: !!sessionId,
   });
 

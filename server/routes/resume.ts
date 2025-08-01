@@ -2,7 +2,7 @@ import express from "express";
 import { z } from "zod";
 import { db } from "../db";
 import { resumeSessions, resumeSections } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { analyzeResume, enhanceContent, generateKeywordSuggestions, type ResumeSection } from "../ai/resume-enhancer";
 import { captureError } from "../sentry";
 
@@ -56,7 +56,53 @@ router.post("/session", async (req, res) => {
   }
 });
 
-// Get session details
+// Get session details by query parameter (used by TanStack Query)
+router.get("/session", async (req, res) => {
+  try {
+    const sessionId = req.query.sessionId as string;
+    
+    if (!sessionId) {
+      return res.status(400).json({
+        success: false,
+        error: "Session ID is required"
+      });
+    }
+
+    const [session] = await db
+      .select()
+      .from(resumeSessions)
+      .where(eq(resumeSessions.sessionId, sessionId));
+
+    if (!session) {
+      return res.json({
+        success: true,
+        session: null
+      });
+    }
+
+    // Get all sections for this session
+    const sections = await db
+      .select()
+      .from(resumeSections)
+      .where(eq(resumeSections.sessionId, sessionId));
+
+    res.json({
+      success: true,
+      session: {
+        ...session,
+        sections
+      }
+    });
+  } catch (error) {
+    captureError(error as Error, { action: 'get_resume_session' });
+    res.status(500).json({
+      success: false,
+      error: "Failed to retrieve session"
+    });
+  }
+});
+
+// Get session details by path parameter
 router.get("/session/:sessionId", async (req, res) => {
   try {
     const { sessionId } = req.params;
@@ -110,7 +156,12 @@ router.post("/section", async (req, res) => {
     const [existingSection] = await db
       .select()
       .from(resumeSections)
-      .where(eq(resumeSections.sessionId, sessionId) && eq(resumeSections.sectionType, sectionType));
+      .where(
+        and(
+          eq(resumeSections.sessionId, sessionId),
+          eq(resumeSections.sectionType, sectionType)
+        )
+      );
 
     if (existingSection) {
       // Update existing section
@@ -262,7 +313,12 @@ router.post("/enhance/:sessionId/:sectionType", async (req, res) => {
     const [section] = await db
       .select()
       .from(resumeSections)
-      .where(eq(resumeSections.sessionId, sessionId) && eq(resumeSections.sectionType, sectionType));
+      .where(
+        and(
+          eq(resumeSections.sessionId, sessionId),
+          eq(resumeSections.sectionType, sectionType)
+        )
+      );
 
     if (!section) {
       return res.status(404).json({
