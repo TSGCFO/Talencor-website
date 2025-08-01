@@ -167,7 +167,8 @@ export default function ResumeWizard() {
   // Create session
   const createSessionMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/resume/session', 'POST', { sessionId, targetRole, industry });
+      const response = await apiRequest('POST', '/api/resume/session', { sessionId, targetRole, industry });
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/resume/session', sessionId] });
@@ -183,7 +184,8 @@ export default function ResumeWizard() {
   // Add/update section
   const addSectionMutation = useMutation({
     mutationFn: async ({ sectionType, content }: { sectionType: string; content: string }) => {
-      return apiRequest('/api/resume/section', 'POST', { sessionId, sectionType, content });
+      const response = await apiRequest('POST', '/api/resume/section', { sessionId, sectionType, content });
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/resume/session', sessionId] });
@@ -197,7 +199,8 @@ export default function ResumeWizard() {
   // Analyze resume
   const analyzeResumeMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/resume/analyze/${sessionId}`, 'POST');
+      const response = await apiRequest('POST', `/api/resume/analyze/${sessionId}`);
+      return response.json();
     },
     onSuccess: (data: any) => {
       setAnalysis(data.analysis);
@@ -212,7 +215,8 @@ export default function ResumeWizard() {
   // Enhance section
   const enhanceSectionMutation = useMutation({
     mutationFn: async (sectionType: string) => {
-      return apiRequest(`/api/resume/enhance/${sessionId}/${sectionType}`, 'POST');
+      const response = await apiRequest('POST', `/api/resume/enhance/${sessionId}/${sectionType}`);
+      return response.json();
     },
     onSuccess: (data, sectionType) => {
       queryClient.invalidateQueries({ queryKey: ['/api/resume/session', sessionId] });
@@ -226,7 +230,8 @@ export default function ResumeWizard() {
   // Get keyword suggestions
   const keywordsMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/resume/keywords/${sessionId}`, 'POST', { targetRole, industry });
+      const response = await apiRequest('POST', `/api/resume/keywords/${sessionId}`, { targetRole, industry });
+      return response.json();
     },
     onSuccess: (data: any) => {
       setKeywords(data.keywords);
@@ -243,6 +248,16 @@ export default function ResumeWizard() {
       createSessionMutation.mutate();
     }
   }, [sessionId]);
+
+  // Update session when target role or industry changes
+  useEffect(() => {
+    if (sessionData && (targetRole || industry)) {
+      const timer = setTimeout(() => {
+        createSessionMutation.mutate();
+      }, 1000); // Debounce updates
+      return () => clearTimeout(timer);
+    }
+  }, [targetRole, industry]);
 
   // Load section content from session data
   useEffect(() => {
