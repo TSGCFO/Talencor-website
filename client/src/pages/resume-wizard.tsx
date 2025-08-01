@@ -207,14 +207,34 @@ export default function ResumeWizard() {
   const analyzeResumeMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest('POST', `/api/resume/analyze/${sessionId}`);
-      return response.json();
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || 'Analysis failed');
+      }
+      return result;
     },
     onSuccess: (data: any) => {
-      setAnalysis(data.analysis);
-      queryClient.invalidateQueries({ queryKey: ['/api/resume/session', sessionId] });
+      if (data.analysis) {
+        setAnalysis(data.analysis);
+        queryClient.invalidateQueries({ queryKey: ['/api/resume/session', sessionId] });
+        toast({
+          title: "Analysis Complete",
+          description: `Your resume scored ${data.analysis.overallScore}/100. Check the feedback for improvements.`
+        });
+      } else {
+        toast({
+          title: "Analysis Error",
+          description: "Analysis completed but no results were returned.",
+          variant: "destructive"
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error('Analysis error:', error);
       toast({
-        title: "Analysis Complete",
-        description: `Your resume scored ${data.analysis.overallScore}/100. Check the feedback for improvements.`
+        title: "Analysis Failed",
+        description: error.message || "Failed to analyze resume. Please try again.",
+        variant: "destructive"
       });
     }
   });

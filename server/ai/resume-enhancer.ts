@@ -10,7 +10,7 @@ export interface ResumeSection {
 export interface ResumeAnalysis {
   overallScore: number;
   sections: {
-    [K in ResumeSection['type']]: {
+    [K in ResumeSection['type']]?: {
       score: number;
       feedback: string;
       suggestions: string[];
@@ -53,12 +53,33 @@ ${section.type.toUpperCase()}:
 ${section.content}
 `).join('\n')}
 
-Provide a comprehensive analysis in JSON format with:
-1. Overall score (1-100)
-2. Section-by-section analysis with scores and feedback
-3. Keyword optimization analysis
-4. ATS optimization recommendations
-5. Industry-specific suggestions
+Provide a comprehensive analysis in JSON format with this EXACT structure:
+{
+  "overallScore": number (1-100),
+  "sections": {
+    "summary": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
+    "experience": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
+    "education": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
+    "skills": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] },
+    "achievements": { "score": number (1-100), "feedback": "string", "suggestions": ["string"] }
+  },
+  "keywordOptimization": {
+    "missing": ["string"],
+    "present": ["string"],
+    "suggestions": "string"
+  },
+  "atsOptimization": {
+    "score": number (1-100),
+    "issues": ["string"],
+    "recommendations": ["string"]
+  },
+  "industrySpecific": {
+    "relevance": number (1-100),
+    "suggestions": ["string"]
+  }
+}
+
+IMPORTANT: Only include sections that were provided in the input. If a section is missing, don't include it in the analysis.
 
 Focus on:
 - Content quality and impact
@@ -86,8 +107,59 @@ Focus on:
       temperature: 0.3,
     });
 
-    const analysis = JSON.parse(response.choices[0].message.content || '{}');
-    return analysis;
+    const content = response.choices[0].message.content;
+    if (!content) {
+      throw new Error('No content received from AI analysis');
+    }
+
+    let analysis;
+    try {
+      analysis = JSON.parse(content);
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', content);
+      throw new Error('Invalid JSON response from AI analysis');
+    }
+
+    // Ensure minimum required structure with fallbacks
+    const structuredAnalysis: ResumeAnalysis = {
+      overallScore: typeof analysis.overallScore === 'number' ? analysis.overallScore : 50,
+      sections: {},
+      keywordOptimization: {
+        missing: Array.isArray(analysis.keywordOptimization?.missing) ? analysis.keywordOptimization.missing : [],
+        present: Array.isArray(analysis.keywordOptimization?.present) ? analysis.keywordOptimization.present : [],
+        suggestions: typeof analysis.keywordOptimization?.suggestions === 'string' ? analysis.keywordOptimization.suggestions : 'No keyword suggestions available'
+      },
+      atsOptimization: {
+        score: typeof analysis.atsOptimization?.score === 'number' ? analysis.atsOptimization.score : 50,
+        issues: Array.isArray(analysis.atsOptimization?.issues) ? analysis.atsOptimization.issues : [],
+        recommendations: Array.isArray(analysis.atsOptimization?.recommendations) ? analysis.atsOptimization.recommendations : []
+      },
+      industrySpecific: {
+        relevance: typeof analysis.industrySpecific?.relevance === 'number' ? analysis.industrySpecific.relevance : 50,
+        suggestions: Array.isArray(analysis.industrySpecific?.suggestions) ? analysis.industrySpecific.suggestions : []
+      }
+    };
+
+    // Only include sections that were provided in input
+    for (const section of sections) {
+      const sectionData = analysis.sections?.[section.type];
+      if (sectionData && typeof sectionData === 'object') {
+        structuredAnalysis.sections[section.type] = {
+          score: typeof sectionData.score === 'number' ? sectionData.score : 50,
+          feedback: typeof sectionData.feedback === 'string' ? sectionData.feedback : 'No feedback available',
+          suggestions: Array.isArray(sectionData.suggestions) ? sectionData.suggestions : []
+        };
+      } else {
+        // Fallback for missing section analysis
+        structuredAnalysis.sections[section.type] = {
+          score: 50,
+          feedback: `Analysis for ${section.type} section is being processed`,
+          suggestions: []
+        };
+      }
+    }
+
+    return structuredAnalysis;
   } catch (error) {
     throw new Error(`Resume analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }

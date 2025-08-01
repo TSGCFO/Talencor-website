@@ -258,23 +258,51 @@ router.post("/analyze/:sessionId", async (req, res) => {
       session.industry || undefined
     );
 
-    // Update session with overall score
-    await db
-      .update(resumeSessions)
-      .set({ overallScore: analysis.overallScore })
-      .where(eq(resumeSessions.sessionId, sessionId));
+    console.log('AI Analysis result:', JSON.stringify(analysis, null, 2));
+
+    // Validate analysis structure and ensure we have valid data
+    if (!analysis || typeof analysis !== 'object') {
+      throw new Error('Invalid analysis response from AI');
+    }
+
+    // Update session with overall score only if we have a valid score
+    if (typeof analysis.overallScore === 'number' && analysis.overallScore >= 0) {
+      await db
+        .update(resumeSessions)
+        .set({ overallScore: analysis.overallScore })
+        .where(eq(resumeSessions.sessionId, sessionId));
+    } else {
+      console.warn('Invalid overall score from AI analysis:', analysis.overallScore);
+    }
 
     // Update individual sections with their scores and feedback
     for (const section of sections) {
-      const sectionAnalysis = analysis.sections[section.sectionType as keyof typeof analysis.sections];
-      if (sectionAnalysis) {
-        await db
-          .update(resumeSections)
-          .set({
-            score: sectionAnalysis.score,
-            feedback: sectionAnalysis.feedback
-          })
-          .where(eq(resumeSections.id, section.id));
+      const sectionKey = section.sectionType as keyof typeof analysis.sections;
+      const sectionAnalysis = analysis.sections?.[sectionKey];
+      
+      if (sectionAnalysis && typeof sectionAnalysis === 'object') {
+        const updateData: any = {};
+        
+        // Only add fields that have valid values
+        if (typeof sectionAnalysis.score === 'number' && sectionAnalysis.score >= 0) {
+          updateData.score = sectionAnalysis.score;
+        }
+        
+        if (typeof sectionAnalysis.feedback === 'string' && sectionAnalysis.feedback.trim()) {
+          updateData.feedback = sectionAnalysis.feedback;
+        }
+        
+        // Only update if we have at least one valid field
+        if (Object.keys(updateData).length > 0) {
+          await db
+            .update(resumeSections)
+            .set(updateData)
+            .where(eq(resumeSections.id, section.id));
+        } else {
+          console.warn(`No valid data to update for section ${section.sectionType}:`, sectionAnalysis);
+        }
+      } else {
+        console.warn(`No analysis found for section ${section.sectionType}`);
       }
     }
 
