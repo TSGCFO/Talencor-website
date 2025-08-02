@@ -18,53 +18,58 @@ export default function JobSeekers() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-20">
+      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-4 sm:mb-6">
                 Advance Your <span className="text-talencor-gold">Career</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 leading-relaxed">
                 Whether you're seeking your first opportunity, making a career change, or looking to advance to the next level, our expert recruiters are here to guide you every step of the way.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex gap-2 w-full sm:w-auto">
+              <div className="space-y-4">
+                {/* Search Bar Row */}
+                <div className="flex gap-2 max-w-xl">
                   <input
                     type="text"
                     placeholder="Search for jobs..."
-                    className="px-4 py-2 rounded-lg text-charcoal bg-white flex-1 sm:w-64"
+                    className="px-4 py-3 rounded-lg text-charcoal bg-white flex-1 min-h-[44px]"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         window.location.href = '/jobs';
                       }
                     }}
                   />
-                  <Link href="/jobs">
-                    <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+                  <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-4 sm:px-6 min-h-[44px]">
+                    <Link href="/jobs">
                       Browse Jobs
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/interview-simulator">
-                    <Button 
-                      size="lg" 
-                      variant="outline"
-                      className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
-                    >
+                
+                {/* Action Buttons Row */}
+                <div className="flex flex-col sm:flex-row gap-4 max-w-xl">
+                  <Button 
+                    asChild
+                    size="lg" 
+                    variant="outline"
+                    className="border-2 border-white bg-transparent hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
+                  >
+                    <Link href="/interview-simulator">
                       <Play className="mr-2" size={20} />
                       Practice Interview
-                    </Button>
-                  </Link>
-                  <Link href="/contact">
-                    <Button 
-                      variant="outline" 
-                      className="border-2 border-white hover:bg-white hover:text-navy text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto"
-                    >
+                    </Link>
+                  </Button>
+                  <Button 
+                    asChild
+                    variant="outline" 
+                    className="border-2 border-white bg-transparent hover:bg-white hover:text-navy text-white flex-1 sm:flex-initial"
+                  >
+                    <Link href="/resume-wizard">
                       Submit Resume
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -80,10 +85,10 @@ export default function JobSeekers() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               Why Work With Us?
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
@@ -157,10 +162,10 @@ export default function JobSeekers() {
       </section>
 
       {/* Career Tools Section */}
-      <section className="py-20 bg-gradient-to-br from-talencor-gold/10 to-talencor-orange/10">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-talencor-gold/10 to-talencor-orange/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               AI-Powered Career Tools
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
@@ -171,17 +176,17 @@ export default function JobSeekers() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="overflow-hidden hover:shadow-xl transition-shadow">
               <CardContent className="p-0">
-                <div className="bg-gradient-to-br from-corporate-blue to-navy p-8 text-white">
+                <div className="bg-gradient-to-br from-navy to-charcoal p-8 text-white">
                   <Play className="h-12 w-12 mb-4" />
                   <h3 className="text-2xl font-bold font-montserrat mb-2">Interview Simulator</h3>
                   <p className="mb-6 text-gray-200">
                     Practice with AI-generated questions tailored to your industry and experience level
                   </p>
-                  <Link href="/interview-simulator">
-                    <Button className="bg-white text-corporate-blue hover:bg-gray-100">
+                  <Button asChild className="bg-white text-navy hover:bg-gray-100">
+                    <Link href="/interview-simulator">
                       Start Practicing
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -194,11 +199,11 @@ export default function JobSeekers() {
                   <p className="mb-6 text-gray-100">
                     Transform your resume with AI-powered optimization for ATS systems
                   </p>
-                  <Link href="/resume-wizard">
-                    <Button className="bg-white text-talencor-orange hover:bg-gray-100">
+                  <Button asChild className="bg-white text-talencor-orange hover:bg-gray-100">
+                    <Link href="/resume-wizard">
                       Enhance Resume
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -211,11 +216,11 @@ export default function JobSeekers() {
                   <p className="mb-6 text-gray-200">
                     Create and organize your custom interview questions for targeted preparation
                   </p>
-                  <Link href="/question-bank">
-                    <Button className="bg-white text-navy hover:bg-gray-100">
+                  <Button asChild className="bg-white text-navy hover:bg-gray-100">
+                    <Link href="/question-bank">
                       Manage Questions
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -224,10 +229,10 @@ export default function JobSeekers() {
       </section>
 
       {/* Job Categories */}
-      <section className="py-20 bg-light-grey">
+      <section className="py-12 sm:py-16 md:py-20 bg-light-grey">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               Industries We Serve
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
@@ -246,15 +251,21 @@ export default function JobSeekers() {
               { name: "Engineering", icon: <Search size={32} />, jobs: "180+ Jobs" },
               { name: "Customer Service", icon: <BookOpen size={32} />, jobs: "220+ Jobs" }
             ].map((industry, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="text-talencor-gold mb-4 flex justify-center">
-                    {industry.icon}
-                  </div>
-                  <h3 className="text-lg font-semibold font-montserrat text-navy mb-2">{industry.name}</h3>
-                  <p className="text-talencor-gold font-medium">{industry.jobs}</p>
-                </CardContent>
-              </Card>
+              <Link 
+                key={index} 
+                href={`/jobs?industry=${encodeURIComponent(industry.name)}`}
+                className="block transform transition-all duration-200 hover:scale-105"
+              >
+                <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    <div className="text-talencor-gold mb-4 flex justify-center">
+                      {industry.icon}
+                    </div>
+                    <h3 className="text-lg font-semibold font-montserrat text-navy mb-2">{industry.name}</h3>
+                    <p className="text-talencor-gold font-medium">{industry.jobs}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
@@ -263,26 +274,27 @@ export default function JobSeekers() {
       {/* CTA Section */}
       <section className="py-8 bg-corporate-blue text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat mb-4 sm:mb-6">
             Ready to Take the Next Step?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Let us help you find the perfect opportunity that matches your skills and career goals
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
-              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+            <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+              <Link href="/resume-wizard">
                 Submit Your Resume
-              </Button>
-            </Link>
-            <Link href="/contact">
-              <Button 
-                variant="outline"
-                className="border-2 border-white hover:bg-white hover:text-corporate-blue text-white px-8 py-4 text-lg font-semibold"
-              >
-                Schedule Consultation  
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button 
+              asChild
+              variant="outline"
+              className="border-2 border-white bg-transparent hover:bg-white hover:text-corporate-blue text-white px-8 py-4 text-lg font-semibold"
+            >
+              <Link href="/contact">
+                Schedule Consultation
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

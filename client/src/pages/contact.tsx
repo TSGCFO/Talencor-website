@@ -118,10 +118,10 @@ export default function Contact() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-light-grey to-white py-20">
+      <section className="bg-gradient-to-br from-light-grey to-white py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-charcoal mb-6">Get in Touch</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-charcoal mb-4 sm:mb-6">Get in Touch</h1>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">
               Ready to take the next step? Contact our team today to discuss your staffing needs or career goals
             </p>
@@ -327,7 +327,7 @@ export default function Contact() {
                         />
                         
                         <AnimatedButton
-                          onClick={() => form.handleSubmit(onSubmit)()}
+                          type="submit"
                           loading={submitContact.isPending}
                           loadingText="Sending Message..."
                           successText="Message Sent!"

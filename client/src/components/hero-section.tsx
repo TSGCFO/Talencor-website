@@ -18,22 +18,22 @@ export default function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
           <div className="mb-12 lg:mb-0">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl logo-font mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl logo-font mb-6 leading-tight">
               Aiming to Build <span className="text-talencor-gold">Long-Lasting</span> Relationships
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-200 leading-relaxed">
               Our business model adapts to your company's need. We provide reliable help without any boundaries, 24-hours a day, seven-days a week.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/job-seekers">
-                <Button className="gradient-button text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto border border-white/20">
+                <Button className="gradient-button text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto border border-white/20 min-h-[44px]">
                   Find Your Next Role
                 </Button>
               </Link>
               <Link href="/employers">
                 <Button 
                   variant="outline" 
-                  className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-navy text-talencor-gold px-8 py-6 text-lg font-semibold w-full sm:w-auto backdrop-blur-sm bg-white/10"
+                  className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-navy text-talencor-gold px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto backdrop-blur-sm bg-white/10 min-h-[44px]"
                 >
                   Hire Top Talent
                 </Button>

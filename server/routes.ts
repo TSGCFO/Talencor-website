@@ -5,15 +5,18 @@ import {
   insertContactSubmissionSchema,
   insertQuestionCategorySchema,
   insertCustomInterviewQuestionSchema,
-  insertQuestionTagSchema
+  insertQuestionTagSchema,
+  insertDynamicLinkSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
 import { captureEvent, captureError, addBreadcrumb, setSentryUser } from "./sentry";
 import { getSentryIssues, resolveSentryIssue, bulkResolveSentryIssues } from "./sentry-api";
 import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentryIssues, addCommentToSentryIssue } from "./sentry-integration";
+import { getSentryFeedbackSummary } from "./sentry-feedback-summary";
 import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
 import { generateInterviewQuestion, evaluateInterviewResponse, generateInterviewTips } from "./ai/interviewSimulator";
+import resumeRoutes from "./routes/resume";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -37,8 +40,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const submission = await storage.createContactSubmission(validatedData);
 
-      // Track successful submission
-      captureEvent('Contact form submission saved to database', {
+      // Log successful submission
+      console.log('Contact form submission saved to database', {
         submissionId: submission.id,
         inquiryType: validatedData.inquiryType,
         userEmail: validatedData.email,
@@ -311,51 +314,145 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const authToken = process.env.SENTRY_AUTH_TOKEN || "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";
       const org = process.env.SENTRY_ORG || "tsg-fulfillment";
       const project = process.env.SENTRY_PROJECT || "talencor-frontend";
+      const projectId = "4509575724613632"; // From screenshot
 
-      // Fetch user feedback from Sentry
-      const feedbackResponse = await fetch(
-        `https://sentry.io/api/0/projects/${org}/${project}/user-feedback/`,
-        {
+      // Fetch user feedback from Sentry - try multiple endpoints
+      console.log(`Fetching feedback from organization: ${org}, project: ${project}`);
+      
+      // Try multiple endpoints for user feedback
+      let allUserFeedback: any[] = [];
+      let feedbackStats = {
+        open: 0,
+        resolved: 0,
+        total: 0
+      };
+
+      // 1. Try user-reports endpoint  
+      try {
+        const userReportsUrl = `https://sentry.io/api/0/projects/${org}/${project}/user-reports/?statsPeriod=90d`;
+        console.log(`Trying user-reports endpoint: ${userReportsUrl}`);
+        
+        const feedbackResponse = await fetch(userReportsUrl, {
           headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
           }
-        }
-      );
+        });
 
-      if (!feedbackResponse.ok) {
-        throw new Error(`Sentry API error: ${feedbackResponse.status} ${feedbackResponse.statusText}`);
+        if (feedbackResponse.ok) {
+          const feedback = await feedbackResponse.json();
+          console.log(`User reports response:`, JSON.stringify(feedback).substring(0, 500));
+          if (Array.isArray(feedback)) {
+            allUserFeedback = [...allUserFeedback, ...feedback];
+          }
+        } else {
+          console.log(`User reports API error: ${feedbackResponse.status} ${feedbackResponse.statusText}`);
+        }
+      } catch (error) {
+        console.error("Error fetching user reports:", error);
       }
 
-      const feedback = await feedbackResponse.json();
-
-      // Also fetch issues that might be reported
-      const issuesResponse = await fetch(
-        `https://sentry.io/api/0/projects/${org}/${project}/issues/?query=is:unresolved`,
-        {
+      // 2. Try organization-level feedback endpoint
+      try {
+        const orgFeedbackUrl = `https://sentry.io/api/0/organizations/${org}/user-feedback/?project=${projectId}&statsPeriod=90d`;
+        console.log(`Trying org feedback endpoint with project ID: ${orgFeedbackUrl}`);
+        
+        const orgFeedbackResponse = await fetch(orgFeedbackUrl, {
           headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
           }
+        });
+        
+        if (orgFeedbackResponse.ok) {
+          const orgFeedback = await orgFeedbackResponse.json();
+          console.log(`Org feedback response:`, JSON.stringify(orgFeedback).substring(0, 500));
+          if (Array.isArray(orgFeedback)) {
+            allUserFeedback = [...allUserFeedback, ...orgFeedback];
+          }
+        } else {
+          console.log(`Org feedback API error: ${orgFeedbackResponse.status} ${orgFeedbackResponse.statusText}`);
         }
-      );
-
-      if (!issuesResponse.ok) {
-        throw new Error(`Sentry Issues API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+      } catch (error) {
+        console.error("Error fetching org feedback:", error);
       }
 
-      const issues = await issuesResponse.json();
+      // 3. Fetch ALL issues to check for user feedback
+      let issues: any[] = [];
+      let issuesWithFeedback = 0;
+      let resolvedIssues = 0;
+      let unresolvedIssues = 0;
+      
+      try {
+        const allIssuesUrl = `https://sentry.io/api/0/projects/${org}/${project}/issues/`;
+        console.log(`Fetching all issues from: ${allIssuesUrl}`);
+        
+        const issuesResponse = await fetch(allIssuesUrl, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (issuesResponse.ok) {
+          issues = await issuesResponse.json();
+          console.log(`Total issues found: ${Array.isArray(issues) ? issues.length : 0}`);
+          
+          // Count feedback in issues
+          if (Array.isArray(issues)) {
+            issues.forEach((issue: any) => {
+              if (issue.userReportCount && issue.userReportCount > 0) {
+                issuesWithFeedback++;
+              }
+              if (issue.status === 'resolved') {
+                resolvedIssues++;
+              } else {
+                unresolvedIssues++;
+              }
+            });
+          }
+        } else {
+          console.log(`Issues API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+        }
+      } catch (error) {
+        console.error("Error fetching issues:", error);
+      }
+
+      // Count open vs resolved feedback
+      if (Array.isArray(allUserFeedback)) {
+        allUserFeedback.forEach((feedback: any) => {
+          feedbackStats.total++;
+          if (feedback.status === 'resolved' || feedback.issue?.status === 'resolved') {
+            feedbackStats.resolved++;
+          } else {
+            feedbackStats.open++;
+          }
+        });
+      }
 
       // Combine and format the data
       const response = {
-        userFeedback: feedback,
-        unresolvedIssues: issues,
+        userFeedback: allUserFeedback,
+        unresolvedIssues: issues.filter((i: any) => i.status !== 'resolved'),
+        allIssues: issues,
         summary: {
-          totalFeedback: Array.isArray(feedback) ? feedback.length : 0,
-          totalIssues: Array.isArray(issues) ? issues.length : 0
+          totalFeedback: allUserFeedback.length,
+          openFeedback: feedbackStats.open,
+          resolvedFeedback: feedbackStats.resolved,
+          totalIssues: issues.length,
+          issuesWithFeedback,
+          resolvedIssues,
+          unresolvedIssues
         }
       };
 
+      console.log("Final response summary:", {
+        totalFeedback: response.summary.totalFeedback,
+        openFeedback: response.summary.openFeedback,
+        resolvedFeedback: response.summary.resolvedFeedback,
+        totalIssues: response.summary.totalIssues
+      });
+      
       res.json(response);
     } catch (error) {
       console.error("Error fetching Sentry feedback:", error);
@@ -374,6 +471,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/sentry/actual/issues/:issueId/resolve", resolveActualSentryIssue);
   app.post("/api/sentry/actual/issues/bulk-resolve", bulkResolveActualSentryIssues);
   app.post("/api/sentry/actual/issues/:issueId/comment", addCommentToSentryIssue);
+  
+  // Sentry feedback summary endpoint
+  app.get("/api/sentry/feedback-summary", getSentryFeedbackSummary);
 
   // Resume Enhancement API endpoint
   app.post("/api/enhance-resume", async (req, res) => {
@@ -404,8 +504,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.options
       );
 
-      // Track successful enhancement
-      captureEvent('Resume enhanced successfully', {
+      // Log successful enhancement
+      console.log('Resume enhanced successfully', {
         jobCategory: validatedData.jobCategory,
         optionsEnabled: Object.keys(validatedData.options).filter(k => validatedData.options[k as keyof EnhancementOptions]),
       });
@@ -473,7 +573,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const result = await generateInterviewQuestion(validatedData);
 
-      captureEvent('Interview question generated successfully', {
+      console.log('Interview question generated successfully', {
         jobCategory: validatedData.jobCategory,
         experienceLevel: validatedData.experienceLevel,
         questionNumber: validatedData.questionNumber,
@@ -529,7 +629,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.experienceLevel
       );
 
-      captureEvent('Interview response evaluated successfully', {
+      console.log('Interview response evaluated successfully', {
         jobCategory: validatedData.jobCategory,
         experienceLevel: validatedData.experienceLevel,
         score: feedback.score,
@@ -577,6 +677,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Dynamic Links endpoints
+  // Get a specific dynamic link by key
+  app.get("/api/dynamic-links/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      const link = await storage.getDynamicLink(key);
+      
+      if (!link) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Link not found" 
+        });
+      }
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'get_dynamic_link',
+        key: req.params.key,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get dynamic link" 
+      });
+    }
+  });
+
+  // Create a new dynamic link
+  app.post("/api/dynamic-links", async (req, res) => {
+    try {
+      const validatedData = insertDynamicLinkSchema.parse(req.body);
+      const link = await storage.createDynamicLink(validatedData);
+      
+      console.log('Dynamic link created', {
+        key: link.key,
+        url: link.url,
+      });
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ 
+          success: false, 
+          message: "Invalid link data", 
+          errors: error.errors 
+        });
+      } else {
+        captureError(error as Error, {
+          action: 'create_dynamic_link',
+          data: req.body,
+        });
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to create dynamic link" 
+        });
+      }
+    }
+  });
+
+  // Update a dynamic link
+  app.put("/api/dynamic-links/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      const { url } = req.body;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "URL is required" 
+        });
+      }
+      
+      const link = await storage.updateDynamicLink(key, url);
+      
+      console.log('Dynamic link updated', {
+        key: link.key,
+        url: link.url,
+      });
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'update_dynamic_link',
+        key: req.params.key,
+        url: req.body.url,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update dynamic link" 
+      });
+    }
+  });
+
+  // Get all dynamic links
+  app.get("/api/dynamic-links", async (req, res) => {
+    try {
+      const links = await storage.getAllDynamicLinks();
+      res.json({ success: true, links });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'get_all_dynamic_links',
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get dynamic links" 
+      });
+    }
+  });
+
+  // Resume enhancement routes
+  app.use("/api/resume", resumeRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

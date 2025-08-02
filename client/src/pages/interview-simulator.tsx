@@ -42,7 +42,7 @@ const JOB_CATEGORIES = [
 ];
 
 export default function InterviewSimulator() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('Information Technology');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [experienceLevel, setExperienceLevel] = useState<string>('mid');
   const [currentQuestion, setCurrentQuestion] = useState<InterviewQuestion | null>(null);
   const [userAnswer, setUserAnswer] = useState('');
@@ -295,7 +295,7 @@ export default function InterviewSimulator() {
                         <SelectValue placeholder="Select a category or leave blank for general questions" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Categories</SelectItem>
+                        <SelectItem value="all">All Categories</SelectItem>
                         {JOB_CATEGORIES.map(category => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
                         ))}

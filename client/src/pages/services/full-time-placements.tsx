@@ -207,7 +207,7 @@ export default function FullTimePlacementsService() {
                 <div className="flex items-start">
                   <CheckCircle className="text-talencor-gold mr-3 mt-1 flex-shrink-0" size={20} />
                   <div>
-                    <strong className="text-navy">Cost-Effective:</strong>
+                    <strong className="text-navy">Cost Effective:</strong>
                     <span className="text-charcoal ml-2">Save on recruitment and training costs</span>
                   </div>
                 </div>

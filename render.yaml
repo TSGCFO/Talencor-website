@@ -1,0 +1,30 @@
+services:
+  # Web Service for your full-stack application
+  - type: web
+    name: talencor-staffing
+    runtime: node
+    region: oregon # You can change this to your preferred region
+    plan: free # Start with free, upgrade as needed
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: talencor-db
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false # You'll set this manually in Render dashboard
+      - key: SENTRY_DSN
+        sync: false # Optional - set manually if using Sentry
+      - key: VITE_SENTRY_DSN
+        sync: false # Optional - set manually if using Sentry
+
+databases:
+  # PostgreSQL database
+  - name: talencor-db
+    databaseName: talencor_production
+    user: talencor_user
+    region: oregon # Should match your web service region
+    plan: free # Start with free tier

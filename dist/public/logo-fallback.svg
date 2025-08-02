@@ -1,0 +1,17 @@
+<svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagonal background inspired by your logo -->
+  <path d="M15 10L25 5L35 10L35 20L25 25L15 20Z" fill="#DD9933" stroke="#E67A33" stroke-width="1"/>
+  
+  <!-- Letter T with hexagonal styling -->
+  <g transform="translate(8, 8)">
+    <path d="M4 4L16 4L16 7L12 7L12 17L8 17L8 7L4 7Z" fill="#2B4C7E"/>
+  </g>
+  
+  <!-- Company name -->
+  <text x="45" y="22" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2B4C7E">TALENCOR</text>
+  <text x="45" y="38" font-family="Arial, sans-serif" font-size="10" font-weight="500" fill="#DD9933">STAFFING</text>
+  
+  <!-- Decorative hexagonal elements -->
+  <circle cx="105" cy="15" r="2" fill="#DD9933" opacity="0.6"/>
+  <circle cx="110" cy="20" r="1.5" fill="#E67A33" opacity="0.4"/>
+</svg>

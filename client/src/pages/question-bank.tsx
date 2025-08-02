@@ -94,14 +94,22 @@ export default function QuestionBank() {
   const queryClient = useQueryClient();
 
   // Form state for creating/editing questions
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    categoryId: string;
+    question: string;
+    difficulty: 'entry' | 'mid' | 'senior' | 'executive';
+    tips: string[];
+    expectedElements: string[];
+    isPublic: boolean;
+    tagIds: number[];
+  }>({
     categoryId: '',
     question: '',
-    difficulty: 'mid' as const,
+    difficulty: 'mid',
     tips: [''],
     expectedElements: [''],
     isPublic: false,
-    tagIds: [] as number[],
+    tagIds: [],
   });
 
   // Fetch questions
@@ -233,6 +241,27 @@ export default function QuestionBank() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/question-bank/questions'] });
+    },
+  });
+
+  // Delete category mutation
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/question-bank/categories/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete category');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/question-bank/categories'] });
+      toast({ title: 'Success', description: 'Category deleted successfully!' });
+    },
+    onError: (error) => {
+      toast({ 
+        title: 'Error', 
+        description: error instanceof Error ? error.message : 'Failed to delete category',
+        variant: 'destructive' 
+      });
     },
   });
 
@@ -748,12 +777,44 @@ export default function QuestionBank() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              // TODO: Implement category edit functionality
+                              toast({
+                                title: "Feature coming soon",
+                                description: "Category editing will be available in the next update.",
+                              });
+                            }}
+                          >
                             <Edit3 className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Category</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete "{category.name}"? 
+                                  This will not delete the questions in this category.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteCategoryMutation.mutate(category.id)}
+                                  className="bg-red-500 hover:bg-red-600 text-white"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </div>
                     ))}
@@ -766,16 +827,16 @@ export default function QuestionBank() {
           {/* Quick Actions */}
           <div className="mt-12 text-center">
             <div className="flex justify-center gap-4">
-              <Link href="/interview-simulator">
-                <Button variant="outline" className="border-talencor-gold text-talencor-gold hover:bg-talencor-gold hover:text-white">
+              <Button asChild variant="outline" className="border-talencor-gold text-talencor-gold hover:bg-talencor-gold hover:text-white">
+                <Link href="/interview-simulator">
                   Practice with AI Simulator
-                </Button>
-              </Link>
-              <Link href="/resume-wizard">
-                <Button variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white">
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white">
+                <Link href="/resume-wizard">
                   Enhance Your Resume
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

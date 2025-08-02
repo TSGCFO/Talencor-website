@@ -18,26 +18,26 @@ export default function Employers() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-20">
+      <section className="bg-gradient-to-br from-navy to-charcoal text-white py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-montserrat mb-4 sm:mb-6">
                 Find Your Perfect <span className="text-talencor-gold">Hire</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 leading-relaxed">
                 Partner with Talencor to access top talent and streamline your hiring process. Our comprehensive staffing solutions are designed to meet your unique business needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/contact">
-                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold w-full sm:w-auto">
+                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold w-full sm:w-auto min-h-[44px]">
                     Post a Job
                   </Button>
                 </Link>
                 <Link href="/contact">
                   <Button 
                     variant="outline" 
-                    className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-navy text-talencor-gold px-8 py-4 text-lg font-semibold w-full sm:w-auto backdrop-blur-sm bg-white/10"
+                    className="border-2 border-talencor-gold hover:bg-talencor-gold hover:text-navy text-talencor-gold px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold w-full sm:w-auto backdrop-blur-sm bg-white/10 min-h-[44px]"
                   >
                     Learn More
                   </Button>
@@ -56,10 +56,10 @@ export default function Employers() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-montserrat text-navy mb-4 sm:mb-6">
               Why Partner With Us?
             </h2>
             <p className="text-xl text-charcoal max-w-3xl mx-auto leading-relaxed">

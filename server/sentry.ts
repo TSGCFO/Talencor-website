@@ -2,11 +2,11 @@ import * as Sentry from "@sentry/node";
 
 // Initialize Sentry for Node.js/Express backend with production-optimized configuration
 export function initSentry() {
-  const dsn = process.env.SENTRY_DSN;
+  const dsn = process.env.SENTRY_BACKEND_DSN || process.env.SENTRY_DSN;
   
   if (!dsn) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("SENTRY_DSN environment variable not found. Sentry will not be initialized.");
+      console.warn("SENTRY_BACKEND_DSN or SENTRY_DSN environment variable not found. Sentry will not be initialized.");
     }
     return;
   }

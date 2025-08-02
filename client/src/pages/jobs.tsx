@@ -191,7 +191,7 @@ export default function Jobs() {
                         <p className="text-lg font-semibold text-talencor-gold">{job.salary}</p>
                       </div>
                       <div className="mt-4 md:mt-0 md:ml-6">
-                        <Link href="/contact">
+                        <Link href="/apply">
                           <Button className="bg-talencor-gold hover:bg-talencor-orange text-white w-full md:w-auto">
                             Apply Now
                           </Button>
@@ -215,7 +215,7 @@ export default function Jobs() {
           <p className="text-xl mb-6 max-w-2xl mx-auto">
             Submit your resume and our recruiters will match you with opportunities that align with your skills and goals
           </p>
-          <Link href="/contact">
+          <Link href="/resume-wizard">
             <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
               Submit Your Resume
             </Button>

@@ -19,7 +19,10 @@ import {
   type InsertQuestionTagRelation,
   userQuestionFavorites,
   type UserQuestionFavorite,
-  type InsertUserQuestionFavorite
+  type InsertUserQuestionFavorite,
+  dynamicLinks,
+  type DynamicLink,
+  type InsertDynamicLink
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, ilike, inArray, desc, sql } from "drizzle-orm";
@@ -56,6 +59,12 @@ export interface IStorage {
   
   toggleQuestionFavorite(userId: number, questionId: number): Promise<{ isFavorited: boolean }>;
   getUserQuestionFavorites(userId: number): Promise<number[]>;
+  
+  // Dynamic Links methods
+  getDynamicLink(key: string): Promise<DynamicLink | undefined>;
+  createDynamicLink(link: InsertDynamicLink): Promise<DynamicLink>;
+  updateDynamicLink(key: string, url: string): Promise<DynamicLink>;
+  getAllDynamicLinks(): Promise<DynamicLink[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -319,6 +328,37 @@ export class DatabaseStorage implements IStorage {
       .where(eq(userQuestionFavorites.userId, userId));
     
     return favorites.map(f => f.questionId);
+  }
+
+  // Dynamic Links methods
+  async getDynamicLink(key: string): Promise<DynamicLink | undefined> {
+    const [link] = await db.select().from(dynamicLinks).where(eq(dynamicLinks.key, key));
+    return link || undefined;
+  }
+
+  async createDynamicLink(link: InsertDynamicLink): Promise<DynamicLink> {
+    const [created] = await db
+      .insert(dynamicLinks)
+      .values(link)
+      .returning();
+    return created;
+  }
+
+  async updateDynamicLink(key: string, url: string): Promise<DynamicLink> {
+    const [updated] = await db
+      .update(dynamicLinks)
+      .set({ 
+        url, 
+        lastChecked: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(dynamicLinks.key, key))
+      .returning();
+    return updated;
+  }
+
+  async getAllDynamicLinks(): Promise<DynamicLink[]> {
+    return await db.select().from(dynamicLinks).orderBy(dynamicLinks.key);
   }
 }
 
