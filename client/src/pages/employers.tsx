@@ -29,7 +29,7 @@ export default function Employers() {
                 Partner with Talencor to access top talent and streamline your hiring process. Our comprehensive staffing solutions are designed to meet your unique business needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/contact">
+                <Link href="/post-job">
                   <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold w-full sm:w-auto min-h-[44px]">
                     Post a Job
                   </Button>

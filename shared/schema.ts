@@ -72,6 +72,35 @@ export const dynamicLinks = pgTable("dynamic_links", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Job Posting tables
+export const jobPostings = pgTable("job_postings", {
+  id: serial("id").primaryKey(),
+  // Contact Information (Required)
+  contactName: text("contact_name").notNull(),
+  companyName: text("company_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  
+  // Job Details (Required)
+  jobTitle: text("job_title").notNull(),
+  location: text("location").notNull(),
+  employmentType: text("employment_type").notNull(), // 'permanent', 'temporary', 'contract-to-hire'
+  isExistingClient: boolean("is_existing_client").default(false).notNull(),
+  
+  // Job Details (Optional)
+  anticipatedStartDate: date("anticipated_start_date"),
+  salaryRange: text("salary_range"),
+  jobDescription: text("job_description"),
+  specialRequirements: text("special_requirements"),
+  
+  // Status Management
+  status: text("status").default("new").notNull(), // 'new', 'contacted', 'contract_pending', 'posted', 'closed'
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Resume Enhancement tables
 export const resumeSessions = pgTable("resume_sessions", {
   id: serial("id").primaryKey(),
@@ -203,6 +232,13 @@ export const insertResumeSectionSchema = createInsertSchema(resumeSections).omit
   updatedAt: true,
 });
 
+export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  status: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -225,3 +261,5 @@ export type InsertResumeSession = z.infer<typeof insertResumeSessionSchema>;
 export type ResumeSession = typeof resumeSessions.$inferSelect;
 export type InsertResumeSection = z.infer<typeof insertResumeSectionSchema>;
 export type ResumeSection = typeof resumeSections.$inferSelect;
+export type InsertJobPosting = z.infer<typeof insertJobPostingSchema>;
+export type JobPosting = typeof jobPostings.$inferSelect;

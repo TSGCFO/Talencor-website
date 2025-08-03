@@ -6,7 +6,8 @@ import {
   insertQuestionCategorySchema,
   insertCustomInterviewQuestionSchema,
   insertQuestionTagSchema,
-  insertDynamicLinkSchema
+  insertDynamicLinkSchema,
+  insertJobPostingSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
@@ -87,6 +88,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false, 
         message: "Failed to retrieve contact submissions" 
+      });
+    }
+  });
+
+  // Job Posting API Routes
+  
+  // Create a new job posting
+  app.post("/api/job-postings", async (req, res) => {
+    try {
+      const validatedData = insertJobPostingSchema.parse(req.body);
+      const posting = await storage.createJobPosting(validatedData);
+      
+      // TODO: Send notification email to recruiting team
+      console.log('New job posting created:', {
+        id: posting.id,
+        company: posting.companyName,
+        jobTitle: posting.jobTitle,
+        isExistingClient: posting.isExistingClient
+      });
+      
+      res.json({ success: true, id: posting.id });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({
+          success: false,
+          message: "Invalid form data",
+          errors: error.errors
+        });
+      } else {
+        console.error("Error creating job posting:", error);
+        res.status(500).json({
+          success: false,
+          message: "Failed to submit job posting"
+        });
+      }
+    }
+  });
+  
+  // Get all job postings (with optional status filter)
+  app.get("/api/job-postings", async (req, res) => {
+    try {
+      const { status } = req.query;
+      const postings = await storage.getJobPostings(
+        status ? { status: status as string } : undefined
+      );
+      res.json(postings);
+    } catch (error) {
+      console.error("Error fetching job postings:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job postings"
+      });
+    }
+  });
+  
+  // Get a single job posting by ID
+  app.get("/api/job-postings/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const posting = await storage.getJobPostingById(id);
+      
+      if (!posting) {
+        return res.status(404).json({
+          success: false,
+          message: "Job posting not found"
+        });
+      }
+      
+      res.json(posting);
+    } catch (error) {
+      console.error("Error fetching job posting:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job posting"
+      });
+    }
+  });
+  
+  // Update job posting status
+  app.patch("/api/job-postings/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!status || !['new', 'contacted', 'contract_pending', 'posted', 'closed'].includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status"
+        });
+      }
+      
+      const updated = await storage.updateJobPostingStatus(id, status);
+      res.json({ success: true, posting: updated });
+    } catch (error) {
+      console.error("Error updating job posting status:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update job posting status"
       });
     }
   });

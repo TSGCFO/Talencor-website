@@ -22,7 +22,10 @@ import {
   type InsertUserQuestionFavorite,
   dynamicLinks,
   type DynamicLink,
-  type InsertDynamicLink
+  type InsertDynamicLink,
+  jobPostings,
+  type JobPosting,
+  type InsertJobPosting
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, ilike, inArray, desc, sql } from "drizzle-orm";
@@ -65,6 +68,12 @@ export interface IStorage {
   createDynamicLink(link: InsertDynamicLink): Promise<DynamicLink>;
   updateDynamicLink(key: string, url: string): Promise<DynamicLink>;
   getAllDynamicLinks(): Promise<DynamicLink[]>;
+  
+  // Job Posting methods
+  createJobPosting(posting: InsertJobPosting): Promise<JobPosting>;
+  getJobPostings(filters?: { status?: string }): Promise<JobPosting[]>;
+  getJobPostingById(id: number): Promise<JobPosting | undefined>;
+  updateJobPostingStatus(id: number, status: string): Promise<JobPosting>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -327,7 +336,7 @@ export class DatabaseStorage implements IStorage {
       .from(userQuestionFavorites)
       .where(eq(userQuestionFavorites.userId, userId));
     
-    return favorites.map(f => f.questionId);
+    return favorites.map(f => f.questionId).filter((id): id is number => id !== null);
   }
 
   // Dynamic Links methods
@@ -359,6 +368,47 @@ export class DatabaseStorage implements IStorage {
 
   async getAllDynamicLinks(): Promise<DynamicLink[]> {
     return await db.select().from(dynamicLinks).orderBy(dynamicLinks.key);
+  }
+  
+  // Job Posting methods
+  async createJobPosting(posting: InsertJobPosting): Promise<JobPosting> {
+    const [created] = await db
+      .insert(jobPostings)
+      .values(posting)
+      .returning();
+    return created;
+  }
+  
+  async getJobPostings(filters?: { status?: string }): Promise<JobPosting[]> {
+    if (filters?.status) {
+      return await db
+        .select()
+        .from(jobPostings)
+        .where(eq(jobPostings.status, filters.status))
+        .orderBy(desc(jobPostings.createdAt));
+    }
+    
+    return await db
+      .select()
+      .from(jobPostings)
+      .orderBy(desc(jobPostings.createdAt));
+  }
+  
+  async getJobPostingById(id: number): Promise<JobPosting | undefined> {
+    const [posting] = await db.select().from(jobPostings).where(eq(jobPostings.id, id));
+    return posting || undefined;
+  }
+  
+  async updateJobPostingStatus(id: number, status: string): Promise<JobPosting> {
+    const [updated] = await db
+      .update(jobPostings)
+      .set({ 
+        status,
+        updatedAt: new Date()
+      })
+      .where(eq(jobPostings.id, id))
+      .returning();
+    return updated;
   }
 }
 
