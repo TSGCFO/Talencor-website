@@ -79,7 +79,7 @@ export default function JobPosting() {
           ? format(data.anticipatedStartDate, "yyyy-MM-dd")
           : null,
       };
-      return apiRequest("/api/job-postings", "POST", formattedData);
+      return apiRequest("POST", "/api/job-postings", formattedData);
     },
     onSuccess: () => {
       setIsSubmitted(true);
