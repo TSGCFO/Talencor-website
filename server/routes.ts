@@ -100,12 +100,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertJobPostingSchema.parse(req.body);
       const posting = await storage.createJobPosting(validatedData);
       
-      // TODO: Send notification email to recruiting team
+      // Log the new posting for internal tracking
       console.log('New job posting created:', {
         id: posting.id,
         company: posting.companyName,
         jobTitle: posting.jobTitle,
         isExistingClient: posting.isExistingClient
+      });
+      
+      // Import email functions dynamically to avoid circular dependencies
+      const { sendJobPostingConfirmation, sendInternalJobPostingNotification } = await import("./email.js");
+      
+      // Send confirmation email to submitter
+      await sendJobPostingConfirmation({
+        contactName: posting.contactName,
+        email: posting.email,
+        companyName: posting.companyName,
+        jobTitle: posting.jobTitle,
+        isExistingClient: posting.isExistingClient
+      });
+      
+      // Send internal notification to recruiting team
+      await sendInternalJobPostingNotification({
+        id: posting.id,
+        contactName: posting.contactName,
+        email: posting.email,
+        phone: posting.phone,
+        companyName: posting.companyName,
+        jobTitle: posting.jobTitle,
+        location: posting.location,
+        employmentType: posting.employmentType,
+        isExistingClient: posting.isExistingClient,
+        anticipatedStartDate: posting.anticipatedStartDate,
+        salaryRange: posting.salaryRange,
+        jobDescription: posting.jobDescription,
+        specialRequirements: posting.specialRequirements
       });
       
       res.json({ success: true, id: posting.id });

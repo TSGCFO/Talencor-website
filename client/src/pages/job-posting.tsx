@@ -164,12 +164,43 @@ export default function JobPosting() {
 
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
             <h1 className="text-4xl font-bold mb-4">Post a Job Opening</h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-gray-600 mb-4">
               Fill out the form below to submit your job opening. Our recruiting team will contact you within one business day to discuss your staffing needs.
             </p>
+            
+            {/* How it works section */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+              <h2 className="font-semibold text-navy mb-2">How it works:</h2>
+              <ul className="text-charcoal space-y-1 text-sm">
+                <li className="flex items-start">
+                  <span className="text-talencor-gold mr-2">✓</span>
+                  <span>Posting a job is <strong>free</strong> - simply fill out the form below</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-talencor-gold mr-2">✓</span>
+                  <span>A recruiter will contact you within <strong>one business day</strong></span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-talencor-gold mr-2">✓</span>
+                  <span>For new clients, we'll discuss pricing and contract terms before posting</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-talencor-gold mr-2">✓</span>
+                  <span>Existing clients' jobs are prioritized for immediate processing</span>
+                </li>
+              </ul>
+            </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form 
+                onSubmit={form.handleSubmit(onSubmit)} 
+                onKeyDown={(e) => {
+                  // Prevent form submission on Enter key in input fields
+                  if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
+                    e.preventDefault();
+                  }
+                }}
+                className="space-y-8">
                 {/* Contact Information Section */}
                 <div>
                   <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>
@@ -327,9 +358,6 @@ export default function JobPosting() {
                               />
                             </PopoverContent>
                           </Popover>
-                          <FormDescription>
-                            When do you need this position filled?
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -416,14 +444,44 @@ export default function JobPosting() {
                       </FormItem>
                     )}
                   />
+                  
+                  {/* Additional info based on client status */}
+                  {form.watch("isExistingClient") ? (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm mt-4">
+                      <p className="text-green-800">
+                        <strong>Great!</strong> As an existing client, your job will be prioritized for immediate processing.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm mt-4">
+                      <p className="text-blue-800">
+                        <strong>Welcome!</strong> After submission, a recruiter will contact you to discuss our services and finalize contract terms before posting your job.
+                      </p>
+                    </div>
+                  )}
                 </div>
+
+                {/* Honeypot field for spam prevention - hidden from users */}
+                <input 
+                  type="text" 
+                  name="website" 
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  onChange={(e) => {
+                    // If this field is filled, it's likely a bot
+                    if (e.target.value) {
+                      form.setError('root', { message: 'Invalid submission' });
+                    }
+                  }}
+                />
 
                 {/* Privacy Notice */}
                 <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600">
                   <p>
                     By submitting this form, you agree that Talencor Staffing may contact you about your hiring needs. 
                     Your information will only be used to process your job posting request and will be handled in accordance 
-                    with our privacy policy.
+                    with our <Link href="/privacy-policy" className="text-talencor-gold hover:text-talencor-orange underline">privacy policy</Link>.
                   </p>
                 </div>
 
