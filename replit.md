@@ -32,6 +32,7 @@ The application utilizes a monorepo structure with a clear separation of concern
     - **Customizable Interview Question Bank:** A CRUD system for managing and filtering interview questions by category, difficulty, and tags.
 - **Job Listings Page:** Displays job postings with search functionality.
 - **Dynamic External Links Management:** Database-driven system for managing external links that change periodically (e.g., WHMIS training links), with automatic updates and fallback mechanisms.
+- **Job Posting System:** Comprehensive job submission workflow allowing businesses to post job openings, with client status detection, form validation, and internal status tracking.
 
 **Recent Updates (July 31, 2025):**
 - Fixed Submit Resume button to redirect to Resume Wizard (/resume-wizard) instead of contact page
