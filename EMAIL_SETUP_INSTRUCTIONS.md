@@ -24,7 +24,7 @@ For production email delivery, you need to:
 
 ```typescript
 // Already configured in server/email.ts:
-from: 'noreply@talencor.com', // Already set - just needs domain verification
+from: 'no-reply@talencor.com', // Already set - just needs domain verification
 ```
 
 ### 2. Environment Configuration
