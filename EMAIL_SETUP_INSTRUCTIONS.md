@@ -23,8 +23,8 @@ For production email delivery, you need to:
 4. **Update Email Sender**: Change the `from` address in `server/email.ts`
 
 ```typescript
-// Update this line in server/email.ts:
-from: 'Talencor Staffing <noreply@talencor.com>', // Use your verified domain
+// Already configured in server/email.ts:
+from: 'noreply@talencor.com', // Already set - just needs domain verification
 ```
 
 ### 2. Environment Configuration

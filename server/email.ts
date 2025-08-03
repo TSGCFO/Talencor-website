@@ -29,7 +29,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     try {
       // Send actual email using Resend
       const { data, error } = await resend.emails.send({
-        from: 'onboarding@resend.dev', // Resend's verified test domain
+        from: 'noreply@talencor.com', // Your domain (needs verification in production)
         to: options.to,
         subject: options.subject,
         text: options.text,
