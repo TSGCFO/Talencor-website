@@ -399,7 +399,7 @@ export class DatabaseStorage implements IStorage {
     return posting || undefined;
   }
   
-  async updateJobPostingStatus(id: number, status: string): Promise<JobPosting> {
+  async updateJobPostingStatus(id: number, status: string): Promise<JobPosting | null> {
     const [updated] = await db
       .update(jobPostings)
       .set({ 
@@ -408,7 +408,7 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(jobPostings.id, id))
       .returning();
-    return updated;
+    return updated || null;
   }
 }
 

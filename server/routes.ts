@@ -97,6 +97,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new job posting
   app.post("/api/job-postings", async (req, res) => {
     try {
+      // Check honeypot field for spam prevention
+      if (req.body.website) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid submission detected"
+        });
+      }
+      
       const validatedData = insertJobPostingSchema.parse(req.body);
       const posting = await storage.createJobPosting(validatedData);
       
@@ -209,6 +217,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updated = await storage.updateJobPostingStatus(id, status);
+      
+      if (!updated) {
+        return res.status(404).json({
+          success: false,
+          message: "Job posting not found"
+        });
+      }
+      
       res.json({ success: true, posting: updated });
     } catch (error) {
       console.error("Error updating job posting status:", error);

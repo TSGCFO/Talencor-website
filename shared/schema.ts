@@ -237,6 +237,12 @@ export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({
   createdAt: true,
   updatedAt: true,
   status: true,
+}).extend({
+  email: z.string().email("Invalid email format"),
+  employmentType: z.enum(["permanent", "temporary", "contract-to-hire"], {
+    errorMap: () => ({ message: "Employment type must be permanent, temporary, or contract-to-hire" })
+  }),
+  phone: z.string().min(10, "Phone number must be at least 10 characters"),
 });
 
 // Types
