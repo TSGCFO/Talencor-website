@@ -72,6 +72,19 @@ export const dynamicLinks = pgTable("dynamic_links", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Client Management table
+export const clients = pgTable("clients", {
+  id: serial("id").primaryKey(),
+  companyName: text("company_name").notNull().unique(),
+  contactName: text("contact_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  accessCode: text("access_code").notNull().unique(), // Simple 6-digit code for authentication
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Job Posting tables
 export const jobPostings = pgTable("job_postings", {
   id: serial("id").primaryKey(),
@@ -95,6 +108,9 @@ export const jobPostings = pgTable("job_postings", {
   
   // Status Management
   status: text("status").default("new").notNull(), // 'new', 'contacted', 'contract_pending', 'posted', 'closed'
+  
+  // Client Reference (Optional - if authenticated)
+  clientId: integer("client_id").references(() => clients.id),
   
   // Timestamps
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -232,11 +248,18 @@ export const insertResumeSectionSchema = createInsertSchema(resumeSections).omit
   updatedAt: true,
 });
 
+export const insertClientSchema = createInsertSchema(clients).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
   status: true,
+  clientId: true,
 }).extend({
   email: z.string().email("Invalid email format"),
   employmentType: z.enum(["permanent", "temporary", "contract-to-hire"], {
@@ -267,5 +290,7 @@ export type InsertResumeSession = z.infer<typeof insertResumeSessionSchema>;
 export type ResumeSession = typeof resumeSessions.$inferSelect;
 export type InsertResumeSection = z.infer<typeof insertResumeSectionSchema>;
 export type ResumeSection = typeof resumeSections.$inferSelect;
+export type InsertClient = z.infer<typeof insertClientSchema>;
+export type Client = typeof clients.$inferSelect;
 export type InsertJobPosting = z.infer<typeof insertJobPostingSchema>;
 export type JobPosting = typeof jobPostings.$inferSelect;

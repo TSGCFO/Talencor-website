@@ -94,6 +94,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Job Posting API Routes
   
+  // Client access code verification endpoint
+  app.post("/api/verify-client", async (req, res) => {
+    try {
+      const { accessCode } = req.body;
+      
+      if (!accessCode || typeof accessCode !== 'string') {
+        return res.status(400).json({
+          success: false,
+          message: "Access code is required"
+        });
+      }
+      
+      const client = await storage.getClientByAccessCode(accessCode.trim());
+      
+      if (!client) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid access code"
+        });
+      }
+      
+      res.json({
+        success: true,
+        client: {
+          companyName: client.companyName,
+          contactName: client.contactName,
+          email: client.email,
+          phone: client.phone
+        }
+      });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'verify_client',
+      });
+      res.status(500).json({
+        success: false,
+        message: "Failed to verify access code"
+      });
+    }
+  });
+  
   // Create a new job posting
   app.post("/api/job-postings", async (req, res) => {
     try {
@@ -106,14 +147,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const validatedData = insertJobPostingSchema.parse(req.body);
-      const posting = await storage.createJobPosting(validatedData);
+      let jobPostingData: any = { ...validatedData };
+      
+      // Check if an access code was provided
+      if (req.body.accessCode) {
+        const client = await storage.getClientByAccessCode(req.body.accessCode.trim());
+        if (client) {
+          // Override with client data and mark as existing client
+          jobPostingData = {
+            ...jobPostingData,
+            isExistingClient: true,
+            clientId: client.id,
+            status: 'contacted' // Fast-track status for verified clients
+          };
+        }
+      }
+      
+      const posting = await storage.createJobPosting(jobPostingData);
       
       // Log the new posting for internal tracking
       console.log('New job posting created:', {
         id: posting.id,
         company: posting.companyName,
         jobTitle: posting.jobTitle,
-        isExistingClient: posting.isExistingClient
+        isExistingClient: posting.isExistingClient,
+        status: posting.status
       });
       
       // Import email functions dynamically to avoid circular dependencies

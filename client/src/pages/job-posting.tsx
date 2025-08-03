@@ -52,6 +52,8 @@ type JobPostingFormData = z.infer<typeof jobPostingFormSchema>;
 
 export default function JobPosting() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [accessCode, setAccessCode] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<JobPostingFormData>({
@@ -71,6 +73,43 @@ export default function JobPosting() {
     },
   });
 
+  const verifyAccessCode = async () => {
+    if (!accessCode.trim()) {
+      toast({
+        title: "Please enter an access code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsVerifying(true);
+    try {
+      const response = await apiRequest("POST", "/api/verify-client", { accessCode });
+      
+      if (response.success && response.client) {
+        // Auto-populate form fields with client data
+        form.setValue("companyName", response.client.companyName);
+        form.setValue("contactName", response.client.contactName);
+        form.setValue("email", response.client.email);
+        form.setValue("phone", response.client.phone || "");
+        form.setValue("isExistingClient", true);
+        
+        toast({
+          title: "Client verified!",
+          description: "Your information has been auto-filled.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Invalid access code",
+        description: "Please check your access code and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   const submitMutation = useMutation({
     mutationFn: async (data: JobPostingFormData) => {
       const formattedData = {
@@ -78,6 +117,7 @@ export default function JobPosting() {
         anticipatedStartDate: data.anticipatedStartDate 
           ? format(data.anticipatedStartDate, "yyyy-MM-dd")
           : null,
+        accessCode: accessCode.trim() || undefined, // Include access code if provided
       };
       return apiRequest("POST", "/api/job-postings", formattedData);
     },
@@ -137,6 +177,7 @@ export default function JobPosting() {
                   onClick={() => {
                     setIsSubmitted(false);
                     form.reset();
+                    setAccessCode("");
                   }}
                 >
                   Post Another Job
@@ -201,6 +242,48 @@ export default function JobPosting() {
                   }
                 }}
                 className="space-y-8">
+                {/* Existing Client Access Code Section */}
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold mb-3">Existing Client?</h3>
+                  <p className="text-sm text-gray-700 mb-4">
+                    If you're an existing client, enter your access code to expedite your job posting.
+                  </p>
+                  <div className="flex gap-3">
+                    <Input
+                      placeholder="Enter your access code"
+                      value={accessCode}
+                      onChange={(e) => setAccessCode(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      onClick={verifyAccessCode}
+                      disabled={isVerifying || form.getValues("isExistingClient")}
+                      className="bg-orange-600 hover:bg-orange-700"
+                    >
+                      {isVerifying ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : form.getValues("isExistingClient") ? (
+                        <>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />
+                          Verified
+                        </>
+                      ) : (
+                        "Verify Code"
+                      )}
+                    </Button>
+                  </div>
+                  {form.getValues("isExistingClient") && (
+                    <p className="text-sm text-green-600 mt-2 flex items-center">
+                      <CheckCircle2 className="w-4 h-4 mr-1" />
+                      Client verified - Your information has been auto-filled
+                    </p>
+                  )}
+                </div>
+
                 {/* Contact Information Section */}
                 <div>
                   <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>

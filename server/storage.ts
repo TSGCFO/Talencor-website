@@ -23,6 +23,9 @@ import {
   dynamicLinks,
   type DynamicLink,
   type InsertDynamicLink,
+  clients,
+  type Client,
+  type InsertClient,
   jobPostings,
   type JobPosting,
   type InsertJobPosting
@@ -68,6 +71,11 @@ export interface IStorage {
   createDynamicLink(link: InsertDynamicLink): Promise<DynamicLink>;
   updateDynamicLink(key: string, url: string): Promise<DynamicLink>;
   getAllDynamicLinks(): Promise<DynamicLink[]>;
+  
+  // Client methods
+  getClientByAccessCode(accessCode: string): Promise<Client | undefined>;
+  createClient(client: InsertClient): Promise<Client>;
+  getClients(): Promise<Client[]>;
   
   // Job Posting methods
   createJobPosting(posting: InsertJobPosting): Promise<JobPosting>;
@@ -399,7 +407,7 @@ export class DatabaseStorage implements IStorage {
     return posting || undefined;
   }
   
-  async updateJobPostingStatus(id: number, status: string): Promise<JobPosting | null> {
+  async updateJobPostingStatus(id: number, status: string): Promise<JobPosting> {
     const [updated] = await db
       .update(jobPostings)
       .set({ 
@@ -408,7 +416,38 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(jobPostings.id, id))
       .returning();
-    return updated || null;
+    if (!updated) {
+      throw new Error('Job posting not found');
+    }
+    return updated;
+  }
+  
+  // Client methods
+  async getClientByAccessCode(accessCode: string): Promise<Client | undefined> {
+    const [client] = await db
+      .select()
+      .from(clients)
+      .where(and(
+        eq(clients.accessCode, accessCode),
+        eq(clients.isActive, true)
+      ));
+    return client || undefined;
+  }
+  
+  async createClient(client: InsertClient): Promise<Client> {
+    const [created] = await db
+      .insert(clients)
+      .values(client)
+      .returning();
+    return created;
+  }
+  
+  async getClients(): Promise<Client[]> {
+    return await db
+      .select()
+      .from(clients)
+      .where(eq(clients.isActive, true))
+      .orderBy(clients.companyName);
   }
 }
 

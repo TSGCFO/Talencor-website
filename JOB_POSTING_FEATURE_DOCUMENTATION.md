@@ -1,16 +1,19 @@
 # Job Posting Feature - Complete Workflow Documentation
 
+**Last Updated:** August 3, 2025
+
 ## Table of Contents
 1. [Overview](#overview)
 2. [User Journey](#user-journey)
-3. [Technical Architecture](#technical-architecture)
-4. [Database Schema](#database-schema)
-5. [API Endpoints](#api-endpoints)
-6. [Form Validation](#form-validation)
-7. [Internal Workflow](#internal-workflow)
-8. [Status Management](#status-management)
-9. [Error Handling](#error-handling)
-10. [Security Considerations](#security-considerations)
+3. [Client Access Code System](#client-access-code-system)
+4. [Technical Architecture](#technical-architecture)
+5. [Database Schema](#database-schema)
+6. [API Endpoints](#api-endpoints)
+7. [Form Validation](#form-validation)
+8. [Internal Workflow](#internal-workflow)
+9. [Status Management](#status-management)
+10. [Error Handling](#error-handling)
+11. [Security Considerations](#security-considerations)
 
 ## Overview
 
@@ -18,6 +21,7 @@ The Job Posting feature allows businesses to submit job vacancies through Talenc
 
 ### Key Features:
 - User-friendly job posting form
+- Client access code system for existing client verification
 - Automatic client status detection with dynamic feedback messages
 - Real-time form validation
 - Status tracking system
@@ -48,6 +52,7 @@ When users arrive at `/post-job`, they see:
    - Back link to Employers page
 
 2. **Form Sections**
+   - Client Access Code (optional for existing clients)
    - Contact Information
    - Job Details
    - Client Status
@@ -714,3 +719,148 @@ new → contacted → contract_pending → posted → closed
 - [ ] Success response shows correct ID
 - [ ] Error handling works end-to-end
 - [ ] Date formatting preserved
+
+## Client Access Code System
+
+### Overview
+The client access code system provides a streamlined experience for existing Talencor clients by allowing them to:
+- Auto-populate their contact information
+- Fast-track their job postings
+- Skip initial verification steps
+
+### Implementation Details
+
+#### Database Schema
+
+**Table: `clients`**
+```sql
+CREATE TABLE clients (
+  id SERIAL PRIMARY KEY,
+  company_name TEXT NOT NULL UNIQUE,
+  contact_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  access_code TEXT NOT NULL UNIQUE,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Relation to job_postings:**
+- `job_postings.client_id` → References `clients.id`
+- Allows tracking which postings came from verified clients
+
+### User Experience
+
+1. **Access Code Entry**
+   - Orange-highlighted section at top of job posting form
+   - Input field with "Verify Code" button
+   - Real-time verification without page reload
+
+2. **Successful Verification**
+   - Green checkmark indicates success
+   - Form fields auto-populate:
+     - Company Name
+     - Contact Name
+     - Email
+     - Phone (if available)
+   - "Existing Client" toggle automatically set to true
+   - Fields remain editable if updates needed
+
+3. **Failed Verification**
+   - Error toast notification appears
+   - User can retry or continue without code
+   - Form remains fully functional
+
+### API Endpoints
+
+#### Verify Client Access Code
+**Endpoint:** `POST /api/verify-client`
+
+**Request Body:**
+```json
+{
+  "accessCode": "ACME2025"
+}
+```
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "client": {
+    "companyName": "Acme Corporation",
+    "contactName": "John Smith",
+    "email": "john.smith@acme.com",
+    "phone": "416-555-0001"
+  }
+}
+```
+
+**Error Response (401):**
+```json
+{
+  "success": false,
+  "message": "Invalid access code"
+}
+```
+
+### Benefits
+
+1. **For Clients:**
+   - Faster form completion
+   - No need to re-enter company details
+   - Immediate recognition as trusted client
+   - Priority processing
+
+2. **For Talencor:**
+   - Verified client submissions
+   - Reduced manual verification
+   - Better client experience
+   - Faster workflow processing
+
+### Status Workflow Impact
+
+When a valid access code is used:
+- Job posting status starts at "contacted" instead of "new"
+- Bypasses initial review queue
+- Recruiter can proceed directly with job posting
+
+### Test Access Codes
+
+For development and testing:
+- `ACME2025` - Acme Corporation
+- `TECH2025` - Tech Solutions Inc  
+- `GLOB2025` - Global Manufacturing Ltd
+
+### Security Considerations
+
+1. **Access Code Management**
+   - Codes should be unique and non-guessable
+   - Regular rotation recommended
+   - Deactivation capability via `is_active` flag
+   - Audit trail of usage
+
+2. **Data Protection**
+   - Only non-sensitive contact info returned
+   - No financial or confidential data exposed
+   - HTTPS required for all API calls
+
+### Future Enhancements
+
+1. **Access Code Expiration**
+   - Add expiration dates to codes
+   - Automatic renewal process
+
+2. **Usage Analytics**
+   - Track how often codes are used
+   - Monitor for suspicious activity
+
+3. **Self-Service Portal**
+   - Allow clients to request codes
+   - Reset forgotten codes
+
+4. **Multi-User Support**
+   - Multiple codes per company
+   - Different permission levels
