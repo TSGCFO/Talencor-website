@@ -44,10 +44,7 @@ export default function ClientLogin() {
   // It's like checking if their VIP code is valid
   const loginMutation = useMutation({
     mutationFn: async (data: ClientLoginForm) => {
-      const response = await apiRequest("/api/client/login", {
-        method: "POST",
-        body: JSON.stringify(data)
-      });
+      const response = await apiRequest("POST", "/api/client/login", data);
       return response;
     },
     onSuccess: () => {

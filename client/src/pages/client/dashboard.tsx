@@ -77,7 +77,7 @@ export default function ClientDashboard() {
   // Handle logging out
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("/api/client/logout", { method: "POST" });
+      await apiRequest("POST", "/api/client/logout");
     },
     onSuccess: () => {
       navigate("/client/login");
@@ -89,10 +89,7 @@ export default function ClientDashboard() {
   // Handle updating a job posting
   const updateMutation = useMutation({
     mutationFn: async (data: { id: number; updates: Partial<JobPosting> }) => {
-      await apiRequest(`/api/client/job-postings/${data.id}`, {
-        method: "PATCH",
-        body: JSON.stringify(data.updates)
-      });
+      await apiRequest("PATCH", `/api/client/job-postings/${data.id}`, data.updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/client/job-postings"] });
@@ -116,9 +113,7 @@ export default function ClientDashboard() {
   // Handle deleting a job posting
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/client/job-postings/${id}`, {
-        method: "DELETE"
-      });
+      await apiRequest("DELETE", `/api/client/job-postings/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/client/job-postings"] });
