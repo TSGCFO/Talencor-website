@@ -49,7 +49,12 @@ The application utilizes a monorepo structure with a clear separation of concern
   - Discovered existing test clients in database (Acme Corporation, Tech Solutions Inc, Global Manufacturing Ltd)
   - Created comprehensive documentation with XML tags and simple explanations (see CLIENT_ACCESS_CODE_DOCUMENTATION.md)
   - System allows existing clients to fast-track job postings using access codes
-  - Fixed critical URL issue in internal email notifications (replaced hardcoded localhost:5000 with dynamic Replit deployment URL)
+  - Fixed critical URL issue in internal email notifications:
+    - Created getBaseUrl() function that automatically detects deployment environment
+    - Production deployments use https://talencor.com
+    - Replit preview deployments use REPLIT_DEV_DOMAIN
+    - Local development uses http://localhost:5000
+    - Internal emails now always link to the correct admin dashboard URL
 
 **Recent Updates (August 3, 2025):**
 - Completed comprehensive Job Posting System implementation:

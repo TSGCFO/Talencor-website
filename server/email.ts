@@ -17,6 +17,25 @@ export interface EmailOptions {
 // </EmailOptionsSnippet>
 // </EmailSystemSetupSnippet>
 
+// <BaseUrlHelperSnippet>
+// This function figures out the correct website address based on where the app is running
+// It's like knowing whether to use your home address, work address, or vacation address
+function getBaseUrl(): string {
+  // Check if we're running on the real production website (talencor.com)
+  if (process.env.PRODUCTION_URL || process.env.NODE_ENV === 'production') {
+    return 'https://talencor.com';
+  }
+  
+  // Check if we're running on Replit (the development preview)
+  if (process.env.REPLIT_DEV_DOMAIN) {
+    return `https://${process.env.REPLIT_DEV_DOMAIN}`;
+  }
+  
+  // If neither, we must be running locally on a developer's computer
+  return 'http://localhost:5000';
+}
+// </BaseUrlHelperSnippet>
+
 // <GetGraphClientSnippet>
 // This function connects to Microsoft's email service
 // It's like calling the post office to tell them you want to send mail
@@ -290,7 +309,7 @@ ${data.isExistingClient
   : '- Contact new client within 24 hours\n- Discuss services and pricing\n- Send contract documents'
 }
 
-View in admin panel: ${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/admin/job-postings
+View in admin panel: ${getBaseUrl()}/admin/job-postings
   `.trim();
   // </InternalPlainTextSnippet>
   
@@ -387,7 +406,7 @@ View in admin panel: ${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.RE
       
       <!-- Big orange button to view all job postings -->
       <p style="text-align: center; margin-top: 30px;">
-        <a href="${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/admin/job-postings" style="display: inline-block; padding: 12px 24px; background-color: #F39200; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
+        <a href="${getBaseUrl()}/admin/job-postings" style="display: inline-block; padding: 12px 24px; background-color: #F39200; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
       </p>
     </div>
     <!-- Company footer -->
