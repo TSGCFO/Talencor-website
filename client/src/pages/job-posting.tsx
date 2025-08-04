@@ -337,7 +337,7 @@ export default function JobPosting() {
                         <FormItem>
                           <FormLabel>Phone Number *</FormLabel>
                           <FormControl>
-                            <Input type="tel" placeholder="(555) 123-4567" {...field} />
+                            <Input type="tel" placeholder="(647) 946-2177" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
