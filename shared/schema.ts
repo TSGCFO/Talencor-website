@@ -3,11 +3,18 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
+// <AdminUsersTableSnippet>
+// This table stores information about people who can log into the admin area
+// Think of it like a VIP list at a special entrance - only certain people can get in
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  username: text("username").notNull().unique(),    // Their login name (like their VIP card number)
+  password: text("password").notNull(),              // Their secret code (stored safely, like in a vault)
+  isAdmin: boolean("is_admin").default(false).notNull(), // Are they allowed in the admin area? (true = yes, false = no)
+  createdAt: timestamp("created_at").defaultNow().notNull(), // When they were added to the system
+  updatedAt: timestamp("updated_at").defaultNow().notNull(), // When their info was last changed
 });
+// </AdminUsersTableSnippet>
 
 export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
@@ -197,6 +204,7 @@ export const userQuestionFavoritesRelations = relations(userQuestionFavorites, (
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  isAdmin: true,
 });
 
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({

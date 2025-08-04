@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
 import { storage } from "./storage";
 import { 
   insertContactSubmissionSchema,
@@ -18,8 +19,88 @@ import { getSentryFeedbackSummary } from "./sentry-feedback-summary";
 import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
 import { generateInterviewQuestion, evaluateInterviewResponse, generateInterviewTips } from "./ai/interviewSimulator";
 import resumeRoutes from "./routes/resume";
+import { requireAdmin, loginAdmin, logoutAdmin } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // <SessionMiddlewareSnippet>
+  // Set up session storage - like giving everyone a locker to store their stuff
+  // Sessions let us remember who's logged in between page visits
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'talencor-dev-secret-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+      httpOnly: true, // Prevents JavaScript from reading the cookie
+      maxAge: 1000 * 60 * 60 * 24 // 24 hours in milliseconds
+    }
+  }));
+  // </SessionMiddlewareSnippet>
+
+  // <AdminAuthenticationRoutesSnippet>
+  // These routes handle admin login and logout
+  // Like the entrance and exit doors for the admin area
+  
+  // Admin login endpoint
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // Check if they provided both username and password
+      if (!username || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Username and password are required"
+        });
+      }
+      
+      // Try to log them in
+      const result = await loginAdmin(username, password, req);
+      
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(401).json(result);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred during login"
+      });
+    }
+  });
+  
+  // Admin logout endpoint
+  app.post("/api/admin/logout", async (req, res) => {
+    try {
+      await logoutAdmin(req);
+      res.json({ success: true, message: "Logged out successfully" });
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred during logout"
+      });
+    }
+  });
+  
+  // Check if admin is logged in
+  app.get("/api/admin/auth", (req, res) => {
+    if (req.session.user && req.session.user.isAdmin) {
+      res.json({
+        isAuthenticated: true,
+        user: {
+          id: req.session.user.id,
+          username: req.session.user.username
+        }
+      });
+    } else {
+      res.json({ isAuthenticated: false });
+    }
+  });
+  // </AdminAuthenticationRoutesSnippet>
+
   // Contact form submission
   app.post("/api/contact", async (req, res) => {
     try {
@@ -275,8 +356,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Update job posting status
-  app.patch("/api/job-postings/:id/status", async (req, res) => {
+  // Update job posting status (Admin only)
+  app.patch("/api/job-postings/:id/status", requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { status } = req.body;

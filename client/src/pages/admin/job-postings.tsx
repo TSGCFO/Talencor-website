@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { Loader2, Search, Mail, Phone, Building, MapPin, Calendar, DollarSign } from "lucide-react";
+import { Loader2, Search, Mail, Phone, Building, MapPin, Calendar, DollarSign, LogOut, User } from "lucide-react";
 import type { JobPosting } from "@/../../shared/schema";
 
 const statusOptions = [
@@ -34,9 +35,66 @@ const statusOptions = [
 ];
 
 export default function AdminJobPostings() {
+  const [location, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedPosting, setSelectedPosting] = useState<JobPosting | null>(null);
+  const [adminUser, setAdminUser] = useState<{ id: number; username: string } | null>(null);
+
+  // <AuthenticationCheckSnippet>
+  // Check if the admin is logged in when the page loads
+  // Like checking if someone has a VIP wristband before letting them into the VIP area
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/admin/auth', {
+          credentials: 'include'
+        });
+        const data = await response.json();
+        
+        if (!data.isAuthenticated) {
+          // Not logged in - redirect to login page
+          setLocation('/admin/login');
+        } else {
+          // They're logged in - save their info
+          setAdminUser(data.user);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        setLocation('/admin/login');
+      }
+    };
+    
+    checkAuth();
+  }, [setLocation]);
+  // </AuthenticationCheckSnippet>
+
+  // <LogoutFunctionSnippet>
+  // This function logs the admin out
+  // Like taking their VIP wristband when they leave
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/admin/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "Logged out successfully",
+          description: "You have been logged out of the admin panel.",
+        });
+        setLocation('/admin/login');
+      }
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+  // </LogoutFunctionSnippet>
 
   const { data: jobPostings, isLoading } = useQuery({
     queryKey: ['/api/job-postings', statusFilter],
@@ -103,9 +161,33 @@ export default function AdminJobPostings() {
 
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Admin Header with User Info and Logout */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Job Postings Management</h1>
-            <p className="mt-2 text-gray-600">Review and manage job posting submissions</p>
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Job Postings Management</h1>
+                <p className="mt-2 text-gray-600">Review and manage job posting submissions</p>
+              </div>
+              
+              {/* Admin User Info and Logout Button */}
+              {adminUser && (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <User size={20} />
+                    <span className="font-medium">{adminUser.username}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Filters */}

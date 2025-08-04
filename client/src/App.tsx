@@ -27,6 +27,7 @@ import ResumeWizard from "@/pages/resume-wizard";
 import QuestionBank from "@/pages/question-bank";
 import JobPosting from "@/pages/job-posting";
 import AdminJobPostings from "@/pages/admin/job-postings";
+import AdminLogin from "@/pages/admin-login";
 import NotFound from "@/pages/not-found";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
@@ -56,6 +57,7 @@ function Router() {
           <Route path="/interview-simulator" component={InterviewSimulator} />
           <Route path="/resume-wizard" component={ResumeWizard} />
           <Route path="/question-bank" component={QuestionBank} />
+          <Route path="/admin/login" component={AdminLogin} />
           <Route path="/admin/job-postings" component={AdminJobPostings} />
           <Route path="/demo" component={Demo} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
