@@ -174,34 +174,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: posting.status
       });
       
-      // Import email functions dynamically to avoid circular dependencies
+      // <EmailNotificationTriggerSnippet>
+      // After saving the job posting, we need to send emails
+      // This is like ringing two bells: one for the customer and one for the team
+      
+      // <ImportEmailFunctionsSnippet>
+      // We bring in our email sending tools only when we need them
+      // This is like getting the mailman only when we have mail to send
       const { sendJobPostingConfirmation, sendInternalJobPostingNotification } = await import("./email.js");
+      // </ImportEmailFunctionsSnippet>
       
-      // Send confirmation email to submitter
+      // <SendCustomerConfirmationSnippet>
+      // First, send a "thank you" email to the person who posted the job
+      // This lets them know we got their request
       await sendJobPostingConfirmation({
-        contactName: posting.contactName,
-        email: posting.email,
-        companyName: posting.companyName,
-        jobTitle: posting.jobTitle,
-        isExistingClient: posting.isExistingClient
+        contactName: posting.contactName,       // Their name for the greeting
+        email: posting.email,                   // Where to send the email
+        companyName: posting.companyName,       // Their company name
+        jobTitle: posting.jobTitle,             // The job they need filled
+        isExistingClient: posting.isExistingClient  // Are they already our customer?
       });
+      // </SendCustomerConfirmationSnippet>
       
-      // Send internal notification to recruiting team
+      // <SendTeamNotificationSnippet>
+      // Second, alert our recruiting team about the new job
+      // This email has ALL the details so the team knows what to do
       await sendInternalJobPostingNotification({
-        id: posting.id,
-        contactName: posting.contactName,
-        email: posting.email,
-        phone: posting.phone,
-        companyName: posting.companyName,
-        jobTitle: posting.jobTitle,
-        location: posting.location,
-        employmentType: posting.employmentType,
-        isExistingClient: posting.isExistingClient,
-        anticipatedStartDate: posting.anticipatedStartDate,
-        salaryRange: posting.salaryRange,
-        jobDescription: posting.jobDescription,
-        specialRequirements: posting.specialRequirements
+        id: posting.id,                         // The job posting number
+        contactName: posting.contactName,       // Who submitted it
+        email: posting.email,                   // Their email
+        phone: posting.phone,                   // Their phone number
+        companyName: posting.companyName,       // The company
+        jobTitle: posting.jobTitle,             // What job needs filling
+        location: posting.location,             // Where the job is
+        employmentType: posting.employmentType, // Full-time, part-time, etc.
+        isExistingClient: posting.isExistingClient,  // New or existing customer?
+        anticipatedStartDate: posting.anticipatedStartDate,  // When they need someone
+        salaryRange: posting.salaryRange,       // How much they'll pay
+        jobDescription: posting.jobDescription, // What the job involves
+        specialRequirements: posting.specialRequirements  // Any special needs
       });
+      // </SendTeamNotificationSnippet>
+      // </EmailNotificationTriggerSnippet>
       
       res.json({ success: true, id: posting.id });
     } catch (error) {
