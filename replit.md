@@ -8,6 +8,89 @@ This project is a professional staffing agency website for Talencor Staffing, de
 
 Preferred communication style: Simple, everyday language.
 
+You are required to always generate code that is self-documenting using XML-style tags. This is a mandatory rule for all development work, across all programming languages and use cases.
+
+Each code snippet must include:
+
+- Clear XML-style section tags (e.g., `<emailoptionssnippet>, <userauthconfigsnippet>`) to define logical blocks.
+
+- Inline comments written in simple, easy-to-understand language with no technical jargon.
+
+- Descriptions that explain the purpose of each part of the code as if explaining to someone new to programming.
+
+- Consistent formatting and structure across all snippets.
+
+Refer to the following examples as a guide for style and expectations:
+
+**Example 1 (TypeScript):**
+
+```typescript
+
+// <emailoptionssnippet></emailoptionssnippet>
+
+// This section creates a template for what information every email needs
+
+// It's like a checklist that makes sure we don't forget any important parts of an email
+
+export interface EmailOptions {
+
+to: string;      // Who gets the email (like writing the address on an envelope)
+
+subject: string; // The title of the email (what people see before opening it)
+
+text: string;    // The plain message (like a simple letter)
+
+html?: string;   // A fancy version with colors and pictures (the ? means we don't always need this)
+
+}
+
+// </EmailOptionsSnippet>
+```
+
+**Example 2 (TypeScript):**
+
+```typescript
+// <GetUserSnippet>
+// This function gets information about the current user
+// It asks for only a few details to keep things simple and fast
+export async function getUserAsync(): Promise<User> {
+  // Make sure the client is ready
+  if (!_userClient) {
+    throw new Error('Graph has not been initialized for user auth');
+  }
+
+  return _userClient.api('/me')
+    // Only request specific properties
+    .select(['displayName', 'mail', 'userPrincipalName'])
+    .get();
+}
+// </GetUserSnippet>
+```
+
+**Example 3 (Python):**
+
+```python
+# <GetInboxSnippet>
+# This function checks the user's inbox and gets the latest 25 emails
+# It only asks for important details like who sent it, when it arrived, and the subject
+async def get_inbox(self):
+    query_params = MessagesRequestBuilder.MessagesRequestBuilderGetQueryParameters(
+        select=['from', 'isRead', 'receivedDateTime', 'subject'],
+        top=25,
+        orderby=['receivedDateTime DESC']
+    )
+    request_config = MessagesRequestBuilder.MessagesRequestBuilderGetRequestConfiguration(
+        query_parameters=query_params
+    )
+
+    messages = await self.user_client.me.mail_folders.by_mail_folder_id('inbox').messages.get(
+            request_configuration=request_config)
+    return messages
+# </GetInboxSnippet>
+```
+
+This documentation style must be applied universally, regardless of the language or use case. Always prioritize clarity, simplicity, and completeness.
+
 ## System Architecture
 
 The application utilizes a monorepo structure with a clear separation of concerns, built on a modern full-stack architecture.
