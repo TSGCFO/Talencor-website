@@ -117,6 +117,14 @@ The application utilizes a monorepo structure with a clear separation of concern
 - **Dynamic External Links Management:** Database-driven system for managing external links that change periodically (e.g., WHMIS training links), with automatic updates and fallback mechanisms.
 - **Job Posting System:** Comprehensive job submission workflow allowing businesses to post job openings, with client status detection, form validation, email notifications, honeypot spam prevention, and internal status tracking.
 
+**Recent Updates (August 5, 2025):**
+- Fixed all unresolved Sentry user feedback issues:
+  - Resume Wizard "Get Keywords" error: Fixed React rendering by properly handling keyword objects (keyword.term)
+  - Employers page excessive white space: Reduced padding from py-20 to py-12 on sections
+  - Job Seekers industry filter: Implemented working filter with URL parameters and visual indicator
+  - Added comprehensive error handling to prevent crashes in Resume Wizard
+- All 4 critical user feedback issues have been resolved and marked as such in Sentry
+
 **Recent Updates (August 4, 2025):**
 - Completed migration from Resend to Microsoft Graph API for email notifications:
   - Replaced Resend SDK with Microsoft Graph client using Azure AD app-only authentication

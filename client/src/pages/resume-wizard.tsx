@@ -266,6 +266,14 @@ export default function ResumeWizard() {
         title: "Keywords Generated",
         description: "AI-powered keyword suggestions are ready to improve your ATS compatibility."
       });
+    },
+    onError: (error: Error) => {
+      console.error("Keywords generation error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate keywords. Please try again.",
+        variant: "destructive"
+      });
     }
   });
 
@@ -771,7 +779,7 @@ export default function ResumeWizard() {
                   <div className="flex flex-wrap gap-2 mb-3">
                     {keywords.keywords.slice(0, 8).map((keyword, index) => (
                       <Badge key={index} variant="outline" className="text-xs">
-                        {keyword}
+                        {typeof keyword === 'string' ? keyword : keyword.term}
                       </Badge>
                     ))}
                   </div>

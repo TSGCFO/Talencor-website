@@ -194,7 +194,7 @@ export default function Employers() {
       </section>
 
       {/* Client Success */}
-      <section className="py-20 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold font-montserrat text-navy mb-6">
@@ -238,7 +238,7 @@ export default function Employers() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-8 bg-corporate-blue text-white">
+      <section className="py-12 bg-corporate-blue text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">
             Ready to Find Your Next Great Hire?
