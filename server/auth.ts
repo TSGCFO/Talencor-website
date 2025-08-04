@@ -16,6 +16,11 @@ declare module 'express-session' {
       username: string;
       isAdmin: boolean;
     };
+    client?: {
+      id: number;
+      companyName: string;
+      accessCode: string;
+    };
   }
 }
 // </SessionUserTypeSnippet>

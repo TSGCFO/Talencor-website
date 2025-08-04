@@ -82,6 +82,9 @@ export interface IStorage {
   getJobPostings(filters?: { status?: string }): Promise<JobPosting[]>;
   getJobPostingById(id: number): Promise<JobPosting | undefined>;
   updateJobPostingStatus(id: number, status: string): Promise<JobPosting>;
+  getJobPostingsByCompany(companyName: string): Promise<JobPosting[]>;
+  updateJobPosting(id: number, updates: Partial<InsertJobPosting>): Promise<JobPosting>;
+  deleteJobPosting(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -420,6 +423,33 @@ export class DatabaseStorage implements IStorage {
       throw new Error('Job posting not found');
     }
     return updated;
+  }
+
+  async getJobPostingsByCompany(companyName: string): Promise<JobPosting[]> {
+    return await db
+      .select()
+      .from(jobPostings)
+      .where(eq(jobPostings.companyName, companyName))
+      .orderBy(desc(jobPostings.createdAt));
+  }
+
+  async updateJobPosting(id: number, updates: Partial<InsertJobPosting>): Promise<JobPosting> {
+    const [updated] = await db
+      .update(jobPostings)
+      .set({ 
+        ...updates,
+        updatedAt: new Date()
+      })
+      .where(eq(jobPostings.id, id))
+      .returning();
+    if (!updated) {
+      throw new Error('Job posting not found');
+    }
+    return updated;
+  }
+
+  async deleteJobPosting(id: number): Promise<void> {
+    await db.delete(jobPostings).where(eq(jobPostings.id, id));
   }
   
   // Client methods

@@ -101,6 +101,195 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   // </AdminAuthenticationRoutesSnippet>
 
+  // <ClientPortalRoutesSnippet>
+  // These routes handle client access to their job postings
+  // Like a special entrance for VIP customers to see their orders
+  
+  // Client login with access code
+  app.post("/api/client/login", async (req, res) => {
+    try {
+      const { accessCode } = req.body;
+      
+      // Check if they provided an access code
+      if (!accessCode) {
+        return res.status(400).json({
+          success: false,
+          message: "Access code is required"
+        });
+      }
+      
+      // Look up the client by access code
+      const client = await storage.getClientByAccessCode(accessCode);
+      
+      if (!client) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid access code"
+        });
+      }
+      
+      // Store client info in session
+      req.session.client = {
+        id: client.id,
+        companyName: client.companyName,
+        accessCode: client.accessCode
+      };
+      
+      res.json({
+        success: true,
+        client: {
+          id: client.id,
+          companyName: client.companyName
+        }
+      });
+    } catch (error) {
+      console.error('Client login error:', error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred during login"
+      });
+    }
+  });
+  
+  // Client logout
+  app.post("/api/client/logout", (req, res) => {
+    req.session.client = undefined;
+    res.json({ success: true, message: "Logged out successfully" });
+  });
+  
+  // Check if client is logged in
+  app.get("/api/client/auth", (req, res) => {
+    if (req.session.client) {
+      res.json({
+        isAuthenticated: true,
+        client: {
+          id: req.session.client.id,
+          companyName: req.session.client.companyName
+        }
+      });
+    } else {
+      res.json({ isAuthenticated: false });
+    }
+  });
+  
+  // Get client's job postings
+  app.get("/api/client/job-postings", async (req, res) => {
+    try {
+      // Check if client is logged in
+      if (!req.session.client) {
+        return res.status(401).json({
+          success: false,
+          message: "Please log in to view your job postings"
+        });
+      }
+      
+      // Get all job postings for this client
+      const jobPostings = await storage.getJobPostingsByCompany(req.session.client.companyName);
+      
+      res.json({
+        success: true,
+        jobPostings
+      });
+    } catch (error) {
+      console.error('Error fetching client job postings:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job postings"
+      });
+    }
+  });
+
+  // Update a job posting
+  app.patch("/api/client/job-postings/:id", async (req, res) => {
+    try {
+      // Check if client is logged in
+      if (!req.session.client) {
+        return res.status(401).json({
+          success: false,
+          message: "Please log in to update job postings"
+        });
+      }
+
+      const jobId = parseInt(req.params.id);
+      
+      // First, verify this job belongs to the client
+      const job = await storage.getJobPostingById(jobId);
+      if (!job) {
+        return res.status(404).json({
+          success: false,
+          message: "Job posting not found"
+        });
+      }
+
+      if (job.companyName !== req.session.client.companyName) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only edit your own job postings"
+        });
+      }
+
+      // Update the job posting
+      const updatedJob = await storage.updateJobPosting(jobId, req.body);
+      
+      res.json({
+        success: true,
+        jobPosting: updatedJob
+      });
+    } catch (error) {
+      console.error('Error updating job posting:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update job posting"
+      });
+    }
+  });
+
+  // Delete a job posting
+  app.delete("/api/client/job-postings/:id", async (req, res) => {
+    try {
+      // Check if client is logged in
+      if (!req.session.client) {
+        return res.status(401).json({
+          success: false,
+          message: "Please log in to delete job postings"
+        });
+      }
+
+      const jobId = parseInt(req.params.id);
+      
+      // First, verify this job belongs to the client
+      const job = await storage.getJobPostingById(jobId);
+      if (!job) {
+        return res.status(404).json({
+          success: false,
+          message: "Job posting not found"
+        });
+      }
+
+      if (job.companyName !== req.session.client.companyName) {
+        return res.status(403).json({
+          success: false,
+          message: "You can only delete your own job postings"
+        });
+      }
+
+      // Delete the job posting
+      await storage.deleteJobPosting(jobId);
+      
+      res.json({
+        success: true,
+        message: "Job posting deleted successfully"
+      });
+    } catch (error) {
+      console.error('Error deleting job posting:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete job posting"
+      });
+    }
+  });
+  // </ClientPortalRoutesSnippet>
+
   // Contact form submission
   app.post("/api/contact", async (req, res) => {
     try {
