@@ -164,8 +164,8 @@ ${data.isExistingClient
 }
 
 If you have any immediate questions, please don't hesitate to contact us at:
-Phone: (555) 123-4567
-Email: recruiting@talencor.com
+Phone: (647) 946-2177
+Email: info@talencor.com
 
 Best regards,
 The Talencor Staffing Team
