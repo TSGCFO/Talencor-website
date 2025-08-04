@@ -2,9 +2,17 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { GraduationCap, Shield, Users, Award, BookOpen, CheckCircle } from "lucide-react";
+import { GraduationCap, Shield, Users, Award, BookOpen, CheckCircle, ExternalLink } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TrainingService() {
+  // Fetch the WHMIS training link from the database
+  const { data: linkData, isLoading } = useQuery<{ success: boolean; link?: { url: string; description?: string } }>({
+    queryKey: ['/api/dynamic-links/whmis_training'],
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes to get updated links
+  });
+
   return (
     <>
       <Helmet>
@@ -166,19 +174,37 @@ export default function TrainingService() {
           </div>
 
           <div className="text-center">
-            <a 
-              href="https://aixsafety.com/wp-content/uploads/articulate_uploads/WHS-Apr2025Aix/story.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block"
-            >
-              <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
-                Start Free WHMIS Training
-              </Button>
-            </a>
-            <p className="text-sm text-charcoal mt-4">
-              Training provided by AIX Safety - Opens in new window
-            </p>
+            {isLoading ? (
+              <Skeleton className="h-14 w-64 mx-auto mb-4" />
+            ) : linkData?.link?.url ? (
+              <>
+                <a 
+                  href={linkData.link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block"
+                >
+                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+                    Start Free WHMIS Training
+                    <ExternalLink className="ml-2" size={20} />
+                  </Button>
+                </a>
+                <p className="text-sm text-charcoal mt-4">
+                  Click above to access the free WHMIS certification course
+                </p>
+              </>
+            ) : (
+              <>
+                <Link href="/contact">
+                  <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
+                    Request Free WHMIS Training
+                  </Button>
+                </Link>
+                <p className="text-sm text-charcoal mt-4">
+                  Contact us to get access to free WHMIS certification
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 
-const SENTRY_AUTH_TOKEN = "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";
+const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
 const SENTRY_ORG = "tsg-fulfillment";
 const SENTRY_PROJECT = process.env.SENTRY_PROJECT_SLUG || "talencor-frontend";
+
+// Validate that required environment variables are set
+if (!SENTRY_AUTH_TOKEN) {
+  console.error('SENTRY_AUTH_TOKEN environment variable is required for Sentry integration');
+}
 
 interface SentryIssue {
   id: string;

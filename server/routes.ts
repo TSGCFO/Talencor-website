@@ -5,7 +5,9 @@ import {
   insertContactSubmissionSchema,
   insertQuestionCategorySchema,
   insertCustomInterviewQuestionSchema,
-  insertQuestionTagSchema
+  insertQuestionTagSchema,
+  insertDynamicLinkSchema,
+  insertJobPostingSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { generateSitemap, generateRobotsTxt, sitemapEntries } from "./sitemap";
@@ -15,6 +17,7 @@ import { getActualSentryIssues, resolveActualSentryIssue, bulkResolveActualSentr
 import { getSentryFeedbackSummary } from "./sentry-feedback-summary";
 import { enhanceResume, generateIndustryKeywords, type EnhancementOptions } from "./ai/resumeEnhancer";
 import { generateInterviewQuestion, evaluateInterviewResponse, generateInterviewTips } from "./ai/interviewSimulator";
+import resumeRoutes from "./routes/resume";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
@@ -85,6 +88,221 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false, 
         message: "Failed to retrieve contact submissions" 
+      });
+    }
+  });
+
+  // Job Posting API Routes
+  
+  // Client access code verification endpoint
+  app.post("/api/verify-client", async (req, res) => {
+    try {
+      const { accessCode } = req.body;
+      
+      if (!accessCode || typeof accessCode !== 'string') {
+        return res.status(400).json({
+          success: false,
+          message: "Access code is required"
+        });
+      }
+      
+      const client = await storage.getClientByAccessCode(accessCode.trim());
+      
+      if (!client) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid access code"
+        });
+      }
+      
+      res.json({
+        success: true,
+        client: {
+          companyName: client.companyName,
+          contactName: client.contactName,
+          email: client.email,
+          phone: client.phone
+        }
+      });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'verify_client',
+      });
+      res.status(500).json({
+        success: false,
+        message: "Failed to verify access code"
+      });
+    }
+  });
+  
+  // Create a new job posting
+  app.post("/api/job-postings", async (req, res) => {
+    try {
+      // Check honeypot field for spam prevention
+      if (req.body.website) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid submission detected"
+        });
+      }
+      
+      const validatedData = insertJobPostingSchema.parse(req.body);
+      let jobPostingData: any = { ...validatedData };
+      
+      // Check if an access code was provided
+      if (req.body.accessCode) {
+        const client = await storage.getClientByAccessCode(req.body.accessCode.trim());
+        if (client) {
+          // Override with client data and mark as existing client
+          jobPostingData = {
+            ...jobPostingData,
+            isExistingClient: true,
+            clientId: client.id,
+            status: 'contacted' // Fast-track status for verified clients
+          };
+        }
+      }
+      
+      const posting = await storage.createJobPosting(jobPostingData);
+      
+      // Log the new posting for internal tracking
+      console.log('New job posting created:', {
+        id: posting.id,
+        company: posting.companyName,
+        jobTitle: posting.jobTitle,
+        isExistingClient: posting.isExistingClient,
+        status: posting.status
+      });
+      
+      // <EmailNotificationTriggerSnippet>
+      // After saving the job posting, we need to send emails
+      // This is like ringing two bells: one for the customer and one for the team
+      
+      // <ImportEmailFunctionsSnippet>
+      // We bring in our email sending tools only when we need them
+      // This is like getting the mailman only when we have mail to send
+      const { sendJobPostingConfirmation, sendInternalJobPostingNotification } = await import("./email.js");
+      // </ImportEmailFunctionsSnippet>
+      
+      // <SendCustomerConfirmationSnippet>
+      // First, send a "thank you" email to the person who posted the job
+      // This lets them know we got their request
+      await sendJobPostingConfirmation({
+        contactName: posting.contactName,       // Their name for the greeting
+        email: posting.email,                   // Where to send the email
+        companyName: posting.companyName,       // Their company name
+        jobTitle: posting.jobTitle,             // The job they need filled
+        isExistingClient: posting.isExistingClient  // Are they already our customer?
+      });
+      // </SendCustomerConfirmationSnippet>
+      
+      // <SendTeamNotificationSnippet>
+      // Second, alert our recruiting team about the new job
+      // This email has ALL the details so the team knows what to do
+      await sendInternalJobPostingNotification({
+        id: posting.id,                         // The job posting number
+        contactName: posting.contactName,       // Who submitted it
+        email: posting.email,                   // Their email
+        phone: posting.phone,                   // Their phone number
+        companyName: posting.companyName,       // The company
+        jobTitle: posting.jobTitle,             // What job needs filling
+        location: posting.location,             // Where the job is
+        employmentType: posting.employmentType, // Full-time, part-time, etc.
+        isExistingClient: posting.isExistingClient,  // New or existing customer?
+        anticipatedStartDate: posting.anticipatedStartDate,  // When they need someone
+        salaryRange: posting.salaryRange,       // How much they'll pay
+        jobDescription: posting.jobDescription, // What the job involves
+        specialRequirements: posting.specialRequirements  // Any special needs
+      });
+      // </SendTeamNotificationSnippet>
+      // </EmailNotificationTriggerSnippet>
+      
+      res.json({ success: true, id: posting.id });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({
+          success: false,
+          message: "Invalid form data",
+          errors: error.errors
+        });
+      } else {
+        console.error("Error creating job posting:", error);
+        res.status(500).json({
+          success: false,
+          message: "Failed to submit job posting"
+        });
+      }
+    }
+  });
+  
+  // Get all job postings (with optional status filter)
+  app.get("/api/job-postings", async (req, res) => {
+    try {
+      const { status } = req.query;
+      const postings = await storage.getJobPostings(
+        status ? { status: status as string } : undefined
+      );
+      res.json(postings);
+    } catch (error) {
+      console.error("Error fetching job postings:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job postings"
+      });
+    }
+  });
+  
+  // Get a single job posting by ID
+  app.get("/api/job-postings/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const posting = await storage.getJobPostingById(id);
+      
+      if (!posting) {
+        return res.status(404).json({
+          success: false,
+          message: "Job posting not found"
+        });
+      }
+      
+      res.json(posting);
+    } catch (error) {
+      console.error("Error fetching job posting:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job posting"
+      });
+    }
+  });
+  
+  // Update job posting status
+  app.patch("/api/job-postings/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!status || !['new', 'contacted', 'contract_pending', 'posted', 'closed'].includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status"
+        });
+      }
+      
+      const updated = await storage.updateJobPostingStatus(id, status);
+      
+      if (!updated) {
+        return res.status(404).json({
+          success: false,
+          message: "Job posting not found"
+        });
+      }
+      
+      res.json({ success: true, posting: updated });
+    } catch (error) {
+      console.error("Error updating job posting status:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update job posting status"
       });
     }
   });
@@ -675,6 +893,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Dynamic Links endpoints
+  // Get a specific dynamic link by key
+  app.get("/api/dynamic-links/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      const link = await storage.getDynamicLink(key);
+      
+      if (!link) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Link not found" 
+        });
+      }
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'get_dynamic_link',
+        key: req.params.key,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get dynamic link" 
+      });
+    }
+  });
+
+  // Create a new dynamic link
+  app.post("/api/dynamic-links", async (req, res) => {
+    try {
+      const validatedData = insertDynamicLinkSchema.parse(req.body);
+      const link = await storage.createDynamicLink(validatedData);
+      
+      console.log('Dynamic link created', {
+        key: link.key,
+        url: link.url,
+      });
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ 
+          success: false, 
+          message: "Invalid link data", 
+          errors: error.errors 
+        });
+      } else {
+        captureError(error as Error, {
+          action: 'create_dynamic_link',
+          data: req.body,
+        });
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to create dynamic link" 
+        });
+      }
+    }
+  });
+
+  // Update a dynamic link
+  app.put("/api/dynamic-links/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      const { url } = req.body;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "URL is required" 
+        });
+      }
+      
+      const link = await storage.updateDynamicLink(key, url);
+      
+      console.log('Dynamic link updated', {
+        key: link.key,
+        url: link.url,
+      });
+      
+      res.json({ success: true, link });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'update_dynamic_link',
+        key: req.params.key,
+        url: req.body.url,
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update dynamic link" 
+      });
+    }
+  });
+
+  // Get all dynamic links
+  app.get("/api/dynamic-links", async (req, res) => {
+    try {
+      const links = await storage.getAllDynamicLinks();
+      res.json({ success: true, links });
+    } catch (error) {
+      captureError(error as Error, {
+        action: 'get_all_dynamic_links',
+      });
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get dynamic links" 
+      });
+    }
+  });
+
+  // Resume enhancement routes
+  app.use("/api/resume", resumeRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

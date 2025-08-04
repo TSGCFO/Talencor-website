@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initSentry, sentryErrorHandler } from "./sentry";
+import { scheduleLinkUpdates } from "./link-updater";
 
 // Initialize Sentry first before any other middleware
 initSentry();
@@ -41,6 +42,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Schedule automatic link updates
+  scheduleLinkUpdates();
+  
   const server = await registerRoutes(app);
 
   // Sentry error handler must be before any other error middleware

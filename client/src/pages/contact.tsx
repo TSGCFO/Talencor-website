@@ -327,7 +327,7 @@ export default function Contact() {
                         />
                         
                         <AnimatedButton
-                          onClick={() => form.handleSubmit(onSubmit)()}
+                          type="submit"
                           loading={submitContact.isPending}
                           loadingText="Sending Message..."
                           successText="Message Sent!"
