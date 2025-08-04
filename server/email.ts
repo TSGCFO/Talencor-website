@@ -290,7 +290,7 @@ ${data.isExistingClient
   : '- Contact new client within 24 hours\n- Discuss services and pricing\n- Send contract documents'
 }
 
-View in admin panel: ${process.env.REPL_SLUG ? `https://${process.env.REPL_SLUG}.repl.co` : 'http://localhost:5000'}/admin/job-postings
+View in admin panel: ${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/admin/job-postings
   `.trim();
   // </InternalPlainTextSnippet>
   
@@ -387,7 +387,7 @@ View in admin panel: ${process.env.REPL_SLUG ? `https://${process.env.REPL_SLUG}
       
       <!-- Big orange button to view all job postings -->
       <p style="text-align: center; margin-top: 30px;">
-        <a href="${process.env.REPL_SLUG ? `https://${process.env.REPL_SLUG}.repl.co` : 'http://localhost:5000'}/admin/job-postings" style="display: inline-block; padding: 12px 24px; background-color: #F39200; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
+        <a href="${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/admin/job-postings" style="display: inline-block; padding: 12px 24px; background-color: #F39200; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
       </p>
     </div>
     <!-- Company footer -->
