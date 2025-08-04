@@ -238,7 +238,11 @@ export default function InterviewSimulator() {
         throw new Error(data.message || "Failed to evaluate response");
       }
 
+      // <SetFeedbackSnippet>
+      // Store the AI feedback (like saving test results)
+      console.log('Feedback received:', data.feedback);
       setFeedback(data.feedback);
+      // </SetFeedbackSnippet>
     } catch (error) {
       toast({
         title: "Error",
@@ -500,6 +504,8 @@ export default function InterviewSimulator() {
               </Card>
 
               {/* Feedback */}
+              {/* <FeedbackDisplaySnippet> */}
+              {/* Show the AI feedback if it exists (like showing test results) */}
               {feedback && (
                 <Card>
                   <CardHeader>

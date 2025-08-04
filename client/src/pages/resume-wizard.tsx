@@ -159,7 +159,14 @@ export default function ResumeWizard() {
   const [activeSection, setActiveSection] = useState<ResumeSection['sectionType']>('summary');
   const [sectionContent, setSectionContent] = useState<Record<string, string>>({});
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
-  const [keywords, setKeywords] = useState<{keywords: string[], explanation: string} | null>(null);
+  // <KeywordsStateSnippet>
+  // This stores the keyword suggestions (like a list of special words for the resume)
+  // Keywords can be simple words (string) or complex objects with extra info
+  const [keywords, setKeywords] = useState<{
+    keywords: (string | {term: string, category?: string, priority?: string, placement?: string})[],
+    explanation: string
+  } | null>(null);
+  // </KeywordsStateSnippet>
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -776,13 +783,17 @@ export default function ResumeWizard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
+                  {/* <KeywordsDisplaySnippet> */}
+                  {/* Show the keywords like labels (similar to hashtags) */}
                   <div className="flex flex-wrap gap-2 mb-3">
                     {keywords.keywords.slice(0, 8).map((keyword, index) => (
                       <Badge key={index} variant="outline" className="text-xs">
+                        {/* Check if keyword is just text or a complex object with more info */}
                         {typeof keyword === 'string' ? keyword : keyword.term}
                       </Badge>
                     ))}
                   </div>
+                  {/* </KeywordsDisplaySnippet> */}
                   <p className="text-xs text-gray-600 dark:text-gray-400">
                     {keywords.explanation}
                   </p>

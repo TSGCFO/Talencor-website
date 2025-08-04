@@ -199,6 +199,10 @@ export default function QuestionBank() {
       setEditingQuestion(null);
       resetForm();
       toast({ title: 'Success', description: 'Question updated successfully!' });
+      // <SwitchBackToBrowseSnippet>
+      // Go back to browse tab after successful update (like returning to the main page)
+      setActiveTab('browse');
+      // </SwitchBackToBrowseSnippet>
     },
     onError: (error) => {
       toast({ 
@@ -277,8 +281,12 @@ export default function QuestionBank() {
     });
   };
 
+  // <HandleEditSnippet>
+  // This function prepares the form for editing (like opening a file in an editor)
   const handleEdit = (question: CustomInterviewQuestion) => {
+    // Remember which question we're editing (like keeping a bookmark)
     setEditingQuestion(question);
+    // Fill the form with current question data (like copying text into a form)
     setFormData({
       categoryId: question.categoryId?.toString() || '',
       question: question.question,
@@ -288,8 +296,12 @@ export default function QuestionBank() {
       isPublic: question.isPublic,
       tagIds: question.tags?.map(tag => tag.id) || [],
     });
+    // Open the dialog (not actually used since we use tabs)
     setIsCreateDialogOpen(true);
+    // Switch to the create tab to show the edit form (like turning to the right page)
+    setActiveTab('create');
   };
+  // </HandleEditSnippet>
 
   const handleSubmit = () => {
     const questionData = {
