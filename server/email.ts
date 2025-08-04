@@ -1,7 +1,26 @@
+/**
+ * Email System for Talencor Staffing Job Postings
+ * 
+ * This file handles all email communications when someone submits a job posting.
+ * It sends two emails:
+ * 1. A confirmation email to the person who submitted the job
+ * 2. A notification email to our internal team at info@talencor.com
+ * 
+ * The system uses Microsoft Graph API to send emails from no-reply@talencor.com
+ */
+
 import { Client } from "@microsoft/microsoft-graph-client";
 import { ClientSecretCredential } from "@azure/identity";
 import "isomorphic-fetch";
 
+/**
+ * EmailOptions - What information we need to send any email
+ * 
+ * @param to - The email address of the person who will receive the email
+ * @param subject - The title/subject line of the email
+ * @param text - A plain text version of the email (for older email programs)
+ * @param html - An optional pretty HTML version with colors and formatting
+ */
 export interface EmailOptions {
   to: string;
   subject: string;
@@ -9,17 +28,30 @@ export interface EmailOptions {
   html?: string;
 }
 
-// Initialize Microsoft Graph client with app-only authentication
+/**
+ * Creates a connection to Microsoft's email service
+ * 
+ * Think of this like logging into your email account before sending emails.
+ * It uses three pieces of information stored securely:
+ * - MICROSOFT_TENANT_ID: Your company's ID in Microsoft's system
+ * - MICROSOFT_CLIENT_ID: Your app's unique ID
+ * - MICROSOFT_CLIENT_SECRET: Your app's password (kept secret)
+ * 
+ * @returns A client that can send emails through Microsoft
+ */
 async function getGraphClient(): Promise<Client> {
+  // Create login credentials using the three pieces of Microsoft information
   const credential = new ClientSecretCredential(
-    process.env.MICROSOFT_TENANT_ID!,
-    process.env.MICROSOFT_CLIENT_ID!,
-    process.env.MICROSOFT_CLIENT_SECRET!
+    process.env.MICROSOFT_TENANT_ID!,    // Your company ID
+    process.env.MICROSOFT_CLIENT_ID!,     // Your app ID
+    process.env.MICROSOFT_CLIENT_SECRET!  // Your app password
   );
 
+  // Set up the connection to Microsoft's email service
   const client = Client.initWithMiddleware({
     authProvider: {
       getAccessToken: async () => {
+        // Get permission to send emails
         const tokenResponse = await credential.getToken('https://graph.microsoft.com/.default');
         return tokenResponse?.token || '';
       }
