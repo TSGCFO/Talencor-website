@@ -34,6 +34,16 @@ The application utilizes a monorepo structure with a clear separation of concern
 - **Dynamic External Links Management:** Database-driven system for managing external links that change periodically (e.g., WHMIS training links), with automatic updates and fallback mechanisms.
 - **Job Posting System:** Comprehensive job submission workflow allowing businesses to post job openings, with client status detection, form validation, email notifications, honeypot spam prevention, and internal status tracking.
 
+**Recent Updates (August 4, 2025):**
+- Completed migration from Resend to Microsoft Graph API for email notifications:
+  - Replaced Resend SDK with Microsoft Graph client using Azure AD app-only authentication
+  - Updated email system to send from no-reply@talencor.com using Microsoft credentials
+  - Enhanced email templates with professional HTML formatting and Talencor branding
+  - Changed internal notification recipient from recruiting@talencor.com to info@talencor.com
+  - Successfully tested both new client and existing client email workflows
+  - Created comprehensive email system documentation (see EMAIL_SETUP_INSTRUCTIONS.md)
+  - Maintained error handling and graceful fallbacks to prevent job posting failures
+
 **Recent Updates (August 3, 2025):**
 - Completed comprehensive Job Posting System implementation:
   - Built full job posting submission form with real-time validation
@@ -92,4 +102,6 @@ The application utilizes a monorepo structure with a clear separation of concern
 - **vite**: Frontend build tool and development server
 - **tsx**: TypeScript execution for development
 - **esbuild**: Fast JavaScript bundler
-- **OpenAI API**: For AI-powered career tools (Resume Enhancement and Interview Simulator).
+- **OpenAI API**: For AI-powered career tools (Resume Enhancement and Interview Simulator)
+- **@microsoft/microsoft-graph-client**: Microsoft Graph SDK for email functionality
+- **@azure/identity**: Azure authentication library for app-only Graph API access

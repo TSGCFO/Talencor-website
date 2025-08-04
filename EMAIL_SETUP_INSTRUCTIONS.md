@@ -1,131 +1,104 @@
-# Email Setup Instructions for Production
+# Email System Setup Instructions
 
 ## Overview
 
-The job posting system includes email notifications that send confirmation emails to job submitters and alerts to the recruiting team. This document explains how to set up real email delivery for production.
+The Talencor Staffing application uses Microsoft Graph API to send emails from `no-reply@talencor.com`. This system sends two types of emails when a job posting is submitted:
 
-## Current Status
+1. **Confirmation email** to the job posting submitter
+2. **Internal notification email** to `info@talencor.com`
 
-✅ **Email System Implemented**: Job posting notifications are fully coded and tested
-✅ **Resend Integration**: Uses Resend API for email delivery
-✅ **Fallback System**: Gracefully handles email failures without breaking job submissions
-✅ **Professional Templates**: HTML and text email templates with Talencor branding
+## Microsoft Graph Integration
 
-## Production Setup Required
+### Authentication
+The system uses app-only authentication with the following Azure AD credentials:
+- `MICROSOFT_CLIENT_ID` - Application (client) ID
+- `MICROSOFT_CLIENT_SECRET` - Client secret
+- `MICROSOFT_TENANT_ID` - Directory (tenant) ID
 
-### 1. Domain Verification (Required for Production)
+### Email Sender
+All emails are sent from: `no-reply@talencor.com`
 
-For production email delivery, you need to:
-
-1. **Go to Resend Dashboard**: https://resend.com/domains
-2. **Add Your Domain**: Add `talencor.com` (or your production domain)
-3. **Verify DNS Records**: Follow Resend's instructions to add DNS records
-4. **Update Email Sender**: Change the `from` address in `server/email.ts`
-
-```typescript
-// Already configured in server/email.ts:
-from: 'no-reply@talencor.com', // Already set - just needs domain verification
-```
-
-### 2. Environment Configuration
-
-Ensure these environment variables are set in production:
-
-```bash
-RESEND_API_KEY=re_your_production_api_key_here
-```
-
-### 3. Email Addresses
-
-The system currently sends emails to:
-
-- **Job Submitters**: Confirmation email to their provided email address
-- **Internal Team**: Alert emails to `recruiting@talencor.com`
-
-Update the internal email address in `server/email.ts` if needed:
-
-```typescript
-// Search for "recruiting@talencor.com" and update if different
-```
+### Dependencies
+- `@microsoft/microsoft-graph-client` - Microsoft Graph SDK
+- `@azure/identity` - Azure authentication library
+- `isomorphic-fetch` - HTTP client for Graph API
 
 ## Email Templates
 
-### Confirmation Email (to job submitters)
+### 1. Job Posting Confirmation Email
+**Sent to:** Job posting submitter
+**Subject:** "Job Posting Received - Talencor Staffing"
+
+**Features:**
 - Professional HTML template with Talencor branding
-- Personalized with job title and company name
-- Different messages for existing vs new clients
+- Personalized content based on job details
+- Different messaging for existing vs. new clients
 - Contact information included
 
-### Internal Alert Email (to recruiting team)
-- Complete job posting details
-- Formatted for easy review
-- Priority indication for existing clients
+### 2. Internal Notification Email
+**Sent to:** `info@talencor.com`
+**Subject:** "New Job Posting: [Job Title] at [Company Name]"
+
+**Features:**
+- Comprehensive job posting details
+- Client status indicator (existing/new client)
+- Action items based on client status
+- Direct link to admin panel
+- Professional HTML formatting
+
+## Implementation Details
+
+### Error Handling
+- Graceful fallback: Email failures don't block job posting submission
+- Comprehensive logging for debugging
+- User-friendly error messages
+
+### Security
+- Uses secure app-only authentication
+- No user credentials stored
+- Minimal permissions required (Mail.Send)
+
+### Performance
+- Asynchronous email sending
+- Connection pooling for Graph API calls
+- Efficient HTML template generation
 
 ## Testing
 
-### Development Testing
-```bash
-# Test job posting with email notifications
-curl -X POST http://localhost:5000/api/job-postings \
-  -H "Content-Type: application/json" \
-  -d '{
-    "contactName": "Test User",
-    "companyName": "Test Company",
-    "email": "test@example.com",
-    "phone": "1234567890",
-    "jobTitle": "Test Position",
-    "location": "Toronto, ON",
-    "employmentType": "permanent",
-    "isExistingClient": false
-  }'
+The system has been tested with:
+- ✅ New client job postings
+- ✅ Existing client job postings (with access codes)
+- ✅ Both HTML and plain text email formats
+- ✅ Error handling and fallback scenarios
+
+## Configuration
+
+### Required Environment Variables
+```
+MICROSOFT_CLIENT_ID=your_application_client_id
+MICROSOFT_CLIENT_SECRET=your_client_secret
+MICROSOFT_TENANT_ID=your_directory_tenant_id
 ```
 
-### Production Testing
-1. Submit a test job posting through the website
-2. Check that confirmation email is received
-3. Verify internal team receives alert email
-4. Test with both existing and new client scenarios
+### Azure AD App Registration Requirements
+1. Application must have `Mail.Send` permission
+2. Admin consent required for app-only access
+3. no-reply@talencor.com mailbox must be configured
 
-## Troubleshooting
+## Monitoring
 
-### Common Issues
+All email operations are logged with:
+- Timestamp
+- Recipient email
+- Subject line
+- Success/failure status
+- Error details (if applicable)
 
-1. **Domain Not Verified Error**
-   - Solution: Complete domain verification in Resend dashboard
-   - Temporary: System will continue working, emails just won't send
+## Migration from Resend
 
-2. **Invalid API Key**
-   - Solution: Check RESEND_API_KEY environment variable
-   - Verify key is active in Resend dashboard
-
-3. **Emails Not Received**
-   - Check spam folders
-   - Verify email addresses are correct
-   - Review server logs for delivery status
-
-### Monitoring
-
-Monitor email delivery through:
-- Server console logs (shows delivery attempts)
-- Resend dashboard (shows delivery status)
-- Admin dashboard (job posting submissions continue regardless)
-
-## Production Checklist
-
-- [ ] Domain verified in Resend
-- [ ] DNS records configured
-- [ ] Production API key set
-- [ ] Email templates reviewed
-- [ ] Internal email address confirmed
-- [ ] Test emails sent and received
-- [ ] Monitoring set up
-
-## Alternative Email Providers
-
-If you prefer a different email service, the system can be adapted for:
-- SendGrid
-- AWS SES
-- Mailgun
-- Postmark
-
-Contact your developer to implement alternative providers.
+The system has been completely migrated from Resend to Microsoft Graph:
+- ✅ All Resend dependencies removed
+- ✅ Authentication updated to use Azure AD
+- ✅ Email templates enhanced with HTML formatting
+- ✅ Internal notification recipient changed to info@talencor.com
+- ✅ Full compatibility with existing job posting workflow

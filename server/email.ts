@@ -1,7 +1,6 @@
-import { Resend } from 'resend';
-
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { Client } from "@microsoft/microsoft-graph-client";
+import { ClientSecretCredential } from "@azure/identity";
+import "isomorphic-fetch";
 
 export interface EmailOptions {
   to: string;
@@ -10,43 +9,73 @@ export interface EmailOptions {
   html?: string;
 }
 
-// Send real emails using Resend API with fallback for testing
+// Initialize Microsoft Graph client with app-only authentication
+async function getGraphClient(): Promise<Client> {
+  const credential = new ClientSecretCredential(
+    process.env.MICROSOFT_TENANT_ID!,
+    process.env.MICROSOFT_CLIENT_ID!,
+    process.env.MICROSOFT_CLIENT_SECRET!
+  );
+
+  const client = Client.initWithMiddleware({
+    authProvider: {
+      getAccessToken: async () => {
+        const tokenResponse = await credential.getToken('https://graph.microsoft.com/.default');
+        return tokenResponse?.token || '';
+      }
+    }
+  });
+
+  return client;
+}
+
+// Send emails using Microsoft Graph API
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
     // Log email for development
-    console.log('Sending email notification:', {
+    console.log('Sending email via Microsoft Graph:', {
       to: options.to,
       subject: options.subject,
       timestamp: new Date().toISOString()
     });
     
-    // Only attempt to send real emails if we have a valid API key
-    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY.length < 10) {
-      console.log('No valid Resend API key - email would be sent in production');
+    // Check for required Microsoft credentials
+    if (!process.env.MICROSOFT_CLIENT_ID || !process.env.MICROSOFT_CLIENT_SECRET || !process.env.MICROSOFT_TENANT_ID) {
+      console.log('Missing Microsoft Graph credentials - email would be sent in production');
       return true;
     }
     
     try {
-      // Send actual email using Resend
-      const { data, error } = await resend.emails.send({
-        from: 'no-reply@talencor.com', // Your domain (needs verification in production)
-        to: options.to,
+      const client = await getGraphClient();
+      
+      // Define the email message
+      const message = {
         subject: options.subject,
-        text: options.text,
-        html: options.html || options.text
-      });
+        body: {
+          contentType: "HTML" as const,
+          content: options.html || `<p>${options.text.replace(/\n/g, '<br>')}</p>`,
+        },
+        toRecipients: [
+          {
+            emailAddress: {
+              address: options.to,
+            },
+          },
+        ],
+      };
+
+      // Send the email from no-reply@talencor.com
+      await client
+        .api("/users/no-reply@talencor.com/sendMail")
+        .post({
+          message,
+          saveToSentItems: true,
+        });
       
-      if (error) {
-        console.error('Resend API error:', error);
-        console.log('Note: For production, verify your domain at https://resend.com/domains');
-        // Don't fail the job posting process due to email issues
-        return true;
-      }
-      
-      console.log('✅ Email sent successfully:', { id: data?.id, to: options.to });
+      console.log('✅ Email sent successfully via Microsoft Graph:', { to: options.to });
       return true;
     } catch (emailError) {
-      console.error('Email service error:', emailError);
+      console.error('Microsoft Graph email error:', emailError);
       console.log('Job posting will continue - email notifications can be configured later');
       return true; // Don't fail the main process
     }
@@ -150,7 +179,7 @@ export async function sendInternalJobPostingNotification(data: {
   jobDescription?: string | null;
   specialRequirements?: string | null;
 }): Promise<boolean> {
-  const recruitingEmail = process.env.RECRUITING_EMAIL || 'recruiting@talencor.com';
+  const internalEmail = 'info@talencor.com';
   const subject = `New Job Posting: ${data.jobTitle} at ${data.companyName}`;
   
   const text = `
@@ -184,9 +213,98 @@ ${data.isExistingClient
 View in admin panel: ${process.env.REPL_SLUG ? `https://${process.env.REPL_SLUG}.repl.co` : 'http://localhost:5000'}/admin/job-postings
   `.trim();
   
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #1B3A52; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; background-color: #f9f9f9; }
+    .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+    .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-weight: bold; }
+    .existing-client { background-color: #d4edda; color: #155724; }
+    .new-client { background-color: #d1ecf1; color: #0c5460; }
+    .section { margin: 20px 0; padding: 15px; border-left: 4px solid #F39200; background-color: white; }
+    .section h3 { margin-top: 0; color: #1B3A52; }
+    ul { margin: 10px 0; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>New Job Posting Received</h1>
+      <h2>${data.jobTitle} at ${data.companyName}</h2>
+    </div>
+    <div class="content">
+      <p><strong>Posting ID:</strong> #${data.id}</p>
+      <p><strong>Client Status:</strong> 
+        <span class="status-badge ${data.isExistingClient ? 'existing-client' : 'new-client'}">
+          ${data.isExistingClient ? 'EXISTING CLIENT' : 'NEW CLIENT'}
+        </span>
+      </p>
+      
+      <div class="section">
+        <h3>Company Information</h3>
+        <ul>
+          <li><strong>Company:</strong> ${data.companyName}</li>
+          <li><strong>Contact:</strong> ${data.contactName}</li>
+          <li><strong>Email:</strong> ${data.email}</li>
+          <li><strong>Phone:</strong> ${data.phone}</li>
+        </ul>
+      </div>
+      
+      <div class="section">
+        <h3>Job Details</h3>
+        <ul>
+          <li><strong>Title:</strong> ${data.jobTitle}</li>
+          <li><strong>Location:</strong> ${data.location}</li>
+          <li><strong>Type:</strong> ${data.employmentType}</li>
+          ${data.anticipatedStartDate ? `<li><strong>Start Date:</strong> ${data.anticipatedStartDate}</li>` : ''}
+          ${data.salaryRange ? `<li><strong>Salary Range:</strong> ${data.salaryRange}</li>` : ''}
+        </ul>
+      </div>
+      
+      ${data.jobDescription ? `
+      <div class="section">
+        <h3>Job Description</h3>
+        <p>${data.jobDescription.replace(/\n/g, '<br>')}</p>
+      </div>
+      ` : ''}
+      
+      ${data.specialRequirements ? `
+      <div class="section">
+        <h3>Special Requirements</h3>
+        <p>${data.specialRequirements.replace(/\n/g, '<br>')}</p>
+      </div>
+      ` : ''}
+      
+      <div class="section">
+        <h3>Action Required</h3>
+        ${data.isExistingClient 
+          ? '<ul><li>Verify current contract status</li><li>Proceed with job posting</li></ul>'
+          : '<ul><li>Contact new client within 24 hours</li><li>Discuss services and pricing</li><li>Send contract documents</li></ul>'
+        }
+      </div>
+      
+      <p style="text-align: center; margin-top: 30px;">
+        <a href="${process.env.REPL_SLUG ? `https://${process.env.REPL_SLUG}.repl.co` : 'http://localhost:5000'}/admin/job-postings" style="display: inline-block; padding: 12px 24px; background-color: #F39200; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View in Admin Panel</a>
+      </p>
+    </div>
+    <div class="footer">
+      <p>&copy; 2025 Talencor Staffing. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
   return sendEmail({
-    to: recruitingEmail,
+    to: internalEmail,
     subject,
-    text
+    text,
+    html
   });
 }
