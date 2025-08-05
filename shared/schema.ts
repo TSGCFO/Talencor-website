@@ -103,18 +103,18 @@ export const jobPostings = pgTable("job_postings", {
   
   // Job Details (Required)
   jobTitle: text("job_title").notNull(),
-  department: text("department").notNull(),
+  department: text("department"), // Made optional for form compatibility
   location: text("location").notNull(),
   employmentType: text("employment_type").notNull(), // 'permanent', 'temporary', 'contract-to-hire'
-  numberOfPositions: integer("number_of_positions").default(1).notNull(),
-  urgency: text("urgency").default("medium").notNull(), // 'low', 'medium', 'high', 'urgent'
+  numberOfPositions: integer("number_of_positions").default(1), // Made optional with default
+  urgency: text("urgency").default("medium"), // Made optional with default
   isExistingClient: boolean("is_existing_client").default(false).notNull(),
   
   // Job Details (Optional)
   anticipatedStartDate: date("anticipated_start_date"),
   salaryRange: text("salary_range"),
-  jobDescription: text("job_description").notNull(),
-  requiredQualifications: text("required_qualifications").notNull(),
+  jobDescription: text("job_description"), // Made optional for form compatibility
+  requiredQualifications: text("required_qualifications"), // Made optional for form compatibility
   preferredQualifications: text("preferred_qualifications"),
   specialInstructions: text("special_instructions"),
   
