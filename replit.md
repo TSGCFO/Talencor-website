@@ -102,7 +102,7 @@ The application utilizes a monorepo structure with a clear separation of concern
 - **Modern Frontend Stack:** Leverages React 18, Wouter for routing, Tailwind CSS for styling, Radix UI/shadcn/ui for accessible components, and TanStack Query for server state management.
 - **Robust Form Handling:** Employs React Hook Form with Zod validation for secure and efficient form processing.
 - **ORM for Database Interaction:** Drizzle ORM is used for type-safe interaction with PostgreSQL, with shared TypeScript schemas between client and server.
-- **AI Integration:** Incorporates OpenAI's gpt-4o model for intelligent features such as resume enhancement, interview simulation, and dynamic question generation.
+- **AI Integration:** Incorporates OpenAI's gpt-4.1-2025-04-14 model for intelligent features such as resume enhancement, interview simulation, and dynamic question generation.
 - **UI/UX Design:** Features a golden/orange color palette consistent with Talencor's branding, responsive design for optimal viewing across devices, and engaging micro-interactions and animated loading states for an enhanced user experience.
 - **SEO Optimization:** Comprehensive SEO strategy including meta tags, structured data (Schema.org), XML sitemap, and Google-specific optimizations to maximize visibility.
 

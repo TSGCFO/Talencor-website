@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+// the newest OpenAI model is "gpt-4.1-2025-04-14" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export interface EnhancementOptions {
@@ -113,7 +113,7 @@ JSON RESPONSE FORMAT:
 Remember: The enhanced resume should feel authentic to the candidate while significantly improving their chances of landing interviews in ${jobCategory}.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1-2025-04-14",
       messages: [
         {
           role: "system",
@@ -197,7 +197,7 @@ export async function generateIndustryKeywords(
 ): Promise<string[]> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1-2025-04-14",
       messages: [
         {
           role: "system",
@@ -285,7 +285,7 @@ Focus on providing 20-25 HIGH-IMPACT keywords that will genuinely improve ATS ma
       ],
       response_format: { type: "json_object" },
       temperature: 0.5,
-      max_tokens: 500,
+      max_tokens: 5000,
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");

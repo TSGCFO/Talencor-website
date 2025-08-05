@@ -14,7 +14,7 @@
 
 ## Overview
 
-The Resume Wizard is an AI-powered tool designed to help job seekers create, analyze, and optimize their resumes for better job prospects. It uses OpenAI's advanced GPT-4o model to provide intelligent feedback, ATS (Applicant Tracking System) optimization, and industry-specific recommendations.
+The Resume Wizard is an AI-powered tool designed to help job seekers create, analyze, and optimize their resumes for better job prospects. It uses OpenAI's advanced gpt-4.1-2025-04-14 model to provide intelligent feedback, ATS (Applicant Tracking System) optimization, and industry-specific recommendations.
 
 ### What Makes It Special
 - **Real-time AI Analysis**: Get instant feedback on your resume content
@@ -708,7 +708,7 @@ Provide keyword suggestions in JSON format:
 }`;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4.1-2025-04-14",
     messages: [
       {
         role: "system",
@@ -828,7 +828,7 @@ Provide a comprehensive analysis in JSON format with this EXACT structure:
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o", // Latest OpenAI model
+      model: "gpt-4.1-2025-04-14", // Latest OpenAI model
       messages: [
         {
           role: "system",
@@ -884,7 +884,7 @@ Provide response in JSON format with:
 - reasoning: Explanation of why changes were made`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1-2025-04-14",
       messages: [
         {
           role: "system",
@@ -976,7 +976,7 @@ const analyzeResumeMutation = useMutation({
 ### Backend Processing
 - **Express.js API**: Handles all resume operations
 - **PostgreSQL Storage**: Secure database for resume data
-- **OpenAI Integration**: GPT-4o model for analysis
+- **OpenAI Integration**: gpt-4.1-2025-04-14 model for analysis
 
 #### API Routes (`server/routes/resume.ts`)
 ```typescript
