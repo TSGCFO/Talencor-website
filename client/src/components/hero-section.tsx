@@ -21,9 +21,7 @@ export default function HeroSection() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl logo-font mb-6 leading-tight">
               Aiming to Build <span className="text-talencor-gold">Long-Lasting</span> Relationships
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-200 leading-relaxed">
-              Our business model adapts to your company's need. We provide reliable help without any boundaries, 24-hours a day, seven-days a week.
-            </p>
+            <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-200 leading-relaxed">Our business model adapts to your company's needs. We provide reliable help without any boundaries, 24 hours a day, seven days a week.</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/job-seekers">
                 <Button className="gradient-button text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto border border-white/20 min-h-[44px]">
