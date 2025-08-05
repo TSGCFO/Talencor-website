@@ -117,6 +117,14 @@ The application utilizes a monorepo structure with a clear separation of concern
 - **Dynamic External Links Management:** Database-driven system for managing external links that change periodically (e.g., WHMIS training links), with automatic updates and fallback mechanisms.
 - **Job Posting System:** Comprehensive job submission workflow allowing businesses to post job openings, with client status detection, form validation, email notifications, honeypot spam prevention, and internal status tracking.
 
+**Recent Updates (August 6, 2025):**
+- Resolved additional Sentry error issues:
+  - Fixed TypeError "'/api/resume/session' is not a valid HTTP method" by adding argument validation to apiRequest function
+  - Added comprehensive error checking to prevent incorrect argument order in API calls
+  - Resolved WebSocket connection error (environment-specific Vite HMR issue)
+  - Cleaned up 6 informational Sentry logs about successful contact form submissions
+- All Sentry error issues are now resolved with a clean error dashboard
+
 **Recent Updates (August 5, 2025):**
 - Fixed all unresolved Sentry user feedback issues:
   - Resume Wizard "Get Keywords" error: Fixed React rendering by properly handling keyword objects (keyword.term)
