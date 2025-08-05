@@ -42,9 +42,14 @@ import { Link } from "wouter";
 const jobPostingFormSchema = insertJobPostingSchema.extend({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(10, "Please enter a valid phone number"),
-  jobDescription: z.string().optional(),
+  department: z.string().min(1, "Department is required"),
+  numberOfPositions: z.number().min(1, "Number of positions must be at least 1").default(1),
+  urgency: z.string().default("medium"),
+  jobDescription: z.string().min(1, "Job description is required"),
+  requiredQualifications: z.string().min(1, "Required qualifications is required"),
+  preferredQualifications: z.string().optional(),
   salaryRange: z.string().optional(),
-  specialRequirements: z.string().optional(),
+  specialInstructions: z.string().optional(),
   anticipatedStartDate: z.date().optional(),
 });
 
@@ -64,12 +69,17 @@ export default function JobPosting() {
       email: "",
       phone: "",
       jobTitle: "",
+      department: "",
       location: "",
       employmentType: "permanent",
+      numberOfPositions: 1,
+      urgency: "medium",
       isExistingClient: false,
       jobDescription: "",
+      requiredQualifications: "",
+      preferredQualifications: "",
       salaryRange: "",
-      specialRequirements: "",
+      specialInstructions: "",
     },
   });
 
@@ -85,13 +95,14 @@ export default function JobPosting() {
     setIsVerifying(true);
     try {
       const response = await apiRequest("POST", "/api/verify-client", { accessCode });
+      const data = await response.json();
       
-      if (response.success && response.client) {
+      if (data.success && data.client) {
         // Auto-populate form fields with client data
-        form.setValue("companyName", response.client.companyName);
-        form.setValue("contactName", response.client.contactName);
-        form.setValue("email", response.client.email);
-        form.setValue("phone", response.client.phone || "");
+        form.setValue("companyName", data.client.companyName);
+        form.setValue("contactName", data.client.contactName);
+        form.setValue("email", data.client.email);
+        form.setValue("phone", data.client.phone || "");
         form.setValue("isExistingClient", true);
         
         toast({
@@ -119,16 +130,20 @@ export default function JobPosting() {
           : null,
         accessCode: accessCode.trim() || undefined, // Include access code if provided
       };
-      return apiRequest("POST", "/api/job-postings", formattedData);
+      const response = await apiRequest("POST", "/api/job-postings", formattedData);
+      return response.json();
     },
-    onSuccess: () => {
-      setIsSubmitted(true);
-      toast({
-        title: "Job posting submitted successfully!",
-        description: "Our recruiting team will contact you within one business day.",
-      });
+    onSuccess: (data) => {
+      if (data.success) {
+        setIsSubmitted(true);
+        toast({
+          title: "Job posting submitted successfully!",
+          description: "Our recruiting team will contact you within one business day.",
+        });
+      }
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Job posting submission error:", error);
       toast({
         title: "Error submitting job posting",
         description: "Please try again or contact us directly.",
@@ -138,6 +153,22 @@ export default function JobPosting() {
   });
 
   const onSubmit = (data: JobPostingFormData) => {
+    // <FormSubmissionDebugSnippet>
+    // This helps us see if the form is trying to submit
+    console.log("Form submission triggered with data:", data);
+    
+    // Check if there are any form errors
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.error("Form validation errors:", form.formState.errors);
+      toast({
+        title: "Please fix form errors",
+        description: "Check the form for any validation errors.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // </FormSubmissionDebugSnippet>
+    
     submitMutation.mutate(data);
   };
 
@@ -485,10 +516,10 @@ export default function JobPosting() {
 
                     <FormField
                       control={form.control}
-                      name="specialRequirements"
+                      name="specialInstructions"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Special Requirements or Comments</FormLabel>
+                          <FormLabel>Special Instructions or Comments</FormLabel>
                           <FormControl>
                             <Textarea
                               placeholder="Any additional information we should know..."
