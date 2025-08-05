@@ -482,7 +482,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         anticipatedStartDate: posting.anticipatedStartDate,  // When they need someone
         salaryRange: posting.salaryRange,       // How much they'll pay
         jobDescription: posting.jobDescription, // What the job involves
-        specialRequirements: posting.specialRequirements  // Any special needs
+        specialInstructions: posting.specialInstructions  // Any special needs
       });
       // </SendTeamNotificationSnippet>
       // </EmailNotificationTriggerSnippet>
@@ -957,6 +957,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/sentry/actual/issues/:issueId/resolve", resolveActualSentryIssue);
   app.post("/api/sentry/actual/issues/bulk-resolve", bulkResolveActualSentryIssues);
   app.post("/api/sentry/actual/issues/:issueId/comment", addCommentToSentryIssue);
+  
+  // <BackendSentryEndpointsSnippet>
+  // Backend-specific Sentry endpoints (like a separate mailbox for backend errors)
+  app.get("/api/sentry/backend/issues", (req, res) => {
+    req.query.project = 'backend'; // Force backend project
+    getActualSentryIssues(req, res);
+  });
+  
+  app.get("/api/sentry/backend/issues/:issueId", async (req, res) => {
+    try {
+      const { issueId } = req.params;
+      const response = await fetch(
+        `https://sentry.io/api/0/projects/tsg-fulfillment/talencor-backend/issues/${issueId}/`,
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.SENTRY_AUTH_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!response.ok) {
+        return res.status(response.status).json({ error: `Issue not found: ${response.statusText}` });
+      }
+
+      const issue = await response.json();
+      res.json({ success: true, issue });
+    } catch (error) {
+      console.error('Error fetching backend issue:', error);
+      res.status(500).json({ error: 'Failed to fetch backend issue' });
+    }
+  });
+  // </BackendSentryEndpointsSnippet>
   
   // Sentry feedback summary endpoint
   app.get("/api/sentry/feedback-summary", getSentryFeedbackSummary);

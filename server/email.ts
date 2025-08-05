@@ -269,7 +269,7 @@ export async function sendInternalJobPostingNotification(data: {
   anticipatedStartDate?: string | null;   // When they need someone to start (optional)
   salaryRange?: string | null;            // How much they're willing to pay (optional)
   jobDescription?: string | null;         // Details about the job (optional)
-  specialRequirements?: string | null;    // Any special needs for this job (optional)
+  specialInstructions?: string | null;    // Any special needs for this job (optional)
 }): Promise<boolean> {
   // <InternalEmailSetupSnippet>
   // This is where we send the team alerts
@@ -301,7 +301,7 @@ ${data.anticipatedStartDate ? `- Start Date: ${data.anticipatedStartDate}` : ''}
 ${data.salaryRange ? `- Salary Range: ${data.salaryRange}` : ''}
 
 ${data.jobDescription ? `JOB DESCRIPTION:\n${data.jobDescription}\n` : ''}
-${data.specialRequirements ? `SPECIAL REQUIREMENTS:\n${data.specialRequirements}\n` : ''}
+${data.specialInstructions ? `SPECIAL INSTRUCTIONS:\n${data.specialInstructions}\n` : ''}
 
 ACTION REQUIRED:
 ${data.isExistingClient 
@@ -387,11 +387,11 @@ View in admin panel: ${getBaseUrl()}/admin/job-postings
       </div>
       ` : ''}
       
-      <!-- Only show special requirements box if they provided any -->
-      ${data.specialRequirements ? `
+      <!-- Only show special instructions box if they provided any -->
+      ${data.specialInstructions ? `
       <div class="section">
-        <h3>Special Requirements</h3>
-        <p>${data.specialRequirements.replace(/\n/g, '<br>')}</p>
+        <h3>Special Instructions</h3>
+        <p>${data.specialInstructions.replace(/\n/g, '<br>')}</p>
       </div>
       ` : ''}
       

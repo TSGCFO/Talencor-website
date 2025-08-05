@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
 const SENTRY_ORG = "tsg-fulfillment";
 const SENTRY_PROJECT = process.env.SENTRY_PROJECT_SLUG || "talencor-frontend";
+const SENTRY_BACKEND_PROJECT = "talencor-backend";
 
 // Validate that required environment variables are set
 if (!SENTRY_AUTH_TOKEN) {
@@ -28,12 +29,16 @@ function isFeedbackIssue(issue: any): boolean {
          (issue.metadata?.source === 'new_feedback_envelope');
 }
 
-// Get actual Sentry issues
+// <GetSentryIssuesSnippet>
+// This function fetches issues from Sentry (like checking a mailbox for error reports)
 export async function getActualSentryIssues(req: Request, res: Response) {
   try {
+    // Check which project to query (frontend or backend)
+    const projectSlug = req.query.project === 'backend' ? SENTRY_BACKEND_PROJECT : SENTRY_PROJECT;
+    
     // Build query parameters to fetch unresolved issues
     const queryParams = new URLSearchParams({
-      query: 'is:unresolved', // Only fetch unresolved issues
+      query: req.query.status === 'all' ? '' : 'is:unresolved', // Only fetch unresolved issues by default
       limit: '100', // Fetch up to 100 issues
       sort: 'date', // Sort by most recent
       statsPeriod: '14d', // Last 14 days
@@ -41,7 +46,7 @@ export async function getActualSentryIssues(req: Request, res: Response) {
     });
 
     const response = await fetch(
-      `https://sentry.io/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/issues/?${queryParams}`,
+      `https://sentry.io/api/0/projects/${SENTRY_ORG}/${projectSlug}/issues/?${queryParams}`,
       {
         headers: {
           'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
