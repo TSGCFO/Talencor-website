@@ -247,7 +247,7 @@ export default function Employers() {
             Let's discuss your staffing needs and create a customized solution for your business
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
+            <Link href="/job-posting">
               <Button className="bg-talencor-gold hover:bg-talencor-orange text-white px-8 py-4 text-lg font-semibold">
                 Post a Job Opening
               </Button>
