@@ -14,7 +14,7 @@ export interface EnhancementOptions {
 export async function enhanceResume(
   resumeText: string,
   jobCategory: string,
-  options: EnhancementOptions
+  options: EnhancementOptions,
 ): Promise<{
   enhancedResume: string;
   suggestions: string[];
@@ -22,15 +22,21 @@ export async function enhanceResume(
 }> {
   try {
     const enhancementTasks = [];
-    
+
     if (options.formatting) {
-      enhancementTasks.push("Professional formatting optimized for ATS systems");
+      enhancementTasks.push(
+        "Professional formatting optimized for ATS systems",
+      );
     }
     if (options.keywords) {
-      enhancementTasks.push(`Industry-specific keywords for ${jobCategory} roles`);
+      enhancementTasks.push(
+        `Industry-specific keywords for ${jobCategory} roles`,
+      );
     }
     if (options.achievements) {
-      enhancementTasks.push("Transform responsibilities into quantifiable achievements with metrics");
+      enhancementTasks.push(
+        "Transform responsibilities into quantifiable achievements with metrics",
+      );
     }
     if (options.skills) {
       enhancementTasks.push("Highlight relevant technical and soft skills");
@@ -42,7 +48,7 @@ export async function enhanceResume(
     const prompt = `Transform this resume into a powerful career marketing document that positions the candidate as the ideal choice for ${jobCategory} roles.
 
 ENHANCEMENT OBJECTIVES:
-${enhancementTasks.map((task, index) => `${index + 1}. ${task}`).join('\n')}
+${enhancementTasks.map((task, index) => `${index + 1}. ${task}`).join("\n")}
 
 TARGET INDUSTRY: ${jobCategory}
 
@@ -161,24 +167,24 @@ CURRENT MARKET INTELLIGENCE:
 - AI and automation impact on roles
 - Sustainability and social responsibility focus
 
-Your enhancements should transform ordinary resumes into powerful career marketing documents that command attention, pass ATS screening, and compel hiring managers to schedule interviews. Every enhancement must be strategic, authentic, and results-driven.`
+Your enhancements should transform ordinary resumes into powerful career marketing documents that command attention, pass ATS screening, and compel hiring managers to schedule interviews. Every enhancement must be strategic, authentic, and results-driven.`,
         },
         {
           role: "user",
-          content: prompt
-        }
+          content: prompt,
+        },
       ],
       response_format: { type: "json_object" },
       temperature: 0.7,
-      max_tokens: 2000
+      max_tokens: 2000,
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");
-    
+
     return {
       enhancedResume: result.enhancedResume || resumeText,
       suggestions: result.suggestions || [],
-      improvements: result.improvements || []
+      improvements: result.improvements || [],
     };
   } catch (error) {
     console.error("Error enhancing resume:", error);
@@ -186,7 +192,9 @@ Your enhancements should transform ordinary resumes into powerful career marketi
   }
 }
 
-export async function generateIndustryKeywords(industry: string): Promise<string[]> {
+export async function generateIndustryKeywords(
+  industry: string,
+): Promise<string[]> {
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -223,7 +231,7 @@ INDUSTRY EXPERTISE:
 - Manufacturing: Processes, certifications, systems
 - Creative: Software, techniques, industry standards
 
-Your keyword recommendations should be based on actual market data and proven to increase resume visibility and match rates.`
+Your keyword recommendations should be based on actual market data and proven to increase resume visibility and match rates.`,
         },
         {
           role: "user",
@@ -272,12 +280,12 @@ FORMAT YOUR RESPONSE AS JSON:
   "avoid_keywords": ["outdated or ineffective terms to exclude"]
 }
 
-Focus on providing 20-25 HIGH-IMPACT keywords that will genuinely improve ATS matching for ${industry} professionals.`
-        }
+Focus on providing 20-25 HIGH-IMPACT keywords that will genuinely improve ATS matching for ${industry} professionals.`,
+        },
       ],
       response_format: { type: "json_object" },
       temperature: 0.5,
-      max_tokens: 500
+      max_tokens: 500,
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");
