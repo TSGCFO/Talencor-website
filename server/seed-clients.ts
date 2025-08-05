@@ -21,7 +21,7 @@ async function seedClients() {
         email: "john.smith@acme.com",
         phone: "416-555-0001",
         accessCode: "ACME2025", // Their special VIP code
-        isActive: true
+        isActive: true,
       },
       {
         // <TechStartupClientSnippet>
@@ -31,7 +31,7 @@ async function seedClients() {
         email: "sarah@techstartup.com",
         phone: "647-555-0002",
         accessCode: "TECH2025", // Their special VIP code
-        isActive: true
+        isActive: true,
       },
       {
         // <GlobalCorpClientSnippet>
@@ -41,8 +41,8 @@ async function seedClients() {
         email: "mchen@globalcorp.com",
         phone: "905-555-0003",
         accessCode: "GLOB2025", // Their special VIP code
-        isActive: true
-      }
+        isActive: true,
+      },
     ];
     // </TestClientDataSnippet>
 
@@ -59,9 +59,9 @@ async function seedClients() {
     // <SuccessMessageSnippet>
     // Tell us how many clients were created
     console.log(`✅ Created ${insertedClients.length} test clients`);
-    
+
     // Show each client's details (but hide part of the access code for security)
-    insertedClients.forEach(client => {
+    insertedClients.forEach((client) => {
       const maskedCode = client.accessCode.slice(0, 4) + "****";
       console.log(`   - ${client.companyName} (Code: ${maskedCode})`);
     });
@@ -71,15 +71,15 @@ async function seedClients() {
     // If some clients already existed, let's check what we have
     if (insertedClients.length < testClients.length) {
       console.log("\n📋 Some clients already existed. Current clients:");
-      
+
       // Get all active clients from the database
       const allClients = await db
         .select()
         .from(clients)
         .where(eq(clients.isActive, true));
-      
+
       // Show all clients with masked access codes
-      allClients.forEach(client => {
+      allClients.forEach((client) => {
         const maskedCode = client.accessCode.slice(0, 4) + "****";
         console.log(`   - ${client.companyName} (Code: ${maskedCode})`);
       });
@@ -88,7 +88,6 @@ async function seedClients() {
 
     console.log("\n✨ Client seeding completed!");
     console.log("Test access codes: ACME2025, TECH2025, GLOB2025");
-    
   } catch (error) {
     console.error("❌ Error seeding clients:", error);
     throw error;

@@ -1,4 +1,12 @@
-import { pgTable, text, serial, integer, boolean, timestamp, date } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  boolean,
+  timestamp,
+  date,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -8,8 +16,8 @@ import { relations } from "drizzle-orm";
 // Think of it like a VIP list at a special entrance - only certain people can get in
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),    // Their login name (like their VIP card number)
-  password: text("password").notNull(),              // Their secret code (stored safely, like in a vault)
+  username: text("username").notNull().unique(), // Their login name (like their VIP card number)
+  password: text("password").notNull(), // Their secret code (stored safely, like in a vault)
   isAdmin: boolean("is_admin").default(false).notNull(), // Are they allowed in the admin area? (true = yes, false = no)
   createdAt: timestamp("created_at").defaultNow().notNull(), // When they were added to the system
   updatedAt: timestamp("updated_at").defaultNow().notNull(), // When their info was last changed
@@ -57,14 +65,18 @@ export const questionTags = pgTable("question_tags", {
 
 export const questionTagRelations = pgTable("question_tag_relations", {
   id: serial("id").primaryKey(),
-  questionId: integer("question_id").references(() => customInterviewQuestions.id),
+  questionId: integer("question_id").references(
+    () => customInterviewQuestions.id,
+  ),
   tagId: integer("tag_id").references(() => questionTags.id),
 });
 
 export const userQuestionFavorites = pgTable("user_question_favorites", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
-  questionId: integer("question_id").references(() => customInterviewQuestions.id),
+  questionId: integer("question_id").references(
+    () => customInterviewQuestions.id,
+  ),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -87,7 +99,40 @@ export const clients = pgTable("clients", {
   email: text("email").notNull(),
   phone: text("phone"),
   accessCode: text("access_code").notNull().unique(), // Simple 6-digit code for authentication
+  codeExpiresAt: timestamp("code_expires_at"), // For time-limited codes
+  lastLoginAt: timestamp("last_login_at"), // Track last login
+  loginCount: integer("login_count").default(0).notNull(), // Track usage
+  maxLogins: integer("max_logins"), // Optional login limit
   isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Client Activity Tracking table
+export const clientActivities = pgTable("client_activities", {
+  id: serial("id").primaryKey(),
+  clientId: integer("client_id")
+    .references(() => clients.id)
+    .notNull(),
+  activityType: text("activity_type").notNull(), // 'login', 'logout', 'job_posted', 'job_updated', 'job_deleted'
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  details: text("details"), // JSON string for additional activity details
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Client Code Requests table (for self-service)
+export const clientCodeRequests = pgTable("client_code_requests", {
+  id: serial("id").primaryKey(),
+  companyName: text("company_name").notNull(),
+  contactName: text("contact_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  reason: text("reason"), // Why they need access
+  status: text("status").default("pending").notNull(), // 'pending', 'approved', 'rejected'
+  approvedBy: integer("approved_by").references(() => users.id),
+  approvedAt: timestamp("approved_at"),
+  rejectionReason: text("rejection_reason"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -100,7 +145,7 @@ export const jobPostings = pgTable("job_postings", {
   companyName: text("company_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  
+
   // Job Details (Required)
   jobTitle: text("job_title").notNull(),
   department: text("department"), // Made optional for form compatibility
@@ -109,7 +154,7 @@ export const jobPostings = pgTable("job_postings", {
   numberOfPositions: integer("number_of_positions").default(1), // Made optional with default
   urgency: text("urgency").default("medium"), // Made optional with default
   isExistingClient: boolean("is_existing_client").default(false).notNull(),
-  
+
   // Job Details (Optional)
   anticipatedStartDate: date("anticipated_start_date"),
   salaryRange: text("salary_range"),
@@ -117,13 +162,13 @@ export const jobPostings = pgTable("job_postings", {
   requiredQualifications: text("required_qualifications"), // Made optional for form compatibility
   preferredQualifications: text("preferred_qualifications"),
   specialInstructions: text("special_instructions"),
-  
+
   // Status Management
   status: text("status").default("new").notNull(), // 'new', 'contacted', 'contract_pending', 'posted', 'closed'
-  
+
   // Client Reference (Optional - if authenticated)
   clientId: integer("client_id").references(() => clients.id),
-  
+
   // Timestamps
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -142,7 +187,9 @@ export const resumeSessions = pgTable("resume_sessions", {
 
 export const resumeSections = pgTable("resume_sections", {
   id: serial("id").primaryKey(),
-  sessionId: text("session_id").references(() => resumeSessions.sessionId).notNull(),
+  sessionId: text("session_id")
+    .references(() => resumeSessions.sessionId)
+    .notNull(),
   sectionType: text("section_type").notNull(), // 'summary', 'experience', 'education', 'skills', 'achievements'
   originalContent: text("original_content").notNull(),
   enhancedContent: text("enhanced_content"),
@@ -153,11 +200,13 @@ export const resumeSections = pgTable("resume_sections", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-
 // Relations
-export const resumeSessionsRelations = relations(resumeSessions, ({ many }) => ({
-  sections: many(resumeSections),
-}));
+export const resumeSessionsRelations = relations(
+  resumeSessions,
+  ({ many }) => ({
+    sections: many(resumeSections),
+  }),
+);
 
 export const resumeSectionsRelations = relations(resumeSections, ({ one }) => ({
   session: one(resumeSessions, {
@@ -166,44 +215,56 @@ export const resumeSectionsRelations = relations(resumeSections, ({ one }) => ({
   }),
 }));
 
-export const questionCategoriesRelations = relations(questionCategories, ({ many }) => ({
-  questions: many(customInterviewQuestions),
-}));
-
-export const customInterviewQuestionsRelations = relations(customInterviewQuestions, ({ one, many }) => ({
-  category: one(questionCategories, {
-    fields: [customInterviewQuestions.categoryId],
-    references: [questionCategories.id],
+export const questionCategoriesRelations = relations(
+  questionCategories,
+  ({ many }) => ({
+    questions: many(customInterviewQuestions),
   }),
-  tagRelations: many(questionTagRelations),
-  favorites: many(userQuestionFavorites),
-}));
+);
+
+export const customInterviewQuestionsRelations = relations(
+  customInterviewQuestions,
+  ({ one, many }) => ({
+    category: one(questionCategories, {
+      fields: [customInterviewQuestions.categoryId],
+      references: [questionCategories.id],
+    }),
+    tagRelations: many(questionTagRelations),
+    favorites: many(userQuestionFavorites),
+  }),
+);
 
 export const questionTagsRelations = relations(questionTags, ({ many }) => ({
   questionRelations: many(questionTagRelations),
 }));
 
-export const questionTagRelationsRelations = relations(questionTagRelations, ({ one }) => ({
-  question: one(customInterviewQuestions, {
-    fields: [questionTagRelations.questionId],
-    references: [customInterviewQuestions.id],
+export const questionTagRelationsRelations = relations(
+  questionTagRelations,
+  ({ one }) => ({
+    question: one(customInterviewQuestions, {
+      fields: [questionTagRelations.questionId],
+      references: [customInterviewQuestions.id],
+    }),
+    tag: one(questionTags, {
+      fields: [questionTagRelations.tagId],
+      references: [questionTags.id],
+    }),
   }),
-  tag: one(questionTags, {
-    fields: [questionTagRelations.tagId],
-    references: [questionTags.id],
-  }),
-}));
+);
 
-export const userQuestionFavoritesRelations = relations(userQuestionFavorites, ({ one }) => ({
-  user: one(users, {
-    fields: [userQuestionFavorites.userId],
-    references: [users.id],
+export const userQuestionFavoritesRelations = relations(
+  userQuestionFavorites,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userQuestionFavorites.userId],
+      references: [users.id],
+    }),
+    question: one(customInterviewQuestions, {
+      fields: [userQuestionFavorites.questionId],
+      references: [customInterviewQuestions.id],
+    }),
   }),
-  question: one(customInterviewQuestions, {
-    fields: [userQuestionFavorites.questionId],
-    references: [customInterviewQuestions.id],
-  }),
-}));
+);
 
 // Insert Schemas
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -212,17 +273,23 @@ export const insertUserSchema = createInsertSchema(users).pick({
   isAdmin: true,
 });
 
-export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({
+export const insertContactSubmissionSchema = createInsertSchema(
+  contactSubmissions,
+).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertQuestionCategorySchema = createInsertSchema(questionCategories).omit({
+export const insertQuestionCategorySchema = createInsertSchema(
+  questionCategories,
+).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertCustomInterviewQuestionSchema = createInsertSchema(customInterviewQuestions).omit({
+export const insertCustomInterviewQuestionSchema = createInsertSchema(
+  customInterviewQuestions,
+).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -233,11 +300,15 @@ export const insertQuestionTagSchema = createInsertSchema(questionTags).omit({
   createdAt: true,
 });
 
-export const insertQuestionTagRelationSchema = createInsertSchema(questionTagRelations).omit({
+export const insertQuestionTagRelationSchema = createInsertSchema(
+  questionTagRelations,
+).omit({
   id: true,
 });
 
-export const insertUserQuestionFavoriteSchema = createInsertSchema(userQuestionFavorites).omit({
+export const insertUserQuestionFavoriteSchema = createInsertSchema(
+  userQuestionFavorites,
+).omit({
   id: true,
   createdAt: true,
 });
@@ -249,13 +320,17 @@ export const insertDynamicLinkSchema = createInsertSchema(dynamicLinks).omit({
   createdAt: true,
 });
 
-export const insertResumeSessionSchema = createInsertSchema(resumeSessions).omit({
+export const insertResumeSessionSchema = createInsertSchema(
+  resumeSessions,
+).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
 });
 
-export const insertResumeSectionSchema = createInsertSchema(resumeSections).omit({
+export const insertResumeSectionSchema = createInsertSchema(
+  resumeSections,
+).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -267,35 +342,72 @@ export const insertClientSchema = createInsertSchema(clients).omit({
   updatedAt: true,
 });
 
-export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({
+export const insertJobPostingSchema = createInsertSchema(jobPostings)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    status: true,
+    clientId: true,
+  })
+  .extend({
+    email: z.string().email("Invalid email format"),
+    employmentType: z.enum(["permanent", "temporary", "contract-to-hire"], {
+      errorMap: () => ({
+        message:
+          "Employment type must be permanent, temporary, or contract-to-hire",
+      }),
+    }),
+    phone: z.string().min(10, "Phone number must be at least 10 characters"),
+  });
+
+export const insertClientActivitySchema = createInsertSchema(
+  clientActivities,
+).omit({
   id: true,
   createdAt: true,
-  updatedAt: true,
-  status: true,
-  clientId: true,
-}).extend({
-  email: z.string().email("Invalid email format"),
-  employmentType: z.enum(["permanent", "temporary", "contract-to-hire"], {
-    errorMap: () => ({ message: "Employment type must be permanent, temporary, or contract-to-hire" })
-  }),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
 });
+
+export const insertClientCodeRequestSchema = createInsertSchema(
+  clientCodeRequests,
+)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    approvedBy: true,
+    approvedAt: true,
+  })
+  .extend({
+    email: z.string().email("Invalid email format"),
+  });
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
-export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
+export type InsertContactSubmission = z.infer<
+  typeof insertContactSubmissionSchema
+>;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 
-export type InsertQuestionCategory = z.infer<typeof insertQuestionCategorySchema>;
+export type InsertQuestionCategory = z.infer<
+  typeof insertQuestionCategorySchema
+>;
 export type QuestionCategory = typeof questionCategories.$inferSelect;
-export type InsertCustomInterviewQuestion = z.infer<typeof insertCustomInterviewQuestionSchema>;
-export type CustomInterviewQuestion = typeof customInterviewQuestions.$inferSelect;
+export type InsertCustomInterviewQuestion = z.infer<
+  typeof insertCustomInterviewQuestionSchema
+>;
+export type CustomInterviewQuestion =
+  typeof customInterviewQuestions.$inferSelect;
 export type InsertQuestionTag = z.infer<typeof insertQuestionTagSchema>;
 export type QuestionTag = typeof questionTags.$inferSelect;
-export type InsertQuestionTagRelation = z.infer<typeof insertQuestionTagRelationSchema>;
+export type InsertQuestionTagRelation = z.infer<
+  typeof insertQuestionTagRelationSchema
+>;
 export type QuestionTagRelation = typeof questionTagRelations.$inferSelect;
-export type InsertUserQuestionFavorite = z.infer<typeof insertUserQuestionFavoriteSchema>;
+export type InsertUserQuestionFavorite = z.infer<
+  typeof insertUserQuestionFavoriteSchema
+>;
 export type UserQuestionFavorite = typeof userQuestionFavorites.$inferSelect;
 export type InsertDynamicLink = z.infer<typeof insertDynamicLinkSchema>;
 export type DynamicLink = typeof dynamicLinks.$inferSelect;
@@ -307,3 +419,9 @@ export type InsertClient = z.infer<typeof insertClientSchema>;
 export type Client = typeof clients.$inferSelect;
 export type InsertJobPosting = z.infer<typeof insertJobPostingSchema>;
 export type JobPosting = typeof jobPostings.$inferSelect;
+export type InsertClientActivity = z.infer<typeof insertClientActivitySchema>;
+export type ClientActivity = typeof clientActivities.$inferSelect;
+export type InsertClientCodeRequest = z.infer<
+  typeof insertClientCodeRequestSchema
+>;
+export type ClientCodeRequest = typeof clientCodeRequests.$inferSelect;

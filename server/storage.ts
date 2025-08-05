@@ -28,7 +28,13 @@ import {
   type InsertClient,
   jobPostings,
   type JobPosting,
-  type InsertJobPosting
+  type InsertJobPosting,
+  clientActivities,
+  type ClientActivity,
+  type InsertClientActivity,
+  clientCodeRequests,
+  type ClientCodeRequest,
+  type InsertClientCodeRequest
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, ilike, inArray, desc, sql } from "drizzle-orm";
@@ -76,6 +82,20 @@ export interface IStorage {
   getClientByAccessCode(accessCode: string): Promise<Client | undefined>;
   createClient(client: InsertClient): Promise<Client>;
   getClients(): Promise<Client[]>;
+  updateClient(id: number, updates: Partial<InsertClient>): Promise<Client>;
+  updateClientLoginInfo(clientId: number): Promise<void>;
+  deactivateClient(id: number): Promise<void>;
+  
+  // Client Activity methods
+  createClientActivity(activity: InsertClientActivity): Promise<ClientActivity>;
+  getClientActivities(clientId: number): Promise<ClientActivity[]>;
+  
+  // Client Code Request methods
+  createClientCodeRequest(request: InsertClientCodeRequest): Promise<ClientCodeRequest>;
+  getClientCodeRequests(filters?: { status?: string }): Promise<ClientCodeRequest[]>;
+  getClientCodeRequestById(id: number): Promise<ClientCodeRequest | undefined>;
+  approveClientCodeRequest(id: number, adminId: number): Promise<{ client: Client; request: ClientCodeRequest }>;
+  rejectClientCodeRequest(id: number, adminId: number, reason: string): Promise<ClientCodeRequest>;
   
   // Job Posting methods
   createJobPosting(posting: InsertJobPosting): Promise<JobPosting>;
@@ -240,11 +260,11 @@ export class DatabaseStorage implements IStorage {
       conditions.push(sql`${userQuestionFavorites.id} IS NOT NULL`);
     }
 
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
+    const finalQuery = conditions.length > 0 
+      ? query.where(and(...conditions))
+      : query;
 
-    let results = await query.orderBy(desc(customInterviewQuestions.updatedAt));
+    let results = await finalQuery.orderBy(desc(customInterviewQuestions.updatedAt));
 
     // Handle tag filtering separately due to many-to-many relationship
     if (tagIds && tagIds.length > 0) {
@@ -459,7 +479,11 @@ export class DatabaseStorage implements IStorage {
       .from(clients)
       .where(and(
         eq(clients.accessCode, accessCode),
-        eq(clients.isActive, true)
+        eq(clients.isActive, true),
+        or(
+          sql`${clients.codeExpiresAt} IS NULL`,
+          sql`${clients.codeExpiresAt} > NOW()`
+        )
       ));
     return client || undefined;
   }
@@ -478,6 +502,142 @@ export class DatabaseStorage implements IStorage {
       .from(clients)
       .where(eq(clients.isActive, true))
       .orderBy(clients.companyName);
+  }
+
+  async updateClient(id: number, updates: Partial<InsertClient>): Promise<Client> {
+    const [updated] = await db
+      .update(clients)
+      .set({
+        ...updates,
+        updatedAt: new Date()
+      })
+      .where(eq(clients.id, id))
+      .returning();
+    if (!updated) {
+      throw new Error('Client not found');
+    }
+    return updated;
+  }
+
+  async updateClientLoginInfo(clientId: number): Promise<void> {
+    await db
+      .update(clients)
+      .set({
+        lastLoginAt: new Date(),
+        loginCount: sql`${clients.loginCount} + 1`,
+        updatedAt: new Date()
+      })
+      .where(eq(clients.id, clientId));
+  }
+
+  async deactivateClient(id: number): Promise<void> {
+    await db
+      .update(clients)
+      .set({
+        isActive: false,
+        updatedAt: new Date()
+      })
+      .where(eq(clients.id, id));
+  }
+
+  // Client Activity methods
+  async createClientActivity(activity: InsertClientActivity): Promise<ClientActivity> {
+    const [created] = await db
+      .insert(clientActivities)
+      .values(activity)
+      .returning();
+    return created;
+  }
+
+  async getClientActivities(clientId: number): Promise<ClientActivity[]> {
+    return await db
+      .select()
+      .from(clientActivities)
+      .where(eq(clientActivities.clientId, clientId))
+      .orderBy(desc(clientActivities.createdAt));
+  }
+
+  // Client Code Request methods
+  async createClientCodeRequest(request: InsertClientCodeRequest): Promise<ClientCodeRequest> {
+    const [created] = await db
+      .insert(clientCodeRequests)
+      .values(request)
+      .returning();
+    return created;
+  }
+
+  async getClientCodeRequests(filters?: { status?: string }): Promise<ClientCodeRequest[]> {
+    const query = db
+      .select()
+      .from(clientCodeRequests)
+      .where(filters?.status ? eq(clientCodeRequests.status, filters.status) : undefined)
+      .orderBy(desc(clientCodeRequests.createdAt));
+    
+    return await query;
+  }
+
+  async getClientCodeRequestById(id: number): Promise<ClientCodeRequest | undefined> {
+    const [request] = await db
+      .select()
+      .from(clientCodeRequests)
+      .where(eq(clientCodeRequests.id, id));
+    return request || undefined;
+  }
+
+  async approveClientCodeRequest(id: number, adminId: number): Promise<{ client: Client; request: ClientCodeRequest }> {
+    // First, get the request
+    const request = await this.getClientCodeRequestById(id);
+    if (!request) {
+      throw new Error('Code request not found');
+    }
+
+    // Generate a unique 6-digit access code
+    const accessCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Create the client
+    const client = await this.createClient({
+      companyName: request.companyName,
+      contactName: request.contactName,
+      email: request.email,
+      phone: request.phone || null,
+      accessCode,
+      // Set code expiration to 30 days from now by default
+      codeExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    });
+
+    // Update the request status
+    const [updatedRequest] = await db
+      .update(clientCodeRequests)
+      .set({
+        status: 'approved',
+        approvedBy: adminId,
+        approvedAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(clientCodeRequests.id, id))
+      .returning();
+
+    return { client, request: updatedRequest };
+  }
+
+  async rejectClientCodeRequest(id: number, adminId: number, reason: string): Promise<ClientCodeRequest> {
+    const [updated] = await db
+      .update(clientCodeRequests)
+      .set({
+        status: 'rejected',
+        approvedBy: adminId,
+        approvedAt: new Date(),
+        rejectionReason: reason,
+        updatedAt: new Date()
+      })
+      .where(eq(clientCodeRequests.id, id))
+      .returning();
+    
+    if (!updated) {
+      throw new Error('Code request not found');
+    }
+    
+    return updated;
   }
 }
 
