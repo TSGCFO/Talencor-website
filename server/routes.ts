@@ -30,9 +30,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+      secure: false, // Allow cookies in both HTTP and HTTPS (needed for development)
       httpOnly: true, // Prevents JavaScript from reading the cookie
-      maxAge: 1000 * 60 * 60 * 24 // 24 hours in milliseconds
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours in milliseconds
+      sameSite: 'lax' // Helps prevent CSRF attacks while allowing normal navigation
     }
   }));
   // </SessionMiddlewareSnippet>

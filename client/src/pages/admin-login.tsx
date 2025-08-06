@@ -55,8 +55,11 @@ export default function AdminLogin() {
           description: "You've successfully logged in to the admin panel.",
         });
         
-        // Take them to the admin dashboard
-        setLocation("/admin/job-postings");
+        // Small delay to ensure session is established before redirect
+        setTimeout(() => {
+          // Take them to the admin dashboard
+          setLocation("/admin/client-management");
+        }, 100);
       } else {
         // Login failed - show the error message
         setError(data.message || "Login failed. Please try again.");
