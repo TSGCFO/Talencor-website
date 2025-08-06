@@ -32,10 +32,21 @@ export default function Footer() {
                 alt="Talencor Staffing Logo" 
                 className="h-10 sm:h-12 lg:h-14 w-auto transition-all duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
-                  e.currentTarget.onerror = () => {
-                    e.currentTarget.src = '/logo-fallback.svg';
-                  };
+                  // <LogoFallbackSnippet>
+                  // Handle logo loading errors with proper fallback chain
+                  // This prevents errors when images fail to load
+                  const img = e.currentTarget;
+                  
+                  // Check which image failed and load the next fallback
+                  if (img.src.includes('/talencor-logo-new.png')) {
+                    // First image failed, try the alternate logo
+                    img.src = '/talencor-logo-alt.png';
+                  } else if (img.src.includes('/talencor-logo-alt.png')) {
+                    // Alternate logo failed, use the SVG fallback
+                    img.src = '/logo-fallback.svg';
+                  }
+                  // If SVG also fails, browser will show alt text
+                  // </LogoFallbackSnippet>
                 }}
               />
               <div className="text-talencor-gold" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>

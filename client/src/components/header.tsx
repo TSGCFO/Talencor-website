@@ -39,10 +39,21 @@ export default function Header() {
                 alt="Talencor Staffing Logo" 
                 className="h-10 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
-                  e.currentTarget.onerror = () => {
-                    e.currentTarget.src = '/logo-fallback.svg';
-                  };
+                  // <LogoFallbackSnippet>
+                  // Handle logo loading errors with proper fallback chain
+                  // This prevents errors when images fail to load
+                  const img = e.currentTarget;
+                  
+                  // Check which image failed and load the next fallback
+                  if (img.src.includes('/talencor-logo-new.png')) {
+                    // First image failed, try the alternate logo
+                    img.src = '/talencor-logo-alt.png';
+                  } else if (img.src.includes('/talencor-logo-alt.png')) {
+                    // Alternate logo failed, use the SVG fallback
+                    img.src = '/logo-fallback.svg';
+                  }
+                  // If SVG also fails, browser will show alt text
+                  // </LogoFallbackSnippet>
                 }}
               />
               <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
@@ -58,10 +69,21 @@ export default function Header() {
                 alt="Talencor Staffing Logo" 
                 className="h-12 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
-                  e.currentTarget.onerror = () => {
-                    e.currentTarget.src = '/logo-fallback.svg';
-                  };
+                  // <LogoFallbackSnippet>
+                  // Handle logo loading errors with proper fallback chain
+                  // This prevents errors when images fail to load
+                  const img = e.currentTarget;
+                  
+                  // Check which image failed and load the next fallback
+                  if (img.src.includes('/talencor-logo-new.png')) {
+                    // First image failed, try the alternate logo
+                    img.src = '/talencor-logo-alt.png';
+                  } else if (img.src.includes('/talencor-logo-alt.png')) {
+                    // Alternate logo failed, use the SVG fallback
+                    img.src = '/logo-fallback.svg';
+                  }
+                  // If SVG also fails, browser will show alt text
+                  // </LogoFallbackSnippet>
                 }}
               />
               <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
@@ -77,10 +99,21 @@ export default function Header() {
                 alt="Talencor Staffing Logo" 
                 className="h-14 w-auto group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  e.currentTarget.src = '/talencor-logo-alt.png';
-                  e.currentTarget.onerror = () => {
-                    e.currentTarget.src = '/logo-fallback.svg';
-                  };
+                  // <LogoFallbackSnippet>
+                  // Handle logo loading errors with proper fallback chain
+                  // This prevents errors when images fail to load
+                  const img = e.currentTarget;
+                  
+                  // Check which image failed and load the next fallback
+                  if (img.src.includes('/talencor-logo-new.png')) {
+                    // First image failed, try the alternate logo
+                    img.src = '/talencor-logo-alt.png';
+                  } else if (img.src.includes('/talencor-logo-alt.png')) {
+                    // Alternate logo failed, use the SVG fallback
+                    img.src = '/logo-fallback.svg';
+                  }
+                  // If SVG also fails, browser will show alt text
+                  // </LogoFallbackSnippet>
                 }}
               />
               <div className="text-talencor-gold group-hover:scale-105 transition-transform duration-300" style={{ fontFamily: 'AmbiguityThrift, sans-serif' }}>
