@@ -99,13 +99,19 @@ export function initSentry() {
     debug: import.meta.env.DEV,
   });
 
-  // Set additional context
-  Sentry.setContext("browser", {
-    name: navigator.userAgent,
-    language: navigator.language,
-    cookieEnabled: navigator.cookieEnabled,
-    onLine: navigator.onLine,
-  });
+  // Set additional context with error handling
+  try {
+    Sentry.setContext("browser", {
+      name: navigator.userAgent,
+      language: navigator.language,
+      cookieEnabled: navigator.cookieEnabled,
+      onLine: navigator.onLine,
+    });
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.warn("Failed to set Sentry browser context:", error);
+    }
+  }
 
   if (import.meta.env.DEV) {
     console.log("Sentry initialized for frontend with enhanced configuration");
@@ -117,30 +123,66 @@ export const SentryErrorBoundary = Sentry.ErrorBoundary;
 
 // Helper to capture custom events
 export function captureEvent(message: string, extra?: Record<string, any>) {
-  Sentry.captureMessage(message, {
-    extra,
-    level: "info",
-  });
+  try {
+    Sentry.captureMessage(message, {
+      extra,
+      level: "info",
+    });
+  } catch (error) {
+    // If Sentry itself fails, log to console in development
+    if (import.meta.env.DEV) {
+      console.warn("Sentry captureMessage failed:", error);
+      console.log("Original message:", message, extra);
+    }
+    // Don't throw the error to prevent breaking the application flow
+  }
 }
 
 // Helper to capture errors with context
 export function captureError(error: Error, context?: Record<string, any>) {
-  Sentry.captureException(error, {
-    extra: context,
-  });
+  try {
+    Sentry.captureException(error, {
+      extra: context,
+    });
+  } catch (sentryError) {
+    // If Sentry itself fails, log to console in development
+    if (import.meta.env.DEV) {
+      console.warn("Sentry captureException failed:", sentryError);
+      console.error("Original error:", error, context);
+    }
+    // Don't throw the error to prevent breaking the application flow
+  }
 }
 
 // Helper to set user context
 export function setSentryUser(user: { id: string; email?: string; username?: string }) {
-  Sentry.setUser(user);
+  try {
+    Sentry.setUser(user);
+  } catch (error) {
+    // If Sentry itself fails, log to console in development
+    if (import.meta.env.DEV) {
+      console.warn("Sentry setUser failed:", error);
+      console.log("User data:", user);
+    }
+    // Don't throw the error to prevent breaking the application flow
+  }
 }
 
 // Helper to add breadcrumb
 export function addBreadcrumb(message: string, category?: string, data?: Record<string, any>) {
-  Sentry.addBreadcrumb({
-    message,
-    category: category || "custom",
-    data,
-    level: "info",
-  });
+  try {
+    Sentry.addBreadcrumb({
+      message,
+      category: category || "custom",
+      data,
+      level: "info",
+    });
+  } catch (error) {
+    // If Sentry itself fails, log to console in development
+    if (import.meta.env.DEV) {
+      console.warn("Sentry addBreadcrumb failed:", error);
+      console.log("Breadcrumb data:", { message, category, data });
+    }
+    // Don't throw the error to prevent breaking the application flow
+  }
 }
