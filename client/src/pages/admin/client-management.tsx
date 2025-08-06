@@ -123,9 +123,20 @@ export default function ClientManagement() {
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [showBulkGenerate, setShowBulkGenerate] = useState(false);
+  const [showCreateClient, setShowCreateClient] = useState(false);
   const [bulkClientData, setBulkClientData] = useState('');
   const [adminUser, setAdminUser] = useState<{ id: number; username: string } | null>(null);
   const { toast } = useToast();
+  
+  // <NewClientFormStateSnippet>
+  // These store the new client information being entered
+  const [newClientData, setNewClientData] = useState({
+    companyName: '',
+    contactName: '',
+    email: '',
+    phone: ''
+  });
+  // </NewClientFormStateSnippet>
 
   // <AuthenticationCheckSnippet>
   // Check if the admin is logged in when the page loads
@@ -248,6 +259,37 @@ export default function ClientManagement() {
       toast({
         title: "Client Deactivated",
         description: "The client has been deactivated successfully",
+      });
+    }
+  });
+
+  // Mutation for creating a single client
+  const createClientMutation = useMutation({
+    mutationFn: async (clientData: any) => {
+      const response = await fetch('/api/admin/clients/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientData)
+      });
+      if (!response.ok) throw new Error('Failed to create client');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/clients'] });
+      setShowCreateClient(false);
+      setNewClientData({
+        companyName: '',
+        contactName: '',
+        email: '',
+        phone: ''
+      });
+      
+      // Copy access code to clipboard
+      navigator.clipboard.writeText(data.accessCode);
+      
+      toast({
+        title: "Client Created Successfully!",
+        description: `Access code ${data.accessCode} has been copied to clipboard`,
       });
     }
   });
@@ -418,13 +460,22 @@ export default function ClientManagement() {
               )}
             </TabsTrigger>
           </TabsList>
-          <Button 
-            onClick={() => setShowBulkGenerate(true)}
-            className="bg-[#F97316] hover:bg-[#EA580C]"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Bulk Generate Codes
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => setShowCreateClient(true)}
+              className="bg-[#F97316] hover:bg-[#EA580C]"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create New Client
+            </Button>
+            <Button 
+              onClick={() => setShowBulkGenerate(true)}
+              variant="outline"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Bulk Generate
+            </Button>
+          </div>
         </div>
 
         <TabsContent value="clients">
@@ -583,6 +634,72 @@ export default function ClientManagement() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Create New Client Dialog */}
+      <Dialog open={showCreateClient} onOpenChange={setShowCreateClient}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Client</DialogTitle>
+            <DialogDescription>
+              Enter client details to generate an access code
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="companyName">Company Name *</Label>
+              <Input
+                id="companyName"
+                value={newClientData.companyName}
+                onChange={(e) => setNewClientData({...newClientData, companyName: e.target.value})}
+                placeholder="ABC Corporation"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="contactName">Contact Name *</Label>
+              <Input
+                id="contactName"
+                value={newClientData.contactName}
+                onChange={(e) => setNewClientData({...newClientData, contactName: e.target.value})}
+                placeholder="John Smith"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">Email Address *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={newClientData.email}
+                onChange={(e) => setNewClientData({...newClientData, email: e.target.value})}
+                placeholder="john@example.com"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone Number (Optional)</Label>
+              <Input
+                id="phone"
+                value={newClientData.phone}
+                onChange={(e) => setNewClientData({...newClientData, phone: e.target.value})}
+                placeholder="555-0123"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateClient(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => createClientMutation.mutate(newClientData)}
+              disabled={!newClientData.companyName || !newClientData.contactName || !newClientData.email || createClientMutation.isPending}
+              className="bg-[#F97316] hover:bg-[#EA580C]"
+            >
+              Create Client & Generate Code
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Bulk Generate Dialog */}
       <Dialog open={showBulkGenerate} onOpenChange={setShowBulkGenerate}>

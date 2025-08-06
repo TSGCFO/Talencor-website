@@ -527,6 +527,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Generate bulk access codes (admin only)
+  // <CreateSingleClientSnippet>
+  // This endpoint creates one new client with an access code
+  // Like giving a VIP pass to a specific company
+  app.post("/api/admin/clients/create", async (req, res) => {
+    try {
+      // Check if they're an admin
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const { companyName, contactName, email, phone } = req.body;
+      
+      // Make sure we have the required information
+      if (!companyName || !contactName || !email) {
+        return res.status(400).json({ 
+          error: "Company name, contact name, and email are required" 
+        });
+      }
+      
+      // Generate a unique 8-character access code
+      const generateAccessCode = () => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+          code += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return code;
+      };
+      
+      const accessCode = generateAccessCode();
+      
+      // Create the new client with the generated code
+      const client = await storage.createClient({
+        companyName,
+        contactName,
+        email,
+        phone: phone || null,
+        accessCode,
+        isActive: true,
+        codeExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+      });
+      
+      // Send back the client info with the access code
+      res.json({
+        success: true,
+        client,
+        accessCode: client.accessCode
+      });
+    } catch (error) {
+      console.error('Error creating client:', error);
+      res.status(500).json({ error: "Failed to create client" });
+    }
+  });
+  // </CreateSingleClientSnippet>
+
   app.post("/api/admin/clients/bulk-generate", async (req, res) => {
     try {
       if (!req.session.user?.isAdmin) {
