@@ -112,12 +112,13 @@ Client Portal System
 
 **Fields collected:**
 
-- Job title and description
-- Location and work type
-- Salary range
-- Required qualifications
-- Application instructions
-- Client contact information
+- Contact information (name, company, email, phone)
+- Job details (title, department, location)
+- Employment type (permanent, temporary, contract-to-hire)
+- Number of positions and urgency level
+- Start date and salary range
+- Job description and qualifications
+- Special instructions
 
 ### 3. Admin Management Dashboard
 
@@ -243,26 +244,48 @@ CREATE TABLE clientActivities (
 ```sql
 CREATE TABLE jobPostings (
   id SERIAL PRIMARY KEY,
-  client_name VARCHAR(255) NOT NULL,
-  client_email VARCHAR(255) NOT NULL,
-  access_code VARCHAR(50),
+  -- Contact Information (Required)
+  contact_name VARCHAR(255) NOT NULL,
+  company_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL,
+
+  -- Job Details (Required)
   job_title VARCHAR(255) NOT NULL,
-  job_description TEXT NOT NULL,
-  location VARCHAR(255),
-  job_type VARCHAR(100),
+  department VARCHAR(255),
+  location VARCHAR(255) NOT NULL,
+  employment_type VARCHAR(50) NOT NULL, -- 'permanent', 'temporary', 'contract-to-hire'
+  number_of_positions INTEGER DEFAULT 1,
+  urgency VARCHAR(50) DEFAULT 'medium',
+  is_existing_client BOOLEAN DEFAULT false NOT NULL,
+
+  -- Job Details (Optional)
+  anticipated_start_date DATE,
   salary_range VARCHAR(100),
-  requirements TEXT,
-  how_to_apply TEXT,
-  contact_person VARCHAR(255),
-  contact_email VARCHAR(255),
-  contact_phone VARCHAR(50),
-  status VARCHAR(50) DEFAULT 'pending',
-  honey_pot VARCHAR(255),
-  created_at TIMESTAMP DEFAULT NOW()
+  job_description TEXT,
+  required_qualifications TEXT,
+  preferred_qualifications TEXT,
+  special_instructions TEXT,
+
+  -- Status & References
+  status VARCHAR(50) DEFAULT 'new' NOT NULL, -- 'new', 'contacted', 'contract_pending', 'posted', 'closed'
+  client_id INTEGER REFERENCES clients(id),
+
+  -- Timestamps
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
 ```
 
 **Purpose:** Stores all job postings submitted through the portal
+
+**Key fields:**
+
+- `contact_name/company_name`: Who's submitting the job
+- `employment_type`: Type of employment (permanent, temporary, contract-to-hire)
+- `is_existing_client`: Whether submitted by authenticated client
+- `client_id`: Links to clients table if authenticated
+- `status`: Tracks job posting lifecycle
 
 ---
 
@@ -511,17 +534,23 @@ Response:
 ```json
 Request:
 {
-  "accessCode": "AB3CD5EF",
+  "contactName": "Jane Doe",
+  "companyName": "ABC Corporation",
+  "email": "jane@abc.com",
+  "phone": "555-0101",
   "jobTitle": "Software Developer",
-  "jobDescription": "Full job description...",
+  "department": "Engineering",
   "location": "New York, NY",
-  "jobType": "full-time",
+  "employmentType": "permanent",
+  "numberOfPositions": 2,
+  "urgency": "high",
+  "isExistingClient": true,
+  "anticipatedStartDate": "2025-02-01",
   "salaryRange": "$80,000 - $120,000",
-  "requirements": "5+ years experience...",
-  "howToApply": "Send resume to...",
-  "contactPerson": "Jane Doe",
-  "contactEmail": "jane@abc.com",
-  "contactPhone": "555-0101"
+  "jobDescription": "Full job description...",
+  "requiredQualifications": "5+ years experience...",
+  "preferredQualifications": "Experience with React...",
+  "specialInstructions": "Please contact HR first..."
 }
 
 Response:
@@ -744,14 +773,22 @@ Response:
    - System confirms code is valid
 
 3. **Fill out job details**
-   - **Job Title**: Clear, specific title
-   - **Description**: Complete job description
+   - **Contact Name**: Your full name
+   - **Company Name**: Your organization name
+   - **Email**: Your business email
+   - **Phone**: Contact phone number
+   - **Job Title**: Clear, specific position title
+   - **Department**: Which department (optional)
    - **Location**: City, State or "Remote"
-   - **Job Type**: Full-time, Part-time, Contract, etc.
-   - **Salary Range**: Be as specific as possible
-   - **Requirements**: List key qualifications
-   - **How to Apply**: Clear application instructions
-   - **Contact Information**: Who candidates should contact
+   - **Employment Type**: Permanent, Temporary, or Contract-to-hire
+   - **Number of Positions**: How many people to hire
+   - **Urgency**: Low, Medium, or High
+   - **Anticipated Start Date**: When you need them to start (optional)
+   - **Salary Range**: Be as specific as possible (optional)
+   - **Job Description**: Complete job description (optional)
+   - **Required Qualifications**: Must-have skills and experience (optional)
+   - **Preferred Qualifications**: Nice-to-have skills (optional)
+   - **Special Instructions**: Any additional notes (optional)
 
 4. **Submit the posting**
    - Review all information
@@ -1249,8 +1286,10 @@ CREATE INDEX idx_activities_type ON "clientActivities"(activity_type);
 CREATE INDEX idx_activities_created ON "clientActivities"(created_at);
 
 -- Speed up job posting queries
-CREATE INDEX idx_jobs_code ON "jobPostings"(access_code);
-CREATE INDEX idx_jobs_email ON "jobPostings"(client_email);
+CREATE INDEX idx_jobs_company ON "jobPostings"(company_name);
+CREATE INDEX idx_jobs_email ON "jobPostings"(email);
+CREATE INDEX idx_jobs_client ON "jobPostings"(client_id);
+CREATE INDEX idx_jobs_status ON "jobPostings"(status);
 ```
 
 ---
