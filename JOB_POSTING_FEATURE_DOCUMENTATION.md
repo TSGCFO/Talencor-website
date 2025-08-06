@@ -3,6 +3,7 @@
 **Last Updated:** August 3, 2025
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [User Journey](#user-journey)
 3. [Client Access Code System](#client-access-code-system)
@@ -17,9 +18,13 @@
 
 ## Overview
 
-The Job Posting feature allows businesses to submit job vacancies through Talencor's website. The system collects essential information, distinguishes between new and existing clients, and manages the entire workflow from submission to job activation.
+The Job Posting feature allows businesses to submit job vacancies through
+Talencor's website. The system collects essential information, distinguishes
+between new and existing clients, and manages the entire workflow from
+submission to job activation.
 
-### Key Features:
+### Key Features
+
 - User-friendly job posting form
 - Client access code system for existing client verification
 - Automatic client status detection with dynamic feedback messages
@@ -35,6 +40,7 @@ The Job Posting feature allows businesses to submit job vacancies through Talenc
 ### Step 1: Accessing the Job Posting Form
 
 **Entry Points:**
+
 1. **From Employers Page** → Click "Post a Job" button
    - URL: `/employers` → `/post-job`
    - Button location: Hero section of Employers page
@@ -61,6 +67,7 @@ When users arrive at `/post-job`, they see:
 ### Step 3: Filling Out the Form
 
 #### Contact Information Section (All Required)
+
 1. **Contact Name**
    - Text input field
    - Placeholder: "John Doe"
@@ -73,7 +80,7 @@ When users arrive at `/post-job`, they see:
 
 3. **Email Address**
    - Email input field
-   - Placeholder: "john@company.com"
+   - Placeholder: "<john@company.com>"
    - Validation: Required, valid email format
 
 4. **Phone Number**
@@ -82,6 +89,7 @@ When users arrive at `/post-job`, they see:
    - Validation: Required, minimum 10 characters
 
 #### Job Details Section
+
 1. **Job Title** (Required)
    - Text input field
    - Placeholder: "Warehouse Associate"
@@ -120,6 +128,7 @@ When users arrive at `/post-job`, they see:
    - Minimum height: 100px
 
 #### Client Status Section
+
 1. **Existing Client Toggle**
    - Switch/toggle component
    - Label: "Are you an existing Talencor client?"
@@ -127,8 +136,11 @@ When users arrive at `/post-job`, they see:
    - Default: false (unchecked)
 
 2. **Dynamic Feedback Messages**
-   - **For Existing Clients:** Green info box displays: "Great! As an existing client, your job will be prioritized for immediate processing."
-   - **For New Clients:** Blue info box displays: "Welcome! After submission, a recruiter will contact you to discuss our services and finalize contract terms before posting your job."
+   - **For Existing Clients:** Green info box displays: "Great! As an existing
+     client, your job will be prioritized for immediate processing."
+   - **For New Clients:** Blue info box displays: "Welcome! After submission, a
+     recruiter will contact you to discuss our services and finalize contract
+     terms before posting your job."
 
 ### Step 4: Form Submission
 
@@ -138,7 +150,8 @@ When users arrive at `/post-job`, they see:
    - Disabled during submission
 
 2. **Form Behavior**
-   - **Enter Key Prevention:** Pressing Enter in input fields does NOT submit the form (prevents accidental submissions)
+   - **Enter Key Prevention:** Pressing Enter in input fields does NOT submit
+     the form (prevents accidental submissions)
    - Form can only be submitted by clicking the Submit button
 
 3. **Validation Process**
@@ -154,12 +167,13 @@ When users arrive at `/post-job`, they see:
 
 ### Step 5: Post-Submission Experience
 
-#### Success State:
+#### Success State
+
 1. **Confirmation Page Shows:**
    - Green checkmark icon
    - "Thank You!" heading
    - Success message: "Your job posting has been successfully submitted..."
-   
+
 2. **For New Clients (isExistingClient = false):**
    - Orange info box explaining next steps:
      - Recruiter will review submission
@@ -171,7 +185,8 @@ When users arrive at `/post-job`, they see:
    - "Back to Home" → Returns to homepage
    - "Post Another Job" → Resets form for new submission
 
-#### Error State:
+#### Error State
+
 1. **Toast Notification Shows:**
    - Red error message
    - "Error submitting job posting"
@@ -182,9 +197,11 @@ When users arrive at `/post-job`, they see:
 ### Frontend Components
 
 #### 1. Job Posting Page Component
+
 **File:** `client/src/pages/job-posting.tsx`
 
 **Key Features:**
+
 - React functional component with hooks
 - Form state management using `react-hook-form`
 - Zod schema validation
@@ -193,6 +210,7 @@ When users arrive at `/post-job`, they see:
 - Responsive design with Tailwind CSS
 
 **Component Structure:**
+
 ```typescript
 - JobPosting (main component)
   - Form (shadcn/ui form wrapper)
@@ -205,6 +223,7 @@ When users arrive at `/post-job`, they see:
 ```
 
 #### 2. Form Schema
+
 ```typescript
 const jobPostingFormSchema = insertJobPostingSchema.extend({
   email: z.string().email("Please enter a valid email address"),
@@ -219,9 +238,11 @@ const jobPostingFormSchema = insertJobPostingSchema.extend({
 ### Backend Architecture
 
 #### 1. Database Table
+
 **Table Name:** `job_postings`
 
 **Columns:**
+
 - `id` (SERIAL PRIMARY KEY)
 - `contact_name` (TEXT NOT NULL)
 - `company_name` (TEXT NOT NULL)
@@ -240,9 +261,11 @@ const jobPostingFormSchema = insertJobPostingSchema.extend({
 - `updated_at` (TIMESTAMP DEFAULT NOW())
 
 #### 2. API Routes
+
 **File:** `server/routes.ts`
 
 **Endpoints:**
+
 1. **POST /api/job-postings**
    - Creates new job posting
    - Validates input data
@@ -263,9 +286,11 @@ const jobPostingFormSchema = insertJobPostingSchema.extend({
    - Returns updated posting
 
 #### 3. Storage Layer
+
 **File:** `server/storage.ts`
 
 **Methods:**
+
 - `createJobPosting(posting)` - Inserts new posting
 - `getJobPostings(filters)` - Retrieves postings with optional filters
 - `getJobPostingById(id)` - Gets single posting
@@ -274,6 +299,7 @@ const jobPostingFormSchema = insertJobPostingSchema.extend({
 ## Database Schema
 
 ### Drizzle ORM Schema Definition
+
 ```typescript
 export const jobPostings = pgTable("job_postings", {
   id: serial("id").primaryKey(),
@@ -282,22 +308,22 @@ export const jobPostings = pgTable("job_postings", {
   companyName: text("company_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  
+
   // Job Details
   jobTitle: text("job_title").notNull(),
   location: text("location").notNull(),
   employmentType: text("employment_type").notNull(),
   isExistingClient: boolean("is_existing_client").default(false).notNull(),
-  
+
   // Optional Fields
   anticipatedStartDate: date("anticipated_start_date"),
   salaryRange: text("salary_range"),
   jobDescription: text("job_description"),
   specialRequirements: text("special_requirements"),
-  
+
   // Status Management
   status: text("status").default("new").notNull(),
-  
+
   // Timestamps
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -305,6 +331,7 @@ export const jobPostings = pgTable("job_postings", {
 ```
 
 ### TypeScript Types
+
 ```typescript
 export type JobPosting = {
   id: number;
@@ -323,15 +350,17 @@ export type JobPosting = {
   status: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 ```
 
 ## API Endpoints
 
 ### 1. Create Job Posting
+
 **Endpoint:** `POST /api/job-postings`
 
 **Request Body:**
+
 ```json
 {
   "contactName": "John Doe",
@@ -350,6 +379,7 @@ export type JobPosting = {
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "success": true,
@@ -358,6 +388,7 @@ export type JobPosting = {
 ```
 
 **Error Response (400):**
+
 ```json
 {
   "success": false,
@@ -372,12 +403,15 @@ export type JobPosting = {
 ```
 
 ### 2. Get Job Postings
+
 **Endpoint:** `GET /api/job-postings?status=new`
 
 **Query Parameters:**
+
 - `status` (optional): Filter by status value
 
 **Success Response (200):**
+
 ```json
 [
   {
@@ -402,12 +436,13 @@ export type JobPosting = {
 ```
 
 ### 3. Get Single Job Posting
+
 **Endpoint:** `GET /api/job-postings/:id`
 
-**Success Response (200):**
-Returns single job posting object
+**Success Response (200):** Returns single job posting object
 
 **Error Response (404):**
+
 ```json
 {
   "success": false,
@@ -416,9 +451,11 @@ Returns single job posting object
 ```
 
 ### 4. Update Job Posting Status
+
 **Endpoint:** `PATCH /api/job-postings/:id/status`
 
 **Request Body:**
+
 ```json
 {
   "status": "contacted"
@@ -426,6 +463,7 @@ Returns single job posting object
 ```
 
 **Valid Status Values:**
+
 - `new`
 - `contacted`
 - `contract_pending`
@@ -433,10 +471,13 @@ Returns single job posting object
 - `closed`
 
 **Success Response (200):**
+
 ```json
 {
   "success": true,
-  "posting": { /* updated posting object */ }
+  "posting": {
+    /* updated posting object */
+  }
 }
 ```
 
@@ -476,10 +517,13 @@ Returns single job posting object
 ## Internal Workflow
 
 ### Step 1: Submission Notification
+
 **When:** Immediately after successful form submission
 
 **Actions:**
+
 1. Console log created with submission details:
+
    ```
    New job posting created:
    - ID: 123
@@ -489,26 +533,27 @@ Returns single job posting object
    ```
 
 2. **Email Notifications Sent:**
-   
+
    **Confirmation Email to Submitter:**
    - Subject: "Job Posting Received - Talencor Staffing"
    - Includes job details and next steps
    - Different messaging for new vs existing clients
    - Professional HTML template with Talencor branding
-   
+
    **Internal Alert to Recruiting Team:**
    - Subject: "New Job Posting: [Job Title] at [Company]"
-   - Sent to recruiting@talencor.com (or configured email)
+   - Sent to <recruiting@talencor.com> (or configured email)
    - Includes all submission details
    - Shows client status (NEW CLIENT or EXISTING CLIENT)
    - Provides action items based on client type
    - Links to admin dashboard for viewing submission
 
 ### Step 2: Lead Qualification
-**Who:** Recruiting team member
-**When:** Within one business day
+
+**Who:** Recruiting team member **When:** Within one business day
 
 **Process:**
+
 1. Access job postings dashboard at `/admin/job-postings`
 2. Review new submissions (status = "new")
 3. Check if existing client:
@@ -516,7 +561,9 @@ Returns single job posting object
    - If NO → Begin new client onboarding
 
 ### Step 3: Client Contact
+
 **For New Clients:**
+
 1. Update status to "contacted"
 2. Call/email to discuss:
    - Talencor's services
@@ -525,26 +572,32 @@ Returns single job posting object
    - Required documents (WSIB, insurance)
 
 **For Existing Clients:**
+
 1. Verify contract is current
 2. Proceed directly to job posting
 
 ### Step 4: Contract Processing
+
 **For New Clients Only:**
+
 1. Send contract documents
 2. Update status to "contract_pending"
 3. Wait for signed agreement
 4. Collect compliance documents
 
 ### Step 5: Job Activation
+
 **When:** Contract signed/verified
 
 **Actions:**
+
 1. Update status to "posted"
 2. Publish job on public job board
 3. Begin candidate sourcing
 4. Start screening process
 
 ### Step 6: Ongoing Management
+
 1. Regular updates to client
 2. Candidate submissions
 3. Interview coordination
@@ -562,6 +615,7 @@ new → contacted → contract_pending → posted → closed
 ```
 
 **Status Definitions:**
+
 1. **new** - Initial submission, awaiting review
 2. **contacted** - Recruiter has reached out to company
 3. **contract_pending** - Awaiting contract signature (new clients)
@@ -569,10 +623,12 @@ new → contacted → contract_pending → posted → closed
 5. **closed** - Position filled or cancelled
 
 ### Status Update Process
+
 1. Only authorized staff can update status via admin dashboard
 2. Updates tracked with timestamp
 3. Status history maintained via updated_at field
-4. Admin dashboard available at `/admin/job-postings` for managing all submissions
+4. Admin dashboard available at `/admin/job-postings` for managing all
+   submissions
 
 ## Error Handling
 
@@ -611,6 +667,7 @@ new → contacted → contract_pending → posted → closed
 ## Security Considerations
 
 ### Data Protection
+
 1. **No Sensitive Data Collection**
    - No SSN, financial info, or passwords
    - Only business contact information
@@ -624,6 +681,7 @@ new → contacted → contract_pending → posted → closed
    - Database parameterized queries
 
 ### Spam Prevention
+
 1. **Honeypot Field Implementation**
    - Hidden field invisible to real users
    - Automatically filled by bots
@@ -631,6 +689,7 @@ new → contacted → contract_pending → posted → closed
    - No user interaction required (better UX than CAPTCHA)
 
 ### Access Control
+
 1. **Public Submission**
    - Anyone can submit job posting
    - No authentication required for submission
@@ -641,6 +700,7 @@ new → contacted → contract_pending → posted → closed
    - Allows viewing all submissions and updating status
 
 ### Privacy Compliance
+
 1. **Privacy Notice**
    - Displayed on form
    - Explains data usage
@@ -690,6 +750,7 @@ new → contacted → contract_pending → posted → closed
 ## Testing Checklist
 
 ### User Interface Testing
+
 - [ ] Form loads correctly at /post-job
 - [ ] All form fields display properly
 - [ ] Required field indicators visible
@@ -701,6 +762,7 @@ new → contacted → contract_pending → posted → closed
 - [ ] Navigation links work
 
 ### API Testing
+
 - [ ] POST creates new posting
 - [ ] GET retrieves all postings
 - [ ] GET by ID returns correct posting
@@ -709,12 +771,14 @@ new → contacted → contract_pending → posted → closed
 - [ ] Missing posting returns 404
 
 ### Database Testing
+
 - [ ] All fields save correctly
 - [ ] Timestamps auto-populate
 - [ ] Status defaults to "new"
 - [ ] Optional fields handle NULL
 
 ### Integration Testing
+
 - [ ] Form submission creates database record
 - [ ] Success response shows correct ID
 - [ ] Error handling works end-to-end
@@ -723,7 +787,10 @@ new → contacted → contract_pending → posted → closed
 ## Client Access Code System
 
 ### Overview
-The client access code system provides a streamlined experience for existing Talencor clients by allowing them to:
+
+The client access code system provides a streamlined experience for existing
+Talencor clients by allowing them to:
+
 - Auto-populate their contact information
 - Fast-track their job postings
 - Skip initial verification steps
@@ -733,6 +800,7 @@ The client access code system provides a streamlined experience for existing Tal
 #### Database Schema
 
 **Table: `clients`**
+
 ```sql
 CREATE TABLE clients (
   id SERIAL PRIMARY KEY,
@@ -748,6 +816,7 @@ CREATE TABLE clients (
 ```
 
 **Relation to job_postings:**
+
 - `job_postings.client_id` → References `clients.id`
 - Allows tracking which postings came from verified clients
 
@@ -776,9 +845,11 @@ CREATE TABLE clients (
 ### API Endpoints
 
 #### Verify Client Access Code
+
 **Endpoint:** `POST /api/verify-client`
 
 **Request Body:**
+
 ```json
 {
   "accessCode": "ACME2025"
@@ -786,6 +857,7 @@ CREATE TABLE clients (
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "success": true,
@@ -799,6 +871,7 @@ CREATE TABLE clients (
 ```
 
 **Error Response (401):**
+
 ```json
 {
   "success": false,
@@ -823,6 +896,7 @@ CREATE TABLE clients (
 ### Status Workflow Impact
 
 When a valid access code is used:
+
 - Job posting status starts at "contacted" instead of "new"
 - Bypasses initial review queue
 - Recruiter can proceed directly with job posting
@@ -830,8 +904,9 @@ When a valid access code is used:
 ### Test Access Codes
 
 For development and testing:
+
 - `ACME2025` - Acme Corporation
-- `TECH2025` - Tech Solutions Inc  
+- `TECH2025` - Tech Solutions Inc
 - `GLOB2025` - Global Manufacturing Ltd
 
 ### Security Considerations

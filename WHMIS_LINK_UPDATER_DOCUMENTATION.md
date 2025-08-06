@@ -1,6 +1,7 @@
 # WHMIS Training Link Updater - Comprehensive Documentation
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [System Architecture](#system-architecture)
 3. [Database Schema](#database-schema)
@@ -13,9 +14,14 @@
 
 ## Overview
 
-The WHMIS (Workplace Hazardous Materials Information System) Training Link Updater is an automated system designed to maintain up-to-date training links from aixsafety.com. Since external training providers frequently update their course URLs, this system ensures users always have access to valid training resources without manual intervention.
+The WHMIS (Workplace Hazardous Materials Information System) Training Link
+Updater is an automated system designed to maintain up-to-date training links
+from aixsafety.com. Since external training providers frequently update their
+course URLs, this system ensures users always have access to valid training
+resources without manual intervention.
 
 ### Key Features
+
 - **Fully Automated**: Updates links every 7 days without manual intervention
 - **Intelligent Scraping**: Uses multiple patterns to find valid training links
 - **Database Persistence**: Stores links in PostgreSQL with timestamps
@@ -82,19 +88,23 @@ The system uses a PostgreSQL table to store dynamic links:
 // shared/schema.ts
 export const dynamicLinks = pgTable("dynamic_links", {
   id: serial("id").primaryKey(),
-  key: text("key").notNull().unique(),        // 'whmis_training'
-  url: text("url").notNull(),                 // Current valid URL
-  description: text("description"),           // Human-readable description
-  lastChecked: timestamp("last_checked")      // When last verified
-    .defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")          // When URL changed
-    .defaultNow().notNull(),
-  createdAt: timestamp("created_at")          // When first created
-    .defaultNow().notNull(),
+  key: text("key").notNull().unique(), // 'whmis_training'
+  url: text("url").notNull(), // Current valid URL
+  description: text("description"), // Human-readable description
+  lastChecked: timestamp("last_checked") // When last verified
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at") // When URL changed
+    .defaultNow()
+    .notNull(),
+  createdAt: timestamp("created_at") // When first created
+    .defaultNow()
+    .notNull(),
 });
 ```
 
 ### Sample Database Entry
+
 ```json
 {
   "id": 1,
@@ -115,10 +125,10 @@ The core of the automation lies in `server/link-updater.ts`:
 
 ```typescript
 interface LinkUpdater {
-  key: string;                              // Unique identifier
-  description: string;                      // Human-readable description
-  fetchLatestUrl: () => Promise<string | null>;  // Fetching logic
-  fallbackUrl: string;                      // Fallback if fetch fails
+  key: string; // Unique identifier
+  description: string; // Human-readable description
+  fetchLatestUrl: () => Promise<string | null>; // Fetching logic
+  fallbackUrl: string; // Fallback if fetch fails
 }
 ```
 
@@ -134,29 +144,31 @@ const linkUpdaters: LinkUpdater[] = [
     fetchLatestUrl: async () => {
       try {
         // Primary URL fetch
-        const response = await fetch("https://aixsafety.com/free-online-whmis-training/");
-        
+        const response = await fetch(
+          "https://aixsafety.com/free-online-whmis-training/"
+        );
+
         if (!response.ok) {
           // Fallback to homepage
           const altResponse = await fetch("https://aixsafety.com/");
           // ... search for WHMIS links on homepage
         }
-        
+
         const html = await response.text();
-        
+
         // Strategy 1: Look for Articulate Storyline links
         // These are interactive training modules
         const articulateMatch = html.match(
           /href=["'](https?:\/\/aixsafety\.com\/wp-content\/uploads\/articulate_uploads\/[^"']+\/story\.html?)["']/i
         );
-        
+
         // Strategy 2: Try multiple patterns
         const patterns = [
           /href=["'](https?:\/\/aixsafety\.com[^"']*WMS[^"']*story\.html?)["']/i,
           /href=["'](https?:\/\/aixsafety\.com[^"']*whmis[^"']*training[^"']*?)["']/i,
           /href=["'](https?:\/\/aixsafety\.com[^"']*free[^"']*whmis[^"']*?)["']/i,
         ];
-        
+
         // Return first matching link or default
         // ...
       } catch (error) {
@@ -164,8 +176,8 @@ const linkUpdaters: LinkUpdater[] = [
         return null;
       }
     },
-    fallbackUrl: "/contact"
-  }
+    fallbackUrl: "/contact",
+  },
 ];
 ```
 
@@ -177,13 +189,13 @@ The update process handles both creation and updates:
 export async function updateDynamicLink(updater: LinkUpdater) {
   // 1. Fetch latest URL
   const newUrl = await updater.fetchLatestUrl();
-  
+
   // 2. Check if link exists in database
   const [existing] = await db
     .select()
     .from(dynamicLinks)
     .where(eq(dynamicLinks.key, updater.key));
-  
+
   if (existing) {
     // 3a. Update only if URL changed
     await db
@@ -191,19 +203,17 @@ export async function updateDynamicLink(updater: LinkUpdater) {
       .set({
         url: newUrl,
         lastChecked: new Date(),
-        updatedAt: existing.url !== newUrl ? new Date() : existing.updatedAt
+        updatedAt: existing.url !== newUrl ? new Date() : existing.updatedAt,
       })
       .where(eq(dynamicLinks.key, updater.key));
   } else {
     // 3b. Create new entry
-    await db
-      .insert(dynamicLinks)
-      .values({
-        key: updater.key,
-        url: newUrl,
-        description: updater.description,
-        lastChecked: new Date()
-      });
+    await db.insert(dynamicLinks).values({
+      key: updater.key,
+      url: newUrl,
+      description: updater.description,
+      lastChecked: new Date(),
+    });
   }
 }
 ```
@@ -217,6 +227,7 @@ export async function updateDynamicLink(updater: LinkUpdater) {
 **Example**: `GET /api/dynamic-links/whmis_training`
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -237,6 +248,7 @@ export async function updateDynamicLink(updater: LinkUpdater) {
 **Endpoint**: `PUT /api/dynamic-links/:key`
 
 **Body**:
+
 ```json
 {
   "url": "https://aixsafety.com/new-training-url/story.html"
@@ -248,13 +260,14 @@ export async function updateDynamicLink(updater: LinkUpdater) {
 **Endpoint**: `GET /api/dynamic-links`
 
 **Response**:
+
 ```json
 {
   "success": true,
   "links": [
     {
       "key": "whmis_training",
-      "url": "...",
+      "url": "..."
       // ... other fields
     }
   ]
@@ -263,7 +276,8 @@ export async function updateDynamicLink(updater: LinkUpdater) {
 
 ## Frontend Integration
 
-The training page (`client/src/pages/services/training.tsx`) integrates with the API:
+The training page (`client/src/pages/services/training.tsx`) integrates with the
+API:
 
 ```typescript
 function TrainingPage() {
@@ -273,18 +287,18 @@ function TrainingPage() {
   useEffect(() => {
     const fetchDynamicLink = async () => {
       try {
-        const response = await fetch('/api/dynamic-links/whmis_training');
+        const response = await fetch("/api/dynamic-links/whmis_training");
         const data = await response.json();
-        
+
         if (data.success && data.link) {
           setWhmisLink(data.link.url);
         } else {
           // Fallback to contact page
-          setWhmisLink('/contact');
+          setWhmisLink("/contact");
         }
       } catch (error) {
-        console.error('Failed to fetch WHMIS link:', error);
-        setWhmisLink('/contact');
+        console.error("Failed to fetch WHMIS link:", error);
+        setWhmisLink("/contact");
       } finally {
         setIsLoadingLink(false);
       }
@@ -296,7 +310,7 @@ function TrainingPage() {
   // Button implementation
   const handleWhmisClick = () => {
     if (!isLoadingLink && whmisLink) {
-      window.open(whmisLink, '_blank', 'noopener,noreferrer');
+      window.open(whmisLink, "_blank", "noopener,noreferrer");
     }
   };
 }
@@ -307,6 +321,7 @@ function TrainingPage() {
 ### Server Initialization
 
 In `server/index.ts`:
+
 ```typescript
 import { scheduleLinkUpdates } from "./link-updater";
 
@@ -320,26 +335,29 @@ scheduleLinkUpdates();
 export function scheduleLinkUpdates() {
   // 1. Update immediately on server start
   updateAllDynamicLinks().catch(console.error);
-  
+
   // 2. Schedule weekly updates
   const interval = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-  
+
   setInterval(() => {
     updateAllDynamicLinks().catch(console.error);
   }, interval);
-  
+
   console.log("Dynamic link updater scheduled (every 7 days)");
 }
 ```
 
 ### Update Frequency Rationale
-- **Weekly (7 days)**: Balances between keeping links fresh and avoiding excessive requests
+
+- **Weekly (7 days)**: Balances between keeping links fresh and avoiding
+  excessive requests
 - **On server restart**: Ensures links are current when deploying updates
 - **Manual override**: Available via API for immediate updates if needed
 
 ## Error Handling and Fallbacks
 
 ### 1. Fetch Failures
+
 ```typescript
 try {
   const response = await fetch("https://aixsafety.com/...");
@@ -348,15 +366,17 @@ try {
   }
 } catch (error) {
   console.error("Error fetching WHMIS training link:", error);
-  return null;  // Will keep existing link in database
+  return null; // Will keep existing link in database
 }
 ```
 
 ### 2. Database Failures
+
 - If database update fails, error is logged but server continues
 - Previous valid link remains in database
 
 ### 3. Frontend Fallbacks
+
 - Loading state while fetching
 - Falls back to `/contact` page if:
   - API request fails
@@ -364,6 +384,7 @@ try {
   - Link is invalid
 
 ### 4. Default URL Pattern
+
 ```typescript
 // Hardcoded fallback based on known URL pattern
 return "https://aixsafety.com/wp-content/uploads/articulate_uploads/WMS-July27-2025Aix/story.html";
@@ -372,7 +393,9 @@ return "https://aixsafety.com/wp-content/uploads/articulate_uploads/WMS-July27-2
 ## Maintenance and Monitoring
 
 ### 1. Console Logging
+
 The system provides detailed logging:
+
 ```
 Starting dynamic link updates...
 Updating whmis_training link...
@@ -381,9 +404,11 @@ Dynamic link updates completed
 ```
 
 ### 2. Database Monitoring
+
 Check link freshness:
+
 ```sql
-SELECT 
+SELECT
   key,
   url,
   lastChecked,
@@ -394,6 +419,7 @@ WHERE key = 'whmis_training';
 ```
 
 ### 3. Manual Link Verification
+
 ```bash
 # Check if automated fetching is working
 curl http://localhost:5000/api/dynamic-links/whmis_training
@@ -407,18 +433,22 @@ curl -X PUT http://localhost:5000/api/dynamic-links/whmis_training \
 ### 4. Common Issues and Solutions
 
 **Issue**: Link returns 404
+
 - **Cause**: aixsafety.com changed their URL structure
 - **Solution**: Update regex patterns in link-updater.ts
 
 **Issue**: Fetch timeout
+
 - **Cause**: Network issues or site down
 - **Solution**: System keeps previous valid link
 
 **Issue**: Wrong link captured
+
 - **Cause**: Page structure changed
 - **Solution**: Adjust regex patterns or add new search strategies
 
 ### 5. Future Enhancements
+
 - Add email notifications when links fail to update
 - Implement link validation (check if training page loads)
 - Add support for multiple training providers
@@ -427,6 +457,11 @@ curl -X PUT http://localhost:5000/api/dynamic-links/whmis_training \
 
 ## Conclusion
 
-The WHMIS Training Link Updater provides a robust, automated solution for maintaining valid training links. By combining intelligent web scraping, database persistence, and fallback mechanisms, it ensures users always have access to training resources while minimizing manual maintenance.
+The WHMIS Training Link Updater provides a robust, automated solution for
+maintaining valid training links. By combining intelligent web scraping,
+database persistence, and fallback mechanisms, it ensures users always have
+access to training resources while minimizing manual maintenance.
 
-The system's modular design allows for easy extension to support additional dynamic links beyond WHMIS training, making it a scalable solution for managing external resources that frequently change URLs.
+The system's modular design allows for easy extension to support additional
+dynamic links beyond WHMIS training, making it a scalable solution for managing
+external resources that frequently change URLs.

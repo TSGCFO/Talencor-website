@@ -2,7 +2,8 @@
 
 ## Overview
 
-Your project now has professional markdown formatting tools installed to help you write and maintain clean, consistent documentation.
+Your project now has professional markdown formatting tools installed to help
+you write and maintain clean, consistent documentation.
 
 ## Installed Tools
 
@@ -20,6 +21,7 @@ Run the formatting script in the terminal:
 ```
 
 This gives you three options:
+
 1. **Format all markdown files** - Makes your docs look consistent
 2. **Check for issues** - Finds problems without changing anything
 3. **Fix and format** - Fixes issues AND formats everything
@@ -44,7 +46,6 @@ npx markdownlint "**/*.md" --ignore node_modules --fix
 - **.prettierrc** - Controls how Prettier formats your markdown
   - Line width: 80 characters for markdown (100 for code)
   - Prose wrap: Always (wraps long lines automatically)
-  
 - **.markdownlint.json** - Controls markdown linting rules
   - Allows inline HTML
   - Enforces consistent heading styles
@@ -55,7 +56,7 @@ npx markdownlint "**/*.md" --ignore node_modules --fix
 ✅ **Consistent formatting** across all documentation  
 ✅ **Automatic line wrapping** for better readability  
 ✅ **Error detection** for common markdown mistakes  
-✅ **One-command cleanup** of all markdown files  
+✅ **One-command cleanup** of all markdown files
 
 ## Tips for Writing Markdown
 
@@ -67,21 +68,24 @@ npx markdownlint "**/*.md" --ignore node_modules --fix
 ## Examples
 
 ### Before Formatting
+
 ```markdown
 # My Document
-This is a really long line that goes on and on and doesn't wrap properly making it hard to read in the editor and causing horizontal scrolling issues.
 
--   Inconsistent    spacing
--  Mixed bullet styles
+This is a really long line that goes on and on and doesn't wrap properly making
+it hard to read in the editor and causing horizontal scrolling issues.
+
+- Inconsistent spacing
+- Mixed bullet styles
 ```
 
 ### After Formatting
+
 ```markdown
 # My Document
 
-This is a really long line that goes on and on and doesn't wrap properly
-making it hard to read in the editor and causing horizontal scrolling
-issues.
+This is a really long line that goes on and on and doesn't wrap properly making
+it hard to read in the editor and causing horizontal scrolling issues.
 
 - Inconsistent spacing
 - Mixed bullet styles

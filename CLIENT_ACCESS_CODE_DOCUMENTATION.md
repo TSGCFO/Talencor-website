@@ -8,20 +8,25 @@
 ## What is the Client Access Code System?
 
 <!-- <SimpleExplanationSnippet> -->
-The Client Access Code system is like giving your best customers a special membership card. 
+
+The Client Access Code system is like giving your best customers a special
+membership card.
 
 Imagine you run a coffee shop:
+
 - New customers have to fill out a loyalty card application
 - But regular customers just show their membership number
 - The cashier instantly knows who they are and their usual order
 
 That's exactly what our access code system does for job postings!
+
 <!-- </SimpleExplanationSnippet> -->
 
 ## How Does It Work?
 
 <!-- <StepByStepProcessSnippet> -->
-### For Existing Clients:
+
+### For Existing Clients
 
 1. **They Get a Special Code**
    - Each client company receives a unique 8-character code
@@ -45,28 +50,33 @@ That's exactly what our access code system does for job postings!
    - Instead of starting at "new" status
    - Their job jumps straight to "contacted" status
    - It's like skipping the line at the DMV!
-<!-- </StepByStepProcessSnippet> -->
+   <!-- </StepByStepProcessSnippet> -->
 
 ## Test Access Codes
 
 <!-- <TestCodesSnippet> -->
+
 For testing the system, we have three example companies ready to use:
 
-| Company Name | Access Code | Contact Person |
-|-------------|-------------|----------------|
-| Acme Corporation | ACME**** | (Check database) |
-| Tech Solutions Inc | TECH**** | (Check database) |
-| Global Manufacturing Ltd | GLOB**** | (Check database) |
+| Company Name             | Access Code  | Contact Person   |
+| ------------------------ | ------------ | ---------------- |
+| Acme Corporation         | ACME\*\*\*\* | (Check database) |
+| Tech Solutions Inc       | TECH\*\*\*\* | (Check database) |
+| Global Manufacturing Ltd | GLOB\*\*\*\* | (Check database) |
 
-**Note:** The full access codes are masked for security. The actual codes follow the pattern shown in the seed script.
+**Note:** The full access codes are masked for security. The actual codes follow
+the pattern shown in the seed script.
+
 <!-- </TestCodesSnippet> -->
 
 ## How the Code Works (Technical Details in Simple Terms)
 
 <!-- <DatabaseStructureSnippet> -->
+
 ### The Client List (Database Table: `clients`)
 
 Think of this as our VIP customer list. For each client, we store:
+
 - **Company Name**: The business name (like "Acme Corporation")
 - **Contact Name**: The main person we talk to (like "John Smith")
 - **Email**: Their email address for communications
@@ -78,6 +88,7 @@ Think of this as our VIP customer list. For each client, we store:
 <!-- </DatabaseStructureSnippet> -->
 
 <!-- <APIEndpointExplanationSnippet> -->
+
 ### The Verification Process (API Endpoint: `/api/verify-client`)
 
 When someone enters an access code, here's what happens behind the scenes:
@@ -95,9 +106,10 @@ When someone enters an access code, here's what happens behind the scenes:
    - If valid: Send back all the client's information
    - If invalid: Send back an error message
    - The form then either fills in the data or shows an error
-<!-- </APIEndpointExplanationSnippet> -->
+   <!-- </APIEndpointExplanationSnippet> -->
 
 <!-- <FormIntegrationSnippet> -->
+
 ### How It Appears on the Job Posting Form
 
 The access code section is designed to be user-friendly:
@@ -121,18 +133,21 @@ The access code section is designed to be user-friendly:
    - Red toast notification for invalid codes
    - User can try again or continue without a code
    - Form still works normally either way
-<!-- </FormIntegrationSnippet> -->
+   <!-- </FormIntegrationSnippet> -->
 
 ## Benefits of the System
 
 <!-- <BenefitsListSnippet> -->
-### For Existing Clients:
+
+### For Existing Clients
+
 - **Saves Time**: No need to type company details again
 - **Fewer Errors**: Information is always correct
 - **Faster Service**: Jobs get processed immediately
 - **Feel Valued**: VIP treatment for loyal customers
 
-### For Talencor Staff:
+### For Talencor Staff
+
 - **Efficiency**: Less manual data entry
 - **Accuracy**: Client info is always up-to-date
 - **Priority Queue**: Know which jobs to handle first
@@ -142,6 +157,7 @@ The access code section is designed to be user-friendly:
 ## Security Features
 
 <!-- <SecurityMeasuresSnippet> -->
+
 The system includes several security measures:
 
 1. **Unique Codes**: Each client has a different code
@@ -154,9 +170,11 @@ The system includes several security measures:
 ## Admin Management
 
 <!-- <AdminFeaturesSnippet> -->
+
 ### Viewing Job Postings
 
 Administrators can see all job postings at `/admin/job-postings` where they can:
+
 - See which postings came from verified clients
 - Filter by status (new, contacted, etc.)
 - Update job posting status
@@ -164,7 +182,9 @@ Administrators can see all job postings at `/admin/job-postings` where they can:
 
 ### Managing Clients
 
-Currently, client management requires database access. Future enhancements will include:
+Currently, client management requires database access. Future enhancements will
+include:
+
 - Admin interface for adding new clients
 - Ability to deactivate clients
 - Access code generation and management
@@ -174,6 +194,7 @@ Currently, client management requires database access. Future enhancements will 
 ## Testing the System
 
 <!-- <TestingGuideSnippet> -->
+
 To test the Client Access Code system:
 
 1. **Go to the Job Posting Page**
@@ -194,27 +215,30 @@ To test the Client Access Code system:
    - Try an invalid code like "WRONG123"
    - See the error message appear
    - Verify the form still works without a code
-<!-- </TestingGuideSnippet> -->
+   <!-- </TestingGuideSnippet> -->
 
 ## Common Questions
 
 <!-- <FAQSnippet> -->
-**Q: What if a client forgets their access code?**
-A: They can still post jobs normally. Contact Talencor to retrieve their code.
 
-**Q: Can access codes be changed?**
-A: Yes, through database updates. Future versions will have a UI for this.
+**Q: What if a client forgets their access code?** A: They can still post jobs
+normally. Contact Talencor to retrieve their code.
 
-**Q: What happens if someone shares their code?**
-A: Each submission is logged. Unusual activity can be investigated.
+**Q: Can access codes be changed?** A: Yes, through database updates. Future
+versions will have a UI for this.
 
-**Q: Do codes expire?**
-A: Currently no. Codes remain valid until the client is deactivated.
+**Q: What happens if someone shares their code?** A: Each submission is logged.
+Unusual activity can be investigated.
+
+**Q: Do codes expire?** A: Currently no. Codes remain valid until the client is
+deactivated.
+
 <!-- </FAQSnippet> -->
 
 ## Future Enhancements
 
 <!-- <PlannedImprovementsSnippet> -->
+
 Planned improvements for the system:
 
 1. **Self-Service Portal**
@@ -236,11 +260,12 @@ Planned improvements for the system:
    - API access for trusted clients
    - Webhook notifications
    - CRM system connections
-<!-- </PlannedImprovementsSnippet> -->
+   <!-- </PlannedImprovementsSnippet> -->
 
 ## Code Examples
 
 <!-- <CodeExampleSnippet> -->
+
 ### How to Add a New Client (Database Command)
 
 ```sql
@@ -274,24 +299,31 @@ curl -X POST http://localhost:5000/api/verify-client \
 # Success: {"success": true, "client": {...company details...}}
 # Error: {"success": false, "message": "Invalid access code"}
 ```
+
 <!-- </CodeExampleSnippet> -->
 
 ## Summary
 
 <!-- <SummarySnippet> -->
+
 The Client Access Code system makes life easier for everyone:
+
 - **Existing clients** save time and get priority service
 - **Talencor staff** work more efficiently with verified clients
 - **The system** runs smoothly with built-in security
 
-It's a simple idea - give your best customers a fast pass - implemented in a secure, user-friendly way.
+It's a simple idea - give your best customers a fast pass - implemented in a
+secure, user-friendly way.
+
 <!-- </SummarySnippet> -->
 
 ---
 
 <!-- <DocumentMetadataSnippet> -->
+
 **Document Created:** August 4, 2025  
 **Last Updated:** August 4, 2025  
 **System Status:** Fully Implemented and Operational  
 **Test Codes Available:** Yes (3 test clients in database)
+
 <!-- </DocumentMetadataSnippet> -->
