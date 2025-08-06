@@ -1,4 +1,4 @@
-# Klein Portal (Client Portal) - Complete Documentation
+# Clein Portal (Client Portal) - Complete Documentation
 
 ## Table of Contents
 
