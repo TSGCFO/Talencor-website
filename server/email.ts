@@ -430,3 +430,242 @@ View in admin panel: ${getBaseUrl()}/admin/job-postings
   // </SendInternalEmailSnippet>
 }
 // </InternalJobNotificationSnippet>
+
+// <ContactFormConfirmationSnippet>
+// This function sends a "thank you" email when someone submits a contact form
+// It's like sending a receipt that we got their message
+export async function sendContactFormConfirmation(data: {
+  firstName: string;         // The person's first name
+  lastName: string;          // The person's last name
+  email: string;            // Where to send the thank you email
+  companyName?: string;     // Their company (if they provided one)
+  inquiryType: string;      // What they're asking about (Job Seeker, Employer, etc.)
+  message: string;          // Their message to us
+}): Promise<boolean> {
+  // <ContactEmailSubjectSnippet>
+  // This is the title people see in their inbox
+  const subject = 'We Received Your Message - Talencor Staffing';
+  // </ContactEmailSubjectSnippet>
+  
+  // <ContactPlainTextSnippet>
+  // This is the simple version of the email
+  const text = `
+Dear ${data.firstName} ${data.lastName},
+
+Thank you for contacting Talencor Staffing.
+
+We have received your ${data.inquiryType.toLowerCase()} inquiry and a member of our team will respond within one business day.
+
+Your Message:
+${data.message}
+
+If you have any immediate questions, please don't hesitate to contact us at:
+Phone: (647) 946-2177
+Email: info@talencor.com
+
+Best regards,
+The Talencor Staffing Team
+  `.trim();
+  // </ContactPlainTextSnippet>
+  
+  // <ContactHTMLTemplateSnippet>
+  // This is the pretty version with colors and nice formatting
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* These lines make the email look nice with colors and spacing */
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #1B3A52; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; background-color: #f9f9f9; }
+    .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+    .message-box { background-color: white; padding: 15px; border-left: 4px solid #F39200; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- The blue header at the top -->
+    <div class="header">
+      <h1>Thank You for Contacting Us</h1>
+    </div>
+    <!-- The main message area -->
+    <div class="content">
+      <p>Dear ${data.firstName} ${data.lastName},</p>
+      <p>Thank you for contacting Talencor Staffing.</p>
+      <p>We have received your <strong>${data.inquiryType.toLowerCase()}</strong> inquiry and a member of our team will respond within one business day.</p>
+      
+      <div class="message-box">
+        <h3>Your Message:</h3>
+        <p>${data.message.replace(/\n/g, '<br>')}</p>
+      </div>
+      
+      <p>If you have any immediate questions, please don't hesitate to contact us:</p>
+      <ul>
+        <li>Phone: (647) 946-2177</li>
+        <li>Email: info@talencor.com</li>
+      </ul>
+    </div>
+    <!-- The footer with copyright -->
+    <div class="footer">
+      <p>&copy; 2025 Talencor Staffing. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+  // </ContactHTMLTemplateSnippet>
+  
+  // <SendContactConfirmationSnippet>
+  // This uses our main email sending function to deliver the message
+  return sendEmail({
+    to: data.email,      // Send to the person who contacted us
+    subject,             // Use the title we created above
+    text,                // The plain version
+    html                 // The pretty version
+  });
+  // </SendContactConfirmationSnippet>
+}
+// </ContactFormConfirmationSnippet>
+
+// <InternalContactNotificationSnippet>
+// This function alerts your team when someone submits a contact form
+// It's like ringing a bell to let the team know someone needs help
+export async function sendInternalContactNotification(data: {
+  id: number;                      // A unique number for this contact submission
+  firstName: string;               // The person's first name
+  lastName: string;                // The person's last name
+  email: string;                   // Their email address
+  phone?: string | null;           // Their phone number (optional)
+  companyName?: string | null;     // Their company (optional)
+  inquiryType: string;             // What they're asking about
+  message: string;                 // Their message
+  submittedAt: Date;              // When they sent the message
+}): Promise<boolean> {
+  // <InternalContactEmailSetupSnippet>
+  // This is where we send the team alerts
+  const internalEmail = 'info@talencor.com';
+  // Create a clear title so the team knows what type of inquiry this is
+  const subject = `New Contact Form: ${data.inquiryType} - ${data.firstName} ${data.lastName}`;
+  // </InternalContactEmailSetupSnippet>
+  
+  // <InternalContactPlainTextSnippet>
+  // This is the simple version that shows all the important information
+  const text = `
+NEW CONTACT FORM SUBMISSION
+
+ID: #${data.id}
+Type: ${data.inquiryType}
+
+CONTACT INFORMATION:
+- Name: ${data.firstName} ${data.lastName}
+- Email: ${data.email}
+${data.phone ? `- Phone: ${data.phone}` : ''}
+${data.companyName ? `- Company: ${data.companyName}` : ''}
+
+MESSAGE:
+${data.message}
+
+SUBMITTED: ${data.submittedAt.toLocaleString()}
+
+ACTION REQUIRED:
+- Respond within 24 hours
+- Log communication in CRM
+- Follow up as needed
+
+View all contacts: ${getBaseUrl()}/admin/contacts
+  `.trim();
+  // </InternalContactPlainTextSnippet>
+  
+  // <InternalContactHTMLTemplateSnippet>
+  // This is the pretty version for the team with organized sections
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* These styles make the email look professional and organized */
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #1B3A52; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; background-color: #f9f9f9; }
+    .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+    .inquiry-type { display: inline-block; padding: 5px 10px; border-radius: 15px; font-weight: bold; background-color: #F39200; color: white; }
+    .section { margin: 20px 0; padding: 15px; border-left: 4px solid #F39200; background-color: white; }
+    .section h3 { margin-top: 0; color: #1B3A52; }
+    ul { margin: 10px 0; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- The header tells what type of inquiry this is -->
+    <div class="header">
+      <h1>New Contact Form Submission</h1>
+      <h2>${data.firstName} ${data.lastName}</h2>
+    </div>
+    <div class="content">
+      <!-- Show the submission ID and inquiry type -->
+      <p><strong>Submission ID:</strong> #${data.id}</p>
+      <p><strong>Inquiry Type:</strong> <span class="inquiry-type">${data.inquiryType}</span></p>
+      
+      <!-- Contact information box -->
+      <div class="section">
+        <h3>Contact Information</h3>
+        <ul>
+          <li><strong>Name:</strong> ${data.firstName} ${data.lastName}</li>
+          <li><strong>Email:</strong> ${data.email}</li>
+          ${data.phone ? `<li><strong>Phone:</strong> ${data.phone}</li>` : ''}
+          ${data.companyName ? `<li><strong>Company:</strong> ${data.companyName}</li>` : ''}
+        </ul>
+      </div>
+      
+      <!-- Message box -->
+      <div class="section">
+        <h3>Message</h3>
+        <p>${data.message.replace(/\n/g, '<br>')}</p>
+      </div>
+      
+      <!-- Submission details -->
+      <div class="section">
+        <h3>Submission Details</h3>
+        <p><strong>Submitted:</strong> ${data.submittedAt.toLocaleString()}</p>
+      </div>
+      
+      <!-- What the team needs to do next -->
+      <div class="section">
+        <h3>Action Required</h3>
+        <ul>
+          <li>Respond within 24 hours</li>
+          <li>Log communication in CRM</li>
+          <li>Follow up as needed</li>
+        </ul>
+      </div>
+      
+      <!-- Big orange button to view all contacts -->
+      <p style="text-align: center; margin-top: 30px;">
+        <a href="${getBaseUrl()}/admin/contacts" style="display: inline-block; padding: 12px 24px; background-color: #F39200; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">View All Contacts</a>
+      </p>
+    </div>
+    <!-- Company footer -->
+    <div class="footer">
+      <p>&copy; 2025 Talencor Staffing. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+  // </InternalContactHTMLTemplateSnippet>
+
+  // <SendInternalContactEmailSnippet>
+  // Send the alert to the team's email address
+  return sendEmail({
+    to: internalEmail,    // Send to info@talencor.com
+    subject,              // Use the clear title
+    text,                 // The simple version
+    html                  // The pretty organized version
+  });
+  // </SendInternalContactEmailSnippet>
+}
+// </InternalContactNotificationSnippet>

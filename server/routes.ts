@@ -647,6 +647,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasPhone: !!validatedData.phone,
       });
 
+      // <ContactEmailNotificationTriggerSnippet>
+      // After saving the contact form submission, we need to send emails
+      // This is like ringing two bells: one for the visitor and one for the team
+      
+      // <ImportContactEmailFunctionsSnippet>
+      // We bring in our email sending tools only when we need them
+      // This is like getting the mailman only when we have mail to send
+      const { sendContactFormConfirmation, sendInternalContactNotification } = await import("./email.js");
+      // </ImportContactEmailFunctionsSnippet>
+      
+      // <SendVisitorConfirmationSnippet>
+      // First, send a "thank you" email to the person who contacted us
+      // This lets them know we got their message
+      await sendContactFormConfirmation({
+        firstName: submission.firstName,        // Their first name
+        lastName: submission.lastName,          // Their last name
+        email: submission.email,                // Where to send the email
+        companyName: submission.companyName,    // Their company (if provided)
+        inquiryType: submission.inquiryType,    // What they're asking about
+        message: submission.message             // Their message to us
+      });
+      // </SendVisitorConfirmationSnippet>
+      
+      // <SendTeamNotificationSnippet>
+      // Second, alert our team about the new contact
+      // This email has ALL the details so the team knows how to respond
+      await sendInternalContactNotification({
+        id: submission.id,                      // The submission number
+        firstName: submission.firstName,        // Their first name
+        lastName: submission.lastName,          // Their last name
+        email: submission.email,                // Their email
+        phone: submission.phone,                // Their phone (if provided)
+        companyName: submission.companyName,    // Their company (if provided)
+        inquiryType: submission.inquiryType,    // What type of inquiry
+        message: submission.message,            // Their full message
+        submittedAt: submission.submittedAt     // When they sent it
+      });
+      // </SendTeamNotificationSnippet>
+      // </ContactEmailNotificationTriggerSnippet>
+
       res.json({ success: true, id: submission.id });
     } catch (error) {
       if (error instanceof z.ZodError) {
