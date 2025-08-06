@@ -27,9 +27,11 @@ import ResumeWizard from "@/pages/resume-wizard";
 import QuestionBank from "@/pages/question-bank";
 import JobPosting from "@/pages/job-posting";
 import AdminJobPostings from "@/pages/admin/job-postings";
+import AdminClientManagement from "@/pages/admin/client-management";
 import AdminLogin from "@/pages/admin-login";
 import ClientLogin from "@/pages/client-login";
 import ClientDashboard from "@/pages/client/dashboard";
+import RequestAccess from "@/pages/request-access";
 import NotFound from "@/pages/not-found";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
@@ -61,8 +63,10 @@ function Router() {
           <Route path="/question-bank" component={QuestionBank} />
           <Route path="/admin/login" component={AdminLogin} />
           <Route path="/admin/job-postings" component={AdminJobPostings} />
-          <Route path="/client/login" component={ClientLogin} />
+          <Route path="/admin/client-management" component={AdminClientManagement} />
+          <Route path="/client-login" component={ClientLogin} />
           <Route path="/client/dashboard" component={ClientDashboard} />
+          <Route path="/request-access" component={RequestAccess} />
           <Route path="/demo" component={Demo} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms-of-service" component={TermsOfService} />

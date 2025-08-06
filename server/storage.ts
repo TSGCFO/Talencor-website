@@ -503,6 +503,14 @@ export class DatabaseStorage implements IStorage {
       .where(eq(clients.isActive, true))
       .orderBy(clients.companyName);
   }
+  
+  async getClientById(id: number): Promise<Client | undefined> {
+    const [client] = await db
+      .select()
+      .from(clients)
+      .where(eq(clients.id, id));
+    return client || undefined;
+  }
 
   async updateClient(id: number, updates: Partial<InsertClient>): Promise<Client> {
     const [updated] = await db

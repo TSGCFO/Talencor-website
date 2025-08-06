@@ -122,11 +122,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const client = await storage.getClientByAccessCode(accessCode);
       
       if (!client) {
+        // <TrackFailedLoginSnippet>
+        // Track failed login attempt for security monitoring
+        await storage.createClientActivity({
+          clientId: 0, // Use 0 for failed attempts
+          activityType: 'failed_login',
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.headers['user-agent'] || 'unknown',
+          details: JSON.stringify({ accessCode: accessCode.substring(0, 3) + '***' })
+        });
+        // </TrackFailedLoginSnippet>
+        
         return res.status(401).json({
           success: false,
           message: "Invalid access code"
         });
       }
+      
+      // <UpdateClientLoginInfoSnippet>
+      // Update login statistics and timestamp
+      await storage.updateClientLoginInfo(client.id);
+      
+      // Track successful login activity
+      await storage.createClientActivity({
+        clientId: client.id,
+        activityType: 'login',
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.headers['user-agent'] || 'unknown',
+        details: JSON.stringify({ timestamp: new Date().toISOString() })
+      });
+      // </UpdateClientLoginInfoSnippet>
       
       // Store client info in session
       req.session.client = {
@@ -288,6 +313,253 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // <ClientCodeRequestRoutesSnippet>
+  // Routes for self-service client code requests
+  // Like an online application form for new VIP membership
+  
+  // Submit a new client code request
+  app.post("/api/client/code-request", async (req, res) => {
+    try {
+      const { companyName, contactName, email, phone, reason } = req.body;
+      
+      // Validate required fields
+      if (!companyName || !contactName || !email) {
+        return res.status(400).json({
+          success: false,
+          message: "Company name, contact name, and email are required"
+        });
+      }
+      
+      // Create the code request
+      const request = await storage.createClientCodeRequest({
+        companyName,
+        contactName,
+        email,
+        phone: phone || null,
+        reason: reason || null,
+        status: 'pending'
+      });
+      
+      res.json({
+        success: true,
+        message: "Your request has been submitted and will be reviewed shortly",
+        requestId: request.id
+      });
+    } catch (error) {
+      console.error('Error creating code request:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to submit request"
+      });
+    }
+  });
+  
+  // Check status of a code request
+  app.get("/api/client/code-request/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const request = await storage.getClientCodeRequestById(id);
+      
+      if (!request) {
+        return res.status(404).json({
+          success: false,
+          message: "Request not found"
+        });
+      }
+      
+      res.json({
+        success: true,
+        request: {
+          id: request.id,
+          status: request.status,
+          createdAt: request.createdAt,
+          companyName: request.companyName
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching code request:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch request"
+      });
+    }
+  });
+  // </ClientCodeRequestRoutesSnippet>
+  
+  // <AdminClientManagementRoutesSnippet>
+  // Admin routes for managing clients and code requests
+  // Like the back office for managing VIP memberships
+  
+  // Get all clients (admin only)
+  app.get("/api/admin/clients", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const clients = await storage.getClients();
+      res.json(clients);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      res.status(500).json({ error: "Failed to fetch clients" });
+    }
+  });
+  
+  // Get client details with activities (admin only)
+  app.get("/api/admin/clients/:id", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const client = await storage.getClientById(id);
+      
+      if (!client) {
+        return res.status(404).json({ error: "Client not found" });
+      }
+      
+      const activities = await storage.getClientActivities(id);
+      
+      res.json({
+        client,
+        activities
+      });
+    } catch (error) {
+      console.error('Error fetching client details:', error);
+      res.status(500).json({ error: "Failed to fetch client details" });
+    }
+  });
+  
+  // Update client (admin only)
+  app.put("/api/admin/clients/:id", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const updated = await storage.updateClient(id, req.body);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating client:', error);
+      res.status(500).json({ error: "Failed to update client" });
+    }
+  });
+  
+  // Deactivate client (admin only)
+  app.delete("/api/admin/clients/:id", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const id = parseInt(req.params.id);
+      await storage.deactivateClient(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deactivating client:', error);
+      res.status(500).json({ error: "Failed to deactivate client" });
+    }
+  });
+  
+  // Get pending code requests (admin only)
+  app.get("/api/admin/code-requests", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const { status } = req.query;
+      const requests = await storage.getClientCodeRequests(
+        status ? { status: status as string } : undefined
+      );
+      res.json(requests);
+    } catch (error) {
+      console.error('Error fetching code requests:', error);
+      res.status(500).json({ error: "Failed to fetch code requests" });
+    }
+  });
+  
+  // Approve code request (admin only)
+  app.post("/api/admin/code-requests/:id/approve", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const result = await storage.approveClientCodeRequest(id, req.session.user.id);
+      
+      res.json({
+        success: true,
+        client: result.client,
+        accessCode: result.client.accessCode
+      });
+    } catch (error) {
+      console.error('Error approving code request:', error);
+      res.status(500).json({ error: "Failed to approve request" });
+    }
+  });
+  
+  // Reject code request (admin only)
+  app.post("/api/admin/code-requests/:id/reject", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const { reason } = req.body;
+      
+      if (!reason) {
+        return res.status(400).json({ error: "Rejection reason is required" });
+      }
+      
+      const updated = await storage.rejectClientCodeRequest(id, req.session.user.id, reason);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error rejecting code request:', error);
+      res.status(500).json({ error: "Failed to reject request" });
+    }
+  });
+  
+  // Generate bulk access codes (admin only)
+  app.post("/api/admin/clients/bulk-generate", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const { clients: clientList } = req.body;
+      
+      if (!Array.isArray(clientList) || clientList.length === 0) {
+        return res.status(400).json({ error: "Client list is required" });
+      }
+      
+      const createdClients = [];
+      
+      for (const clientData of clientList) {
+        const accessCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const client = await storage.createClient({
+          ...clientData,
+          accessCode,
+          codeExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        });
+        createdClients.push(client);
+      }
+      
+      res.json({
+        success: true,
+        clients: createdClients
+      });
+    } catch (error) {
+      console.error('Error generating bulk codes:', error);
+      res.status(500).json({ error: "Failed to generate codes" });
+    }
+  });
+  // </AdminClientManagementRoutesSnippet>
   // </ClientPortalRoutesSnippet>
 
   // Contact form submission
