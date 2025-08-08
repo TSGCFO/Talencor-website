@@ -9,10 +9,10 @@ import "isomorphic-fetch";
 // This section creates a template for what information every email needs
 // It's like a checklist that makes sure we don't forget any important parts of an email
 export interface EmailOptions {
-  to: string;      // Who gets the email (like writing the address on an envelope)
+  to: string; // Who gets the email (like writing the address on an envelope)
   subject: string; // The title of the email (what people see before opening it)
-  text: string;    // The plain message (like a simple letter)
-  html?: string;   // A fancy version with colors and pictures (the ? means we don't always need this)
+  text: string; // The plain message (like a simple letter)
+  html?: string; // A fancy version with colors and pictures (the ? means we don't always need this)
 }
 // </EmailOptionsSnippet>
 // </EmailSystemSetupSnippet>
@@ -22,17 +22,17 @@ export interface EmailOptions {
 // It's like knowing whether to use your home address, work address, or vacation address
 function getBaseUrl(): string {
   // Check if we're running on the real production website (talencor.com)
-  if (process.env.PRODUCTION_URL || process.env.NODE_ENV === 'production') {
-    return 'https://talencor.com';
+  if (process.env.PRODUCTION_URL || process.env.NODE_ENV === "production") {
+    return "https://talencor.com";
   }
-  
+
   // Check if we're running on Replit (the development preview)
   if (process.env.REPLIT_DEV_DOMAIN) {
     return `https://${process.env.REPLIT_DEV_DOMAIN}`;
   }
-  
+
   // If neither, we must be running locally on a developer's computer
-  return 'http://localhost:5000';
+  return "http://localhost:5000";
 }
 // </BaseUrlHelperSnippet>
 
@@ -45,9 +45,9 @@ async function getGraphClient(): Promise<Client> {
   // These passwords prove you're allowed to use Microsoft's email service
   // Think of them like showing your ID at the post office
   const credential = new ClientSecretCredential(
-    process.env.MICROSOFT_TENANT_ID!,    // Your company's special number at Microsoft
-    process.env.MICROSOFT_CLIENT_ID!,     // Your app's personal ID number  
-    process.env.MICROSOFT_CLIENT_SECRET!  // Your app's secret password (keep it safe!)
+    process.env.MICROSOFT_TENANT_ID!, // Your company's special number at Microsoft
+    process.env.MICROSOFT_CLIENT_ID!, // Your app's personal ID number
+    process.env.MICROSOFT_CLIENT_SECRET! // Your app's secret password (keep it safe!)
   );
   // </CredentialSetupSnippet>
 
@@ -59,10 +59,10 @@ async function getGraphClient(): Promise<Client> {
       // This part asks Microsoft "Can I send emails please?"
       // Microsoft checks your passwords and says yes or no
       getAccessToken: async () => {
-        const tokenResponse = await credential.getToken('https://graph.microsoft.com/.default');
-        return tokenResponse?.token || '';
-      }
-    }
+        const tokenResponse = await credential.getToken("https://graph.microsoft.com/.default");
+        return tokenResponse?.token || "";
+      },
+    },
   });
   // </ClientInitializationSnippet>
 
@@ -78,42 +78,47 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     // <LoggingSnippet>
     // This writes down what email we're sending in our records
     // It's like keeping a receipt when you mail something
-    console.log('Sending email via Microsoft Graph:', {
+    console.log("Sending email via Microsoft Graph:", {
       to: options.to,
       subject: options.subject,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     // </LoggingSnippet>
-    
+
     // <CredentialCheckSnippet>
     // This checks if we have all our passwords ready
     // It's like checking if you have stamps before going to the post office
-    if (!process.env.MICROSOFT_CLIENT_ID || !process.env.MICROSOFT_CLIENT_SECRET || !process.env.MICROSOFT_TENANT_ID) {
-      console.log('Missing Microsoft Graph credentials - email would be sent in production');
+    if (
+      !process.env.MICROSOFT_CLIENT_ID ||
+      !process.env.MICROSOFT_CLIENT_SECRET ||
+      !process.env.MICROSOFT_TENANT_ID
+    ) {
+      console.log("Missing Microsoft Graph credentials - email would be sent in production");
       return true; // We say "true" so the website keeps working even without email
     }
     // </CredentialCheckSnippet>
-    
+
     try {
       // <GetEmailServiceSnippet>
       // Get our email sending service ready
       const client = await getGraphClient();
       // </GetEmailServiceSnippet>
-      
+
       // <CreateEmailMessageSnippet>
       // This creates the actual email message
       // It's like writing your letter and putting it in an envelope
       const message = {
-        subject: options.subject,  // The title on the envelope
+        subject: options.subject, // The title on the envelope
         body: {
-          contentType: "HTML" as const,  // This says we want a pretty email with colors
+          contentType: "HTML" as const, // This says we want a pretty email with colors
           // If we have a fancy version, use it. Otherwise make the plain text look nice
-          content: options.html || `<p>${options.text.replace(/\n/g, '<br>')}</p>`,
+          content: options.html || `<p>${options.text.replace(/\n/g, "<br>")}</p>`,
         },
-        toRecipients: [  // Who gets the email
+        toRecipients: [
+          // Who gets the email
           {
             emailAddress: {
-              address: options.to,  // The person's email address
+              address: options.to, // The person's email address
             },
           },
         ],
@@ -124,28 +129,28 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       // This is where we actually send the email
       // It's like putting the letter in the mailbox
       await client
-        .api("/users/no-reply@talencor.com/sendMail")  // Send from the company's no-reply address
+        .api("/users/no-reply@talencor.com/sendMail") // Send from the company's no-reply address
         .post({
           message,
-          saveToSentItems: true,  // Keep a copy in our "Sent" folder
+          saveToSentItems: true, // Keep a copy in our "Sent" folder
         });
       // </ActualEmailSendingSnippet>
-      
-      console.log('✅ Email sent successfully via Microsoft Graph:', { to: options.to });
-      return true;  // Tell everyone the email was sent!
+
+      console.log("✅ Email sent successfully via Microsoft Graph:", { to: options.to });
+      return true; // Tell everyone the email was sent!
     } catch (emailError) {
       // <EmailErrorHandlingSnippet>
       // If something goes wrong with sending the email
       // We write it down but don't stop the website from working
-      console.error('Microsoft Graph email error:', emailError);
-      console.log('Job posting will continue - email notifications can be configured later');
+      console.error("Microsoft Graph email error:", emailError);
+      console.log("Job posting will continue - email notifications can be configured later");
       return true; // Don't fail the main process
       // </EmailErrorHandlingSnippet>
     }
   } catch (error) {
     // <GeneralErrorHandlingSnippet>
     // If anything else goes wrong, we handle it here
-    console.error('Error in email function:', error);
+    console.error("Error in email function:", error);
     return true; // Don't fail the main process
     // </GeneralErrorHandlingSnippet>
   }
@@ -156,17 +161,17 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
 // This function sends a "thank you" email when someone posts a new job
 // It's like sending a receipt when someone drops off a package
 export async function sendJobPostingConfirmation(data: {
-  contactName: string;      // The person's name who posted the job
-  email: string;           // Where to send the thank you email
-  companyName: string;     // The company that needs workers
-  jobTitle: string;        // What job they need to fill
+  contactName: string; // The person's name who posted the job
+  email: string; // Where to send the thank you email
+  companyName: string; // The company that needs workers
+  jobTitle: string; // What job they need to fill
   isExistingClient: boolean; // Do we already know this company? (true = yes, false = no)
 }): Promise<boolean> {
   // <EmailSubjectSnippet>
   // This is the title people see in their inbox
-  const subject = 'Job Posting Received - Talencor Staffing';
+  const subject = "Job Posting Received - Talencor Staffing";
   // </EmailSubjectSnippet>
-  
+
   // <PlainTextMessageSnippet>
   // This is the simple version of the email
   // Some people's email can't show fancy colors, so they see this
@@ -177,9 +182,10 @@ Thank you for submitting your job posting for ${data.jobTitle} at ${data.company
 
 We have received your request and a member of our recruiting team will contact you within one business day.
 
-${data.isExistingClient 
-  ? 'As an existing client, your job posting will be prioritized for immediate processing.'
-  : 'As a new client, we will discuss our services, pricing, and contract terms before posting your job.'
+${
+  data.isExistingClient
+    ? "As an existing client, your job posting will be prioritized for immediate processing."
+    : "As a new client, we will discuss our services, pricing, and contract terms before posting your job."
 }
 
 If you have any immediate questions, please don't hesitate to contact us at:
@@ -190,7 +196,7 @@ Best regards,
 The Talencor Staffing Team
   `.trim();
   // </PlainTextMessageSnippet>
-  
+
   // <HTMLEmailTemplateSnippet>
   // This is the pretty version of the email with colors and nice formatting
   // It's like making a beautiful greeting card instead of just a plain letter
@@ -220,9 +226,10 @@ The Talencor Staffing Team
       <p>Thank you for submitting your job posting for <strong>${data.jobTitle}</strong> at <strong>${data.companyName}</strong>.</p>
       <p>We have received your request and a member of our recruiting team will contact you within one business day.</p>
       <!-- This shows different messages for new vs existing customers -->
-      ${data.isExistingClient 
-        ? '<p style="background-color: #d4edda; padding: 10px; border-radius: 5px;">As an existing client, your job posting will be prioritized for immediate processing.</p>'
-        : '<p style="background-color: #d1ecf1; padding: 10px; border-radius: 5px;">As a new client, we will discuss our services, pricing, and contract terms before posting your job.</p>'
+      ${
+        data.isExistingClient
+          ? '<p style="background-color: #d4edda; padding: 10px; border-radius: 5px;">As an existing client, your job posting will be prioritized for immediate processing.</p>'
+          : '<p style="background-color: #d1ecf1; padding: 10px; border-radius: 5px;">As a new client, we will discuss our services, pricing, and contract terms before posting your job.</p>'
       }
       <p>If you have any immediate questions, please don't hesitate to contact us:</p>
       <ul>
@@ -239,15 +246,15 @@ The Talencor Staffing Team
 </html>
   `.trim();
   // </HTMLEmailTemplateSnippet>
-  
+
   // <ActualSendEmailSnippet>
   // This uses our main email sending function to deliver the message
   // We give it all the pieces: who to send to, the title, and both versions of the message
   return sendEmail({
-    to: data.email,      // Send to the person who posted the job
-    subject,             // Use the title we created above
-    text,                // The plain version
-    html                 // The pretty version
+    to: data.email, // Send to the person who posted the job
+    subject, // Use the title we created above
+    text, // The plain version
+    html, // The pretty version
   });
   // </ActualSendEmailSnippet>
 }
@@ -257,27 +264,27 @@ The Talencor Staffing Team
 // This function alerts your team when someone posts a new job
 // It's like ringing a bell in the office to let everyone know there's work to do
 export async function sendInternalJobPostingNotification(data: {
-  id: number;                             // A unique number for this job posting
-  contactName: string;                    // The person who posted the job
-  email: string;                          // Their email address
-  phone: string;                          // Their phone number
-  companyName: string;                    // The company that needs workers
-  jobTitle: string;                       // What job they need to fill
-  location: string;                       // Where the job is located
-  employmentType: string;                 // Full-time, part-time, etc.
-  isExistingClient: boolean;              // Do we already work with this company?
-  anticipatedStartDate?: string | null;   // When they need someone to start (optional)
-  salaryRange?: string | null;            // How much they're willing to pay (optional)
-  jobDescription?: string | null;         // Details about the job (optional)
-  specialInstructions?: string | null;    // Any special needs for this job (optional)
+  id: number; // A unique number for this job posting
+  contactName: string; // The person who posted the job
+  email: string; // Their email address
+  phone: string; // Their phone number
+  companyName: string; // The company that needs workers
+  jobTitle: string; // What job they need to fill
+  location: string; // Where the job is located
+  employmentType: string; // Full-time, part-time, etc.
+  isExistingClient: boolean; // Do we already work with this company?
+  anticipatedStartDate?: string | null; // When they need someone to start (optional)
+  salaryRange?: string | null; // How much they're willing to pay (optional)
+  jobDescription?: string | null; // Details about the job (optional)
+  specialInstructions?: string | null; // Any special needs for this job (optional)
 }): Promise<boolean> {
   // <InternalEmailSetupSnippet>
   // This is where we send the team alerts
-  const internalEmail = 'info@talencor.com';
+  const internalEmail = "info@talencor.com";
   // Create a clear title so the team knows what company and job this is about
   const subject = `New Job Posting: ${data.jobTitle} at ${data.companyName}`;
   // </InternalEmailSetupSnippet>
-  
+
   // <InternalPlainTextSnippet>
   // This is the simple version that shows all the important information
   // It's organized like a report so the team can quickly see what they need to do
@@ -285,7 +292,7 @@ export async function sendInternalJobPostingNotification(data: {
 NEW JOB POSTING RECEIVED
 
 ID: #${data.id}
-Client Status: ${data.isExistingClient ? 'EXISTING CLIENT' : 'NEW CLIENT'}
+Client Status: ${data.isExistingClient ? "EXISTING CLIENT" : "NEW CLIENT"}
 
 COMPANY INFORMATION:
 - Company: ${data.companyName}
@@ -297,22 +304,23 @@ JOB DETAILS:
 - Title: ${data.jobTitle}
 - Location: ${data.location}
 - Type: ${data.employmentType}
-${data.anticipatedStartDate ? `- Start Date: ${data.anticipatedStartDate}` : ''}
-${data.salaryRange ? `- Salary Range: ${data.salaryRange}` : ''}
+${data.anticipatedStartDate ? `- Start Date: ${data.anticipatedStartDate}` : ""}
+${data.salaryRange ? `- Salary Range: ${data.salaryRange}` : ""}
 
-${data.jobDescription ? `JOB DESCRIPTION:\n${data.jobDescription}\n` : ''}
-${data.specialInstructions ? `SPECIAL INSTRUCTIONS:\n${data.specialInstructions}\n` : ''}
+${data.jobDescription ? `JOB DESCRIPTION:\n${data.jobDescription}\n` : ""}
+${data.specialInstructions ? `SPECIAL INSTRUCTIONS:\n${data.specialInstructions}\n` : ""}
 
 ACTION REQUIRED:
-${data.isExistingClient 
-  ? '- Verify current contract status\n- Proceed with job posting'
-  : '- Contact new client within 24 hours\n- Discuss services and pricing\n- Send contract documents'
+${
+  data.isExistingClient
+    ? "- Verify current contract status\n- Proceed with job posting"
+    : "- Contact new client within 24 hours\n- Discuss services and pricing\n- Send contract documents"
 }
 
 View in admin panel: ${getBaseUrl()}/admin/job-postings
   `.trim();
   // </InternalPlainTextSnippet>
-  
+
   // <InternalHTMLTemplateSnippet>
   // This is the pretty version for the team with organized sections and colors
   // It's like a professional report that's easy to read quickly
@@ -349,8 +357,8 @@ View in admin panel: ${getBaseUrl()}/admin/job-postings
       <!-- Show the posting number and whether they're a new or existing customer -->
       <p><strong>Posting ID:</strong> #${data.id}</p>
       <p><strong>Client Status:</strong> 
-        <span class="status-badge ${data.isExistingClient ? 'existing-client' : 'new-client'}">
-          ${data.isExistingClient ? 'EXISTING CLIENT' : 'NEW CLIENT'}
+        <span class="status-badge ${data.isExistingClient ? "existing-client" : "new-client"}">
+          ${data.isExistingClient ? "EXISTING CLIENT" : "NEW CLIENT"}
         </span>
       </p>
       
@@ -373,34 +381,43 @@ View in admin panel: ${getBaseUrl()}/admin/job-postings
           <li><strong>Location:</strong> ${data.location}</li>
           <li><strong>Type:</strong> ${data.employmentType}</li>
           <!-- Only show start date if they provided one -->
-          ${data.anticipatedStartDate ? `<li><strong>Start Date:</strong> ${data.anticipatedStartDate}</li>` : ''}
+          ${data.anticipatedStartDate ? `<li><strong>Start Date:</strong> ${data.anticipatedStartDate}</li>` : ""}
           <!-- Only show salary if they provided one -->
-          ${data.salaryRange ? `<li><strong>Salary Range:</strong> ${data.salaryRange}</li>` : ''}
+          ${data.salaryRange ? `<li><strong>Salary Range:</strong> ${data.salaryRange}</li>` : ""}
         </ul>
       </div>
       
       <!-- Only show job description box if they provided one -->
-      ${data.jobDescription ? `
+      ${
+        data.jobDescription
+          ? `
       <div class="section">
         <h3>Job Description</h3>
-        <p>${data.jobDescription.replace(/\n/g, '<br>')}</p>
+        <p>${data.jobDescription.replace(/\n/g, "<br>")}</p>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
       
       <!-- Only show special instructions box if they provided any -->
-      ${data.specialInstructions ? `
+      ${
+        data.specialInstructions
+          ? `
       <div class="section">
         <h3>Special Instructions</h3>
-        <p>${data.specialInstructions.replace(/\n/g, '<br>')}</p>
+        <p>${data.specialInstructions.replace(/\n/g, "<br>")}</p>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
       
       <!-- Important: What the team needs to do next -->
       <div class="section">
         <h3>Action Required</h3>
-        ${data.isExistingClient 
-          ? '<ul><li>Verify current contract status</li><li>Proceed with job posting</li></ul>'
-          : '<ul><li>Contact new client within 24 hours</li><li>Discuss services and pricing</li><li>Send contract documents</li></ul>'
+        ${
+          data.isExistingClient
+            ? "<ul><li>Verify current contract status</li><li>Proceed with job posting</li></ul>"
+            : "<ul><li>Contact new client within 24 hours</li><li>Discuss services and pricing</li><li>Send contract documents</li></ul>"
         }
       </div>
       
@@ -422,10 +439,10 @@ View in admin panel: ${getBaseUrl()}/admin/job-postings
   // <SendInternalEmailSnippet>
   // Send the alert to the team's email address
   return sendEmail({
-    to: internalEmail,    // Send to info@talencor.com
-    subject,              // The title we created above
-    text,                 // Plain version for simple email readers
-    html                  // Pretty version with colors and boxes
+    to: internalEmail, // Send to info@talencor.com
+    subject, // The title we created above
+    text, // Plain version for simple email readers
+    html, // Pretty version with colors and boxes
   });
   // </SendInternalEmailSnippet>
 }
@@ -435,18 +452,18 @@ View in admin panel: ${getBaseUrl()}/admin/job-postings
 // This function sends a "thank you" email when someone submits a contact form
 // It's like sending a receipt that we got their message
 export async function sendContactFormConfirmation(data: {
-  firstName: string;         // The person's first name
-  lastName: string;          // The person's last name
-  email: string;            // Where to send the thank you email
-  companyName?: string;     // Their company (if they provided one)
-  inquiryType: string;      // What they're asking about (Job Seeker, Employer, etc.)
-  message: string;          // Their message to us
+  firstName: string; // The person's first name
+  lastName: string; // The person's last name
+  email: string; // Where to send the thank you email
+  companyName?: string; // Their company (if they provided one)
+  inquiryType: string; // What they're asking about (Job Seeker, Employer, etc.)
+  message: string; // Their message to us
 }): Promise<boolean> {
   // <ContactEmailSubjectSnippet>
   // This is the title people see in their inbox
-  const subject = 'We Received Your Message - Talencor Staffing';
+  const subject = "We Received Your Message - Talencor Staffing";
   // </ContactEmailSubjectSnippet>
-  
+
   // <ContactPlainTextSnippet>
   // This is the simple version of the email
   const text = `
@@ -467,7 +484,7 @@ Best regards,
 The Talencor Staffing Team
   `.trim();
   // </ContactPlainTextSnippet>
-  
+
   // <ContactHTMLTemplateSnippet>
   // This is the pretty version with colors and nice formatting
   const html = `
@@ -498,7 +515,7 @@ The Talencor Staffing Team
       
       <div class="message-box">
         <h3>Your Message:</h3>
-        <p>${data.message.replace(/\n/g, '<br>')}</p>
+        <p>${data.message.replace(/\n/g, "<br>")}</p>
       </div>
       
       <p>If you have any immediate questions, please don't hesitate to contact us:</p>
@@ -516,14 +533,14 @@ The Talencor Staffing Team
 </html>
   `.trim();
   // </ContactHTMLTemplateSnippet>
-  
+
   // <SendContactConfirmationSnippet>
   // This uses our main email sending function to deliver the message
   return sendEmail({
-    to: data.email,      // Send to the person who contacted us
-    subject,             // Use the title we created above
-    text,                // The plain version
-    html                 // The pretty version
+    to: data.email, // Send to the person who contacted us
+    subject, // Use the title we created above
+    text, // The plain version
+    html, // The pretty version
   });
   // </SendContactConfirmationSnippet>
 }
@@ -533,23 +550,23 @@ The Talencor Staffing Team
 // This function alerts your team when someone submits a contact form
 // It's like ringing a bell to let the team know someone needs help
 export async function sendInternalContactNotification(data: {
-  id: number;                      // A unique number for this contact submission
-  firstName: string;               // The person's first name
-  lastName: string;                // The person's last name
-  email: string;                   // Their email address
-  phone?: string | null;           // Their phone number (optional)
-  companyName?: string | null;     // Their company (optional)
-  inquiryType: string;             // What they're asking about
-  message: string;                 // Their message
-  submittedAt: Date;              // When they sent the message
+  id: number; // A unique number for this contact submission
+  firstName: string; // The person's first name
+  lastName: string; // The person's last name
+  email: string; // Their email address
+  phone?: string | null; // Their phone number (optional)
+  companyName?: string | null; // Their company (optional)
+  inquiryType: string; // What they're asking about
+  message: string; // Their message
+  submittedAt: Date; // When they sent the message
 }): Promise<boolean> {
   // <InternalContactEmailSetupSnippet>
   // This is where we send the team alerts
-  const internalEmail = 'info@talencor.com';
+  const internalEmail = "info@talencor.com";
   // Create a clear title so the team knows what type of inquiry this is
   const subject = `New Contact Form: ${data.inquiryType} - ${data.firstName} ${data.lastName}`;
   // </InternalContactEmailSetupSnippet>
-  
+
   // <InternalContactPlainTextSnippet>
   // This is the simple version that shows all the important information
   const text = `
@@ -561,8 +578,8 @@ Type: ${data.inquiryType}
 CONTACT INFORMATION:
 - Name: ${data.firstName} ${data.lastName}
 - Email: ${data.email}
-${data.phone ? `- Phone: ${data.phone}` : ''}
-${data.companyName ? `- Company: ${data.companyName}` : ''}
+${data.phone ? `- Phone: ${data.phone}` : ""}
+${data.companyName ? `- Company: ${data.companyName}` : ""}
 
 MESSAGE:
 ${data.message}
@@ -577,7 +594,7 @@ ACTION REQUIRED:
 View all contacts: ${getBaseUrl()}/admin/contacts
   `.trim();
   // </InternalContactPlainTextSnippet>
-  
+
   // <InternalContactHTMLTemplateSnippet>
   // This is the pretty version for the team with organized sections
   const html = `
@@ -616,15 +633,15 @@ View all contacts: ${getBaseUrl()}/admin/contacts
         <ul>
           <li><strong>Name:</strong> ${data.firstName} ${data.lastName}</li>
           <li><strong>Email:</strong> ${data.email}</li>
-          ${data.phone ? `<li><strong>Phone:</strong> ${data.phone}</li>` : ''}
-          ${data.companyName ? `<li><strong>Company:</strong> ${data.companyName}</li>` : ''}
+          ${data.phone ? `<li><strong>Phone:</strong> ${data.phone}</li>` : ""}
+          ${data.companyName ? `<li><strong>Company:</strong> ${data.companyName}</li>` : ""}
         </ul>
       </div>
       
       <!-- Message box -->
       <div class="section">
         <h3>Message</h3>
-        <p>${data.message.replace(/\n/g, '<br>')}</p>
+        <p>${data.message.replace(/\n/g, "<br>")}</p>
       </div>
       
       <!-- Submission details -->
@@ -661,10 +678,10 @@ View all contacts: ${getBaseUrl()}/admin/contacts
   // <SendInternalContactEmailSnippet>
   // Send the alert to the team's email address
   return sendEmail({
-    to: internalEmail,    // Send to info@talencor.com
-    subject,              // Use the clear title
-    text,                 // The simple version
-    html                  // The pretty organized version
+    to: internalEmail, // Send to info@talencor.com
+    subject, // Use the clear title
+    text, // The simple version
+    html, // The pretty organized version
   });
   // </SendInternalContactEmailSnippet>
 }
