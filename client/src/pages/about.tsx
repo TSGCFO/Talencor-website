@@ -1,54 +1,57 @@
-import { Helmet } from "react-helmet-async";
 import { Award, Users, Target, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import StatisticsSection from "@/components/statistics-section";
-import { SEO_CONFIG, generateMetaTags, generateBreadcrumbStructuredData } from "@/lib/seo";
+import { SEOHelmet } from "@/components/seo-helmet";
+import { generateRichSnippetData, VOICE_SEARCH_OPTIMIZATION } from "@/lib/seo-comprehensive";
 
 export default function About() {
-  const seoData = generateMetaTags({
-    title: "About Talencor Staffing | Professional Employment Solutions Toronto",
-    description: "Learn about Talencor Staffing's Profile-Matching System and Team Leader Program. Professional staffing solutions in Toronto and GTA with a focus on quality selection and 24/7 support.",
-    keywords: [
-      "about Talencor Staffing", "staffing company Toronto", "employment agency history", 
-      "Profile-Matching System", "Team Leader Program", "professional staffing GTA",
-      "We Believe philosophy", "staffing expertise Toronto", "employment solutions"
-    ],
-    canonical: "/about"
-  });
-
-  const breadcrumbData = generateBreadcrumbStructuredData([
+  const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "About", url: "/about" }
-  ]);
+  ];
+
+  const faqData = {
+    questions: [
+      {
+        id: 1,
+        question: "What makes Talencor different from other staffing agencies?",
+        answer: "Talencor stands out with our unique Profile-Matching System, Team Leader Program, and 'We Believe' philosophy. We provide 24/7 support, comprehensive training, and handle all administrative costs while maintaining a 95% client satisfaction rate.",
+        upvotes: 48
+      },
+      {
+        id: 2,
+        question: "How long has Talencor been in business?",
+        answer: "Talencor has been providing professional staffing solutions since 2008, building strong relationships with businesses across Toronto and the Greater Toronto Area for over 15 years.",
+        upvotes: 35
+      },
+      {
+        id: 3,
+        question: "What is Talencor's Team Leader Program?",
+        answer: "Our Team Leader Program assigns experienced supervisors to oversee temporary staff placements, ensuring quality performance, maintaining productivity standards, and providing on-site support for both workers and clients.",
+        upvotes: 30
+      }
+    ]
+  };
 
   return (
     <>
-      <Helmet>
-        <title>{seoData.title}</title>
-        <meta name="description" content={seoData.description} />
-        <meta name="keywords" content={seoData.keywords} />
-        <meta name="robots" content={seoData.robots} />
-        <link rel="canonical" href={seoData.canonical} />
-        
-        {/* Open Graph Tags */}
-        <meta property="og:title" content={seoData.ogTitle} />
-        <meta property="og:description" content={seoData.ogDescription} />
-        <meta property="og:type" content={seoData.ogType} />
-        <meta property="og:url" content={seoData.ogUrl} />
-        <meta property="og:site_name" content={SEO_CONFIG.siteName} />
-        
-        {/* Twitter Card Tags */}
-        <meta name="twitter:card" content={seoData.twitterCard} />
-        <meta name="twitter:title" content={seoData.twitterTitle} />
-        <meta name="twitter:description" content={seoData.twitterDescription} />
-        
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbData)}
-        </script>
-      </Helmet>
+      <SEOHelmet
+        title="About Talencor Staffing - Professional Employment Solutions Toronto"
+        description="Learn about Talencor Staffing's 15+ years of excellence, Profile-Matching System, and Team Leader Program. Trusted staffing solutions in Toronto and GTA with 95% client satisfaction and 24/7 support."
+        keywords={[
+          "about Talencor Staffing", "staffing company Toronto", "employment agency history", 
+          "Profile-Matching System", "Team Leader Program", "professional staffing GTA",
+          "We Believe philosophy", "staffing expertise Toronto", "employment solutions",
+          "workforce management", "HR consulting Toronto", "temporary staffing agency",
+          ...VOICE_SEARCH_OPTIMIZATION.conversationalKeywords
+        ]}
+        canonical="/about"
+        breadcrumbs={breadcrumbs}
+        faq={faqData}
+        prefetch={['/services', '/contact']}
+      />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-navy to-corporate-blue text-white py-12 sm:py-16 md:py-20">

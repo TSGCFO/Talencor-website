@@ -10,13 +10,23 @@ import { Button } from "@/components/ui/button";
 import { Check, Star } from "lucide-react";
 import { SEO_CONFIG, generateStructuredData, generateMetaTags } from "@/lib/seo";
 import { GOOGLE_BUSINESS_PROFILE, VOICE_SEARCH_OPTIMIZATION } from "@/lib/advanced-seo";
+import { 
+  generateComprehensivePageData, 
+  generateEntityData, 
+  generateRichSnippetData,
+  ADVANCED_META_TAGS,
+  INTERNATIONAL_SEO,
+  CONTENT_OPTIMIZATION 
+} from "@/lib/seo-comprehensive";
+import { seoMonitor } from "@/lib/seo-monitoring";
 import { useEffect } from "react";
 import { captureEvent, captureError, addBreadcrumb } from "@/lib/sentry";
 
 export default function Home() {
-  // Initialize performance optimizations
+  // Initialize performance optimizations and SEO monitoring
   useEffect(() => {
     initializePerformanceOptimizations();
+    seoMonitor.init();
     
     // Production-ready Sentry tracking
     addBreadcrumb('Home page loaded', 'navigation', {
@@ -26,21 +36,74 @@ export default function Home() {
     });
   }, []);
 
-  const seoData = generateMetaTags({
-    title: "Professional Staffing Solutions in Toronto & GTA",
-    description: "Leading staffing agency in Toronto and GTA providing recruiting, training, payroll administration, labour relations, permanent placements, and consulting services. Contact us today!",
+  // Comprehensive SEO data generation
+  const comprehensivePageData = generateComprehensivePageData({
+    title: "Professional Staffing Solutions in Toronto & GTA | Talencor Staffing",
+    description: "Leading staffing agency in Toronto and GTA providing recruiting, training, payroll administration, labour relations, permanent placements, and consulting services. Contact us today for professional workforce solutions!",
+    url: "/",
+    type: "website",
     keywords: [
       ...SEO_CONFIG.keywords.primary,
       ...SEO_CONFIG.keywords.secondary,
       ...SEO_CONFIG.keywords.location,
       "temporary staffing", "workforce management", "employee placement", "HR services",
-      // Voice search optimization keywords
+      "industrial staffing", "warehouse staffing", "manufacturing jobs", "office staffing",
+      ...VOICE_SEARCH_OPTIMIZATION.conversationalKeywords
+    ],
+    breadcrumbs: [
+      { name: "Home", url: "/" }
+    ],
+    faq: {
+      questions: [
+        {
+          id: 1,
+          question: "What staffing services does Talencor provide?",
+          answer: "Talencor provides comprehensive staffing solutions including temporary staffing, permanent placements, recruiting, employee training with WHMIS certification, payroll administration, labour relations consulting, and workforce management services across Toronto and the Greater Toronto Area.",
+          upvotes: 45
+        },
+        {
+          id: 2,
+          question: "How quickly can Talencor provide temporary workers?",
+          answer: "Talencor can typically provide qualified temporary workers within 24-48 hours for most positions, thanks to our extensive pre-screened talent pool and Profile-Matching System.",
+          upvotes: 38
+        },
+        {
+          id: 3,
+          question: "What industries does Talencor specialize in?",
+          answer: "Talencor specializes in staffing for manufacturing, warehouse/logistics, construction, administrative, healthcare, and general labour industries throughout the GTA.",
+          upvotes: 32
+        },
+        {
+          id: 4,
+          question: "Does Talencor offer WHMIS training?",
+          answer: "Yes, Talencor provides comprehensive WHMIS certification and workplace safety training as part of our employee training services to ensure all workers meet safety compliance standards.",
+          upvotes: 28
+        },
+        {
+          id: 5,
+          question: "What areas does Talencor serve?",
+          answer: "Talencor serves all of Toronto and the Greater Toronto Area including Mississauga, Brampton, Vaughan, Markham, Richmond Hill, Oakville, Burlington, and surrounding regions.",
+          upvotes: 25
+        }
+      ]
+    }
+  });
+
+  const seoData = generateMetaTags({
+    title: "Professional Staffing Solutions in Toronto & GTA | Talencor Staffing",
+    description: "Leading staffing agency in Toronto and GTA providing recruiting, training, payroll administration, labour relations, permanent placements, and consulting services. Contact us today for professional workforce solutions!",
+    keywords: [
+      ...SEO_CONFIG.keywords.primary,
+      ...SEO_CONFIG.keywords.secondary,
+      ...SEO_CONFIG.keywords.location,
+      "temporary staffing", "workforce management", "employee placement", "HR services",
+      "industrial staffing", "warehouse staffing", "manufacturing jobs", "office staffing",
       ...VOICE_SEARCH_OPTIMIZATION.conversationalKeywords
     ],
     canonical: "/"
   });
 
-  const organizationData = generateStructuredData("Organization", {});
+  const organizationData = generateEntityData();
   const localBusinessData = generateStructuredData("LocalBusiness", {});
 
   // Google Business Profile structured data

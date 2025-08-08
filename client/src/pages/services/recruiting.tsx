@@ -1,47 +1,87 @@
-import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Users, Target, CheckCircle, Clock } from "lucide-react";
+import { SEOHelmet } from "@/components/seo-helmet";
+import { generateRichSnippetData, VOICE_SEARCH_OPTIMIZATION } from "@/lib/seo-comprehensive";
 
 export default function RecruitingService() {
+  const breadcrumbs = [
+    { name: "Home", url: "/" },
+    { name: "Services", url: "/services" },
+    { name: "Recruiting", url: "/services/recruiting" }
+  ];
+
+  const serviceStructuredData = generateRichSnippetData('Service', {
+    name: "Professional Recruiting Services",
+    description: "Expert recruiting services providing qualified candidates for businesses in Toronto and GTA",
+    serviceType: "Recruiting and Talent Acquisition",
+    areaServed: "Greater Toronto Area",
+    offers: {
+      "@type": "Offer",
+      "availability": "https://schema.org/InStock",
+      "priceCurrency": "CAD",
+      "priceRange": "$$"
+    }
+  });
+
+  const faqData = {
+    questions: [
+      {
+        id: 1,
+        question: "How quickly can Talencor provide qualified candidates?",
+        answer: "We can typically provide pre-screened qualified candidates within 24-48 hours for most positions, thanks to our extensive talent pool and efficient Profile-Matching System.",
+        upvotes: 52
+      },
+      {
+        id: 2,
+        question: "What is your candidate screening process?",
+        answer: "Our comprehensive screening includes skills assessment, background checks, reference verification, personality matching, and industry-specific testing to ensure the perfect fit for your company.",
+        upvotes: 45
+      },
+      {
+        id: 3,
+        question: "Do you offer replacement guarantees?",
+        answer: "Yes, we offer replacement guarantees for all placements. If a candidate doesn't work out, we'll quickly provide a suitable replacement at no additional cost.",
+        upvotes: 38
+      }
+    ]
+  };
+
+  const howToData = {
+    title: "How to Get Started with Talencor Recruiting Services",
+    description: "Simple steps to find the perfect candidates for your business",
+    totalTime: "PT48H",
+    cost: { currency: "CAD", value: "0" },
+    steps: [
+      { name: "Contact Us", text: "Call (647) 946-2177 or fill out our online form to discuss your staffing needs" },
+      { name: "Define Requirements", text: "Our team works with you to understand your specific position requirements and company culture" },
+      { name: "Candidate Matching", text: "We use our Profile-Matching System to identify the best candidates from our pre-screened talent pool" },
+      { name: "Review & Interview", text: "We present qualified candidates for your review and arrange interviews at your convenience" },
+      { name: "Onboarding", text: "Once you select a candidate, we handle all paperwork and ensure smooth onboarding" }
+    ]
+  };
+
   return (
     <>
-      <Helmet>
-        <title>Professional Recruiting Services | Talencor Staffing Solutions</title>
-        <meta name="description" content="Expert recruiting services in Toronto and GTA. Our staffing operations team continuously recruits new talent to provide the right people the first time. Find qualified candidates for your business." />
-        <meta name="keywords" content="recruiting services Toronto, staffing solutions GTA, talent acquisition, professional recruitment, workforce solutions, employee placement" />
-        <link rel="canonical" href="/services/recruiting" />
-        <meta property="og:title" content="Professional Recruiting Services | Talencor Staffing Solutions" />
-        <meta property="og:description" content="Expert recruiting services in Toronto and GTA. Our staffing operations team continuously recruits new talent to provide the right people the first time." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="/services/recruiting" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Professional Recruiting Services | Talencor Staffing Solutions" />
-        <meta name="twitter:description" content="Expert recruiting services in Toronto and GTA. Our staffing operations team continuously recruits new talent to provide the right people the first time." />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Service",
-            "name": "Professional Recruiting Services",
-            "description": "Expert recruiting services providing qualified candidates for businesses in Toronto and GTA",
-            "provider": {
-              "@type": "Organization",
-              "name": "Talencor Staffing",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "2985 Drew Rd #206, Airport Business Complex",
-                "addressLocality": "Mississauga",
-                "addressRegion": "ON",
-                "addressCountry": "CA"
-              },
-              "telephone": "(647) 946-2177"
-            },
-            "serviceType": "Recruiting and Talent Acquisition",
-            "areaServed": "Greater Toronto Area"
-          })}
-        </script>
-      </Helmet>
+      <SEOHelmet
+        title="Professional Recruiting Services Toronto & GTA - Talencor Staffing"
+        description="Expert recruiting services providing qualified candidates within 24-48 hours. Comprehensive screening, Profile-Matching System, and replacement guarantees. Find the right talent for manufacturing, warehouse, administrative, and more positions in Toronto and GTA."
+        keywords={[
+          "recruiting services Toronto", "staffing solutions GTA", "talent acquisition",
+          "professional recruitment", "workforce solutions", "employee placement",
+          "temporary staffing Toronto", "permanent placement GTA", "industrial recruiting",
+          "warehouse staffing", "manufacturing recruitment", "office staffing Toronto",
+          "skilled trades recruitment", "construction staffing", "healthcare staffing",
+          ...VOICE_SEARCH_OPTIMIZATION.conversationalKeywords
+        ]}
+        canonical="/services/recruiting"
+        breadcrumbs={breadcrumbs}
+        structuredData={[serviceStructuredData]}
+        faq={faqData}
+        howTo={howToData}
+        prefetch={['/contact', '/apply']}
+      />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-to-br from-navy to-corporate-blue text-white">

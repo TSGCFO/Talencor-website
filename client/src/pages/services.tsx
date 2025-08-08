@@ -1,11 +1,11 @@
-import { Helmet } from "react-helmet-async";
 import { Users, Clock, Handshake, Search, GraduationCap, TrendingUp, ArrowRight, Calculator, Building } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { SERVICES, JOB_POSITIONS } from "@/lib/constants";
 import BenefitsSection from "@/components/benefits-section";
-import { SEO_CONFIG, generateMetaTags, generateBreadcrumbStructuredData } from "@/lib/seo";
+import { SEOHelmet } from "@/components/seo-helmet";
+import { generateRichSnippetData, VOICE_SEARCH_OPTIMIZATION } from "@/lib/seo-comprehensive";
 
 const iconMap = {
   Users,
@@ -19,71 +19,71 @@ const iconMap = {
 };
 
 export default function Services() {
-  const seoData = generateMetaTags({
-    title: "Professional Staffing Services | Toronto & GTA",
-    description: "Comprehensive staffing services including recruiting, training, payroll administration, labour relations, permanent placements, and consulting in Toronto and GTA.",
-    keywords: [
-      "staffing services Toronto", "recruiting services GTA", "employee training", "payroll services", 
-      "labour relations", "permanent placement", "workforce consulting", "temporary staffing",
-      "WHMIS certification", "HR services Toronto", "employment agency GTA"
-    ],
-    canonical: "/services"
-  });
-
-  const breadcrumbData = generateBreadcrumbStructuredData([
+  const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Services", url: "/services" }
-  ]);
+  ];
 
-  const servicesStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Staffing Services",
-    "itemListElement": SERVICES.map((service, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "Service",
-        "name": service.title,
-        "description": service.description,
-        "url": `${SEO_CONFIG.siteUrl}/services/${service.id}`,
-        "provider": {
-          "@type": "Organization",
-          "name": SEO_CONFIG.businessName
-        }
-      }
+  const servicesStructuredData = generateRichSnippetData('ItemList', {
+    name: "Staffing Services",
+    description: "Comprehensive staffing and workforce solutions for businesses in Toronto and GTA",
+    items: SERVICES.map((service) => ({
+      type: "Service",
+      name: service.title,
+      description: service.description,
+      url: `/services/${service.id}`,
+      image: service.icon
     }))
+  });
+
+  const faqData = {
+    questions: [
+      {
+        id: 1,
+        question: "What staffing services does Talencor offer?",
+        answer: "Talencor offers comprehensive staffing services including recruiting, employee training with WHMIS certification, payroll administration, labour relations consulting, permanent placements, and workforce consulting services throughout Toronto and the Greater Toronto Area.",
+        upvotes: 42
+      },
+      {
+        id: 2,
+        question: "How does Talencor's Profile-Matching System work?",
+        answer: "Our Profile-Matching System uses advanced screening techniques to match candidate skills, experience, and personality with your company's specific requirements and culture, ensuring the right fit for both temporary and permanent positions.",
+        upvotes: 35
+      },
+      {
+        id: 3,
+        question: "What industries does Talencor serve?",
+        answer: "Talencor specializes in staffing for manufacturing, warehouse/logistics, construction, administrative, healthcare, and general labour industries across the Greater Toronto Area.",
+        upvotes: 28
+      },
+      {
+        id: 4,
+        question: "What is included in Talencor's payroll administration service?",
+        answer: "Our payroll administration service includes complete payroll processing, vacation pay management, severance calculations, sick leave tracking, benefits administration, tax remittances, and all required government reporting.",
+        upvotes: 25
+      }
+    ]
   };
 
   return (
     <>
-      <Helmet>
-        <title>{seoData.title}</title>
-        <meta name="description" content={seoData.description} />
-        <meta name="keywords" content={seoData.keywords} />
-        <meta name="robots" content={seoData.robots} />
-        <link rel="canonical" href={seoData.canonical} />
-        
-        {/* Open Graph Tags */}
-        <meta property="og:title" content={seoData.ogTitle} />
-        <meta property="og:description" content={seoData.ogDescription} />
-        <meta property="og:type" content={seoData.ogType} />
-        <meta property="og:url" content={seoData.ogUrl} />
-        <meta property="og:site_name" content={SEO_CONFIG.siteName} />
-        
-        {/* Twitter Card Tags */}
-        <meta name="twitter:card" content={seoData.twitterCard} />
-        <meta name="twitter:title" content={seoData.twitterTitle} />
-        <meta name="twitter:description" content={seoData.twitterDescription} />
-        
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbData)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(servicesStructuredData)}
-        </script>
-      </Helmet>
+      <SEOHelmet
+        title="Professional Staffing Services in Toronto & GTA"
+        description="Comprehensive staffing services including recruiting, training, payroll administration, labour relations, permanent placements, and consulting. Expert workforce solutions for businesses in Toronto and the Greater Toronto Area."
+        keywords={[
+          "staffing services Toronto", "recruiting services GTA", "employee training", 
+          "payroll services", "labour relations", "permanent placement", 
+          "workforce consulting", "temporary staffing", "WHMIS certification", 
+          "HR services Toronto", "employment agency GTA", "industrial staffing",
+          "warehouse staffing", "manufacturing recruitment", "office staffing",
+          ...VOICE_SEARCH_OPTIMIZATION.conversationalKeywords
+        ]}
+        canonical="/services"
+        breadcrumbs={breadcrumbs}
+        structuredData={[servicesStructuredData]}
+        faq={faqData}
+        prefetch={['/services/recruiting', '/services/training', '/services/payroll-administration']}
+      />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-navy to-charcoal text-white py-12 sm:py-16 md:py-20">
