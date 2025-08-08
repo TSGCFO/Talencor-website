@@ -30,6 +30,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone"),
+  companyName: text("company_name"),
   inquiryType: text("inquiry_type").notNull(),
   message: text("message").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

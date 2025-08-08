@@ -682,7 +682,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         companyName: submission.companyName,    // Their company (if provided)
         inquiryType: submission.inquiryType,    // What type of inquiry
         message: submission.message,            // Their full message
-        submittedAt: submission.submittedAt     // When they sent it
+        submittedAt: submission.createdAt || new Date()  // When they sent it (use createdAt field)
       });
       // </SendTeamNotificationSnippet>
       // </ContactEmailNotificationTriggerSnippet>
