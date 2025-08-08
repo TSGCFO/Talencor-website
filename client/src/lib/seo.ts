@@ -1,6 +1,6 @@
 export const SEO_CONFIG = {
   siteName: "Talencor Staffing",
-  siteUrl: process.env.NODE_ENV === 'production' ? 'https://talencor-staffing.replit.app' : 'http://localhost:5000',
+  siteUrl: import.meta.env.PROD ? 'https://talencor-staffing.replit.app' : 'http://localhost:5000',
   defaultTitle: "Talencor Staffing | Professional Staffing Solutions in Toronto & GTA",
   defaultDescription: "Leading staffing agency in Toronto and GTA providing recruiting, training, payroll administration, labour relations, permanent placements, and consulting services.",
   defaultImage: "/og-image.jpg",

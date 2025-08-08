@@ -664,7 +664,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         firstName: submission.firstName,        // Their first name
         lastName: submission.lastName,          // Their last name
         email: submission.email,                // Where to send the email
-        companyName: submission.companyName,    // Their company (if provided)
+        companyName: submission.companyName || undefined,    // Their company (if provided)
         inquiryType: submission.inquiryType,    // What they're asking about
         message: submission.message             // Their message to us
       });
@@ -678,8 +678,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         firstName: submission.firstName,        // Their first name
         lastName: submission.lastName,          // Their last name
         email: submission.email,                // Their email
-        phone: submission.phone,                // Their phone (if provided)
-        companyName: submission.companyName,    // Their company (if provided)
+        phone: submission.phone || undefined,   // Their phone (if provided)
+        companyName: submission.companyName || undefined,    // Their company (if provided)
         inquiryType: submission.inquiryType,    // What type of inquiry
         message: submission.message,            // Their full message
         submittedAt: submission.createdAt || new Date()  // When they sent it (use createdAt field)
