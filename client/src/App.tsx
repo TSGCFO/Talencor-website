@@ -37,10 +37,12 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
 import Accessibility from "@/pages/accessibility";
 import SEOAnalysis from "@/pages/seo-analysis";
+import { AdvancedSEOImplementation } from "@/components/seo-advanced-implementation";
 
 function Router() {
   return (
     <div className="min-h-screen flex flex-col">
+      <AdvancedSEOImplementation />
       <Header />
       <main className="flex-1">
         <Switch>
