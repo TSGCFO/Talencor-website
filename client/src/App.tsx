@@ -36,6 +36,7 @@ import NotFound from "@/pages/not-found";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
 import Accessibility from "@/pages/accessibility";
+import SEOAnalysis from "@/pages/seo-analysis";
 
 function Router() {
   return (
@@ -71,6 +72,7 @@ function Router() {
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms-of-service" component={TermsOfService} />
           <Route path="/accessibility" component={Accessibility} />
+          <Route path="/seo-analysis" component={SEOAnalysis} />
           <Route component={NotFound} />
         </Switch>
       </main>
