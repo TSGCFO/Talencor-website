@@ -50,6 +50,22 @@ const getStatusBadge = (status: string) => {
 };
 // </StatusBadgeSnippet>
 
+// Define types for authentication and API responses
+interface ClientAuthResponse {
+  isAuthenticated: boolean;
+  client?: {
+    id: number;
+    companyName: string;
+    contactName: string;
+    email: string;
+    accessCode: string;
+  };
+}
+
+interface JobPostingsResponse {
+  jobPostings: JobPosting[];
+}
+
 export default function ClientDashboard() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -58,7 +74,7 @@ export default function ClientDashboard() {
 
   // <CheckAuthSnippet>
   // First, check if the client is logged in
-  const { data: authData, isLoading: authLoading } = useQuery({
+  const { data: authData, isLoading: authLoading } = useQuery<ClientAuthResponse>({
     queryKey: ["/api/client/auth"],
     retry: false
   });
@@ -66,7 +82,7 @@ export default function ClientDashboard() {
 
   // <FetchJobPostingsSnippet>
   // Get all job postings for this client
-  const { data: jobPostings, isLoading: jobsLoading } = useQuery({
+  const { data: jobPostings, isLoading: jobsLoading } = useQuery<JobPostingsResponse>({
     queryKey: ["/api/client/job-postings"],
     enabled: !!authData?.isAuthenticated,
     retry: false
@@ -338,7 +354,7 @@ export default function ClientDashboard() {
                   <Input
                     id="department"
                     name="department"
-                    defaultValue={editingJob.department}
+                    defaultValue={editingJob.department || ''}
                     required
                   />
                 </div>
@@ -371,13 +387,13 @@ export default function ClientDashboard() {
                     name="numberOfPositions"
                     type="number"
                     min="1"
-                    defaultValue={editingJob.numberOfPositions}
+                    defaultValue={editingJob.numberOfPositions || 1}
                     required
                   />
                 </div>
                 <div>
                   <Label htmlFor="urgency">Urgency</Label>
-                  <Select name="urgency" defaultValue={editingJob.urgency}>
+                  <Select name="urgency" defaultValue={editingJob.urgency || 'medium'}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -406,7 +422,7 @@ export default function ClientDashboard() {
                   id="jobDescription"
                   name="jobDescription"
                   rows={4}
-                  defaultValue={editingJob.jobDescription}
+                  defaultValue={editingJob.jobDescription || ''}
                   required
                 />
               </div>
@@ -417,7 +433,7 @@ export default function ClientDashboard() {
                   id="requiredQualifications"
                   name="requiredQualifications"
                   rows={3}
-                  defaultValue={editingJob.requiredQualifications}
+                  defaultValue={editingJob.requiredQualifications || ''}
                   required
                 />
               </div>

@@ -114,15 +114,15 @@ const jobListings = [
 // </JobListingsDataSnippet>
 
 export default function Jobs() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
   const [location] = useLocation();
   
-  // <IndustryFilterSnippet>
-  // This gets the industry from the URL (like getting a package label from the address)
-  // If someone clicked "Information Technology" on Job Seekers page, this will extract that
-  const industryParam = new URLSearchParams(location.split('?')[1] || '').get('industry');
-  // </IndustryFilterSnippet>
+  // Parse URL parameters
+  const params = new URLSearchParams(location.split('?')[1] || '');
+  const searchParam = params.get('search') || '';
+  const industryParam = params.get('industry');
+  
+  const [searchTerm, setSearchTerm] = useState(searchParam);
+  const [locationFilter, setLocationFilter] = useState("");
 
   const filteredJobs = jobListings.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

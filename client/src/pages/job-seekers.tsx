@@ -32,19 +32,28 @@ export default function JobSeekers() {
                 {/* Search Bar Row */}
                 <div className="flex gap-2 max-w-xl">
                   <input
+                    id="job-search-input"
                     type="text"
                     placeholder="Search for jobs..."
                     className="px-4 py-3 rounded-lg text-charcoal bg-white flex-1 min-h-[44px]"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
-                        window.location.href = '/jobs';
+                        const searchValue = (e.target as HTMLInputElement).value;
+                        const searchParams = searchValue ? `?search=${encodeURIComponent(searchValue)}` : '';
+                        window.location.href = `/jobs${searchParams}`;
                       }
                     }}
                   />
-                  <Button asChild className="bg-talencor-gold hover:bg-talencor-orange text-white px-4 sm:px-6 min-h-[44px]">
-                    <Link href="/jobs">
-                      Browse Jobs
-                    </Link>
+                  <Button 
+                    className="bg-talencor-gold hover:bg-talencor-orange text-white px-4 sm:px-6 min-h-[44px]"
+                    onClick={() => {
+                      const input = document.getElementById('job-search-input') as HTMLInputElement;
+                      const searchValue = input?.value || '';
+                      const searchParams = searchValue ? `?search=${encodeURIComponent(searchValue)}` : '';
+                      window.location.href = `/jobs${searchParams}`;
+                    }}
+                  >
+                    Browse Jobs
                   </Button>
                 </div>
                 

@@ -423,10 +423,10 @@ export default function AdminJobPostings() {
                     </div>
                   )}
 
-                  {selectedPosting.specialRequirements && (
+                  {selectedPosting.specialInstructions && (
                     <div>
-                      <h3 className="font-semibold text-gray-700 mb-2">Special Requirements</h3>
-                      <p className="text-gray-600 whitespace-pre-wrap">{selectedPosting.specialRequirements}</p>
+                      <h3 className="font-semibold text-gray-700 mb-2">Special Instructions</h3>
+                      <p className="text-gray-600 whitespace-pre-wrap">{selectedPosting.specialInstructions}</p>
                     </div>
                   )}
 

@@ -88,11 +88,19 @@ export default function JobPosting() {
       const data = await response.json();
       
       if (data.success && data.client) {
-        // Auto-populate form fields with client data
-        form.setValue("companyName", data.client.companyName);
-        form.setValue("contactName", data.client.contactName);
-        form.setValue("email", data.client.email);
-        form.setValue("phone", data.client.phone || "");
+        // Auto-populate form fields with client data (with safety checks)
+        if (data.client?.companyName) {
+          form.setValue("companyName", data.client.companyName);
+        }
+        if (data.client?.contactName) {
+          form.setValue("contactName", data.client.contactName);
+        }
+        if (data.client?.email) {
+          form.setValue("email", data.client.email);
+        }
+        if (data.client?.phone) {
+          form.setValue("phone", data.client.phone);
+        }
         form.setValue("isExistingClient", true);
         
         toast({
