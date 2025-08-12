@@ -6,6 +6,11 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { AdminHeader } from "@/components/AdminHeader";
 import {
   Table,
   TableBody,
@@ -23,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { Loader2, Search, Mail, Phone, Building, MapPin, Calendar, DollarSign, LogOut, User } from "lucide-react";
+import { Loader2, Search, Mail, Phone, Building, MapPin, Calendar, DollarSign, LogOut, User, X, Send, Eye } from "lucide-react";
 import type { JobPosting } from "@/../../shared/schema";
 
 const statusOptions = [
@@ -40,6 +45,10 @@ export default function AdminJobPostings() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedPosting, setSelectedPosting] = useState<JobPosting | null>(null);
   const [adminUser, setAdminUser] = useState<{ id: number; username: string } | null>(null);
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailRecipient, setEmailRecipient] = useState<any>(null);
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
 
   // <AuthenticationCheckSnippet>
   // Check if the admin is logged in when the page loads
@@ -159,54 +168,16 @@ export default function AdminJobPostings() {
         <title>Admin - Job Postings | Talencor Staffing</title>
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Admin Navigation Tabs */}
-          <div className="mb-6 border-b">
-            <nav className="-mb-px flex space-x-8">
-              <a
-                href="/admin/job-postings"
-                className="border-b-2 border-[#F97316] py-2 px-1 text-sm font-medium text-[#F97316]"
-              >
-                Job Postings
-              </a>
-              <a
-                href="/admin/client-management"
-                className="border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              >
-                Client Management
-              </a>
-            </nav>
-          </div>
-          
-          {/* Admin Header with User Info and Logout */}
-          <div className="mb-8">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Job Postings Management</h1>
-                <p className="mt-2 text-gray-600">Review and manage job posting submissions</p>
-              </div>
-              
-              {/* Admin User Info and Logout Button */}
-              {adminUser && (
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <User size={20} />
-                    <span className="font-medium">{adminUser.username}</span>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="flex items-center gap-2"
-                  >
-                    <LogOut size={16} />
-                    Logout
-                  </Button>
-                </div>
-              )}
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <AdminHeader />
+        
+        <div className="flex-1">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Page Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Job Postings Management</h1>
+              <p className="mt-2 text-gray-600">Review and manage job posting submissions</p>
             </div>
-          </div>
 
           {/* Filters */}
           <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -220,6 +191,16 @@ export default function AdminJobPostings() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
+                {searchTerm && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1"
+                    onClick={() => setSearchTerm('')}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
@@ -350,7 +331,9 @@ export default function AdminJobPostings() {
               </div>
             )}
           </div>
+          </div>
         </div>
+      </div>
 
         {/* Detail Modal */}
         {selectedPosting && (
@@ -449,7 +432,12 @@ export default function AdminJobPostings() {
                   <Button variant="outline" onClick={() => setSelectedPosting(null)}>
                     Close
                   </Button>
-                  <Button onClick={() => window.open(`mailto:${selectedPosting.email}`)}>
+                  <Button onClick={() => {
+                    setEmailRecipient(selectedPosting);
+                    setEmailSubject(`Regarding your job posting: ${selectedPosting.jobTitle}`);
+                    setEmailMessage(`Dear ${selectedPosting.contactName},\n\nThank you for submitting your job posting for ${selectedPosting.jobTitle}.\n\n`);
+                    setShowEmailDialog(true);
+                  }}>
                     <Mail className="mr-2" size={16} />
                     Email Contact
                   </Button>
@@ -458,7 +446,93 @@ export default function AdminJobPostings() {
             </div>
           </div>
         )}
-      </div>
+
+        {/* Email Contact Dialog */}
+        <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Send Email to Contact</DialogTitle>
+              <DialogDescription>
+                Compose your message to {emailRecipient?.contactName} at {emailRecipient?.companyName}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email-to">To</Label>
+                <Input
+                  id="email-to"
+                  value={emailRecipient?.email || ''}
+                  disabled
+                  className="bg-gray-50"
+                />
+              </div>
+              <div>
+                <Label htmlFor="email-subject">Subject</Label>
+                <Input
+                  id="email-subject"
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  placeholder="Enter email subject"
+                />
+              </div>
+              <div>
+                <Label htmlFor="email-message">Message</Label>
+                <Textarea
+                  id="email-message"
+                  value={emailMessage}
+                  onChange={(e) => setEmailMessage(e.target.value)}
+                  placeholder="Enter your message"
+                  className="min-h-[200px]"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setShowEmailDialog(false);
+                setEmailRecipient(null);
+                setEmailSubject('');
+                setEmailMessage('');
+              }}>
+                Cancel
+              </Button>
+              <Button onClick={async () => {
+                try {
+                  const response = await fetch('/api/admin/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      to: emailRecipient?.email,
+                      subject: emailSubject,
+                      message: emailMessage,
+                    }),
+                  });
+                  
+                  if (response.ok) {
+                    toast({
+                      title: "Email sent successfully",
+                      description: `Message sent to ${emailRecipient?.contactName}`,
+                    });
+                    setShowEmailDialog(false);
+                    setEmailRecipient(null);
+                    setEmailSubject('');
+                    setEmailMessage('');
+                  } else {
+                    throw new Error('Failed to send email');
+                  }
+                } catch (error) {
+                  toast({
+                    title: "Failed to send email",
+                    description: "Please try again or use your email client directly.",
+                    variant: "destructive",
+                  });
+                }
+              }}>
+                <Send className="mr-2 h-4 w-4" />
+                Send Email
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
     </>
   );
 }

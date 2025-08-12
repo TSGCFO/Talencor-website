@@ -464,6 +464,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Failed to deactivate client" });
     }
   });
+
+  // Reactivate client (admin only)
+  app.patch("/api/admin/clients/:id/reactivate", async (req, res) => {
+    try {
+      if (!req.session.user?.isAdmin) {
+        return res.status(401).json({ error: "Admin access required" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const client = await storage.reactivateClient(id);
+      res.json(client);
+    } catch (error) {
+      console.error('Error reactivating client:', error);
+      res.status(500).json({ error: "Failed to reactivate client" });
+    }
+  });
   
   // Get pending code requests (admin only)
   app.get("/api/admin/code-requests", async (req, res) => {

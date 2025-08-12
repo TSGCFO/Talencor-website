@@ -85,6 +85,7 @@ export interface IStorage {
   updateClient(id: number, updates: Partial<InsertClient>): Promise<Client>;
   updateClientLoginInfo(clientId: number): Promise<void>;
   deactivateClient(id: number): Promise<void>;
+  reactivateClient(id: number): Promise<Client>;
   
   // Client Activity methods
   createClientActivity(activity: InsertClientActivity): Promise<ClientActivity>;
@@ -546,6 +547,21 @@ export class DatabaseStorage implements IStorage {
         updatedAt: new Date()
       })
       .where(eq(clients.id, id));
+  }
+
+  async reactivateClient(id: number): Promise<Client> {
+    const [reactivated] = await db
+      .update(clients)
+      .set({
+        isActive: true,
+        updatedAt: new Date()
+      })
+      .where(eq(clients.id, id))
+      .returning();
+    if (!reactivated) {
+      throw new Error('Client not found');
+    }
+    return reactivated;
   }
 
   // Client Activity methods
