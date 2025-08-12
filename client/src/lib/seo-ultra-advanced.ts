@@ -436,6 +436,69 @@ export class LinkOptimization {
     return enhanced;
   }
 
+  // Safe DOM manipulation version that avoids innerHTML
+  static addContextualLinksSafe(element: HTMLElement, linkMap: { [keyword: string]: string }): void {
+    const walker = document.createTreeWalker(
+      element,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+
+    const textNodes: Text[] = [];
+    let node;
+    
+    // Collect all text nodes
+    while (node = walker.nextNode()) {
+      textNodes.push(node as Text);
+    }
+
+    // Process each text node
+    textNodes.forEach(textNode => {
+      const text = textNode.textContent || '';
+      let hasChanges = false;
+      let newContent = text;
+
+      Object.entries(linkMap).forEach(([keyword, url]) => {
+        const regex = new RegExp(`\\b(${keyword})\\b`, 'i');
+        const match = regex.exec(newContent);
+        
+        if (match && !hasChanges) { // Only link first occurrence
+          const beforeText = newContent.substring(0, match.index);
+          const matchedText = match[0];
+          const afterText = newContent.substring(match.index + match[0].length);
+          
+          // Create new elements
+          const parentElement = textNode.parentElement;
+          if (parentElement) {
+            // Create text node for content before link
+            if (beforeText) {
+              const beforeNode = document.createTextNode(beforeText);
+              parentElement.insertBefore(beforeNode, textNode);
+            }
+            
+            // Create link element
+            const linkElement = document.createElement('a');
+            linkElement.href = url;
+            linkElement.className = 'contextual-link';
+            linkElement.textContent = matchedText;
+            parentElement.insertBefore(linkElement, textNode);
+            
+            // Create text node for content after link
+            if (afterText) {
+              const afterNode = document.createTextNode(afterText);
+              parentElement.insertBefore(afterNode, textNode);
+            }
+            
+            // Remove original text node
+            parentElement.removeChild(textNode);
+            hasChanges = true;
+          }
+        }
+      });
+    });
+  }
+
   // Implements siloing structure
   static createSiloStructure(): {
     silos: { [category: string]: string[] };

@@ -109,8 +109,8 @@ export function UltraAdvancedSEOImplementation() {
         'interview': '/interview-simulator'
       };
       
-      const enhanced = LinkOptimization.addContextualLinks(area.innerHTML, linkMap);
-      area.innerHTML = enhanced;
+      // Use safe DOM manipulation instead of innerHTML
+      LinkOptimization.addContextualLinksSafe(area as HTMLElement, linkMap);
     });
   }, [location]);
   // </InternalLinkingOptimization>
