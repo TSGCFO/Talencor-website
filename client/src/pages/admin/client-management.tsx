@@ -42,7 +42,10 @@ import { format, formatDistanceToNow } from 'date-fns';
 // <ClientDetailsDialogSnippet>
 // Modal that shows detailed information about a specific client
 function ClientDetailsDialog({ client, isOpen, onClose }: any) {
-  const { data: details, isLoading, error } = useQuery({
+  const { data: details, isLoading, error } = useQuery<{
+    client: any;
+    activities: any[];
+  }>({
     queryKey: [`/api/admin/clients/${client?.id}`],
     enabled: !!client?.id && isOpen
   });
@@ -237,12 +240,12 @@ export default function ClientManagement() {
   // </LogoutFunctionSnippet>
 
   // Fetch all clients
-  const { data: clients = [], isLoading: clientsLoading } = useQuery({
+  const { data: clients = [], isLoading: clientsLoading } = useQuery<any[]>({
     queryKey: ['/api/admin/clients']
   });
 
   // Fetch code requests
-  const { data: codeRequests = [], isLoading: requestsLoading } = useQuery({
+  const { data: codeRequests = [], isLoading: requestsLoading } = useQuery<any[]>({
     queryKey: ['/api/admin/code-requests']
   });
 
