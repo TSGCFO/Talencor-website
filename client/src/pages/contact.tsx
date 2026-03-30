@@ -48,29 +48,47 @@ export default function Contact() {
 
   const submitContact = useMutation({
     mutationFn: async (data: ContactFormData) => {
-      // Add breadcrumb for form submission attempt
-      addBreadcrumb('Contact form submission started', 'user', {
-        inquiryType: data.inquiryType,
-        hasPhone: !!data.phone,
-      });
+      // Add breadcrumb for form submission attempt with safe data
+      try {
+        addBreadcrumb('Contact form submission started', 'user', {
+          inquiryType: String(data.inquiryType || 'Unknown'),
+          hasPhone: Boolean(data.phone),
+        });
+      } catch (error) {
+        // Silently handle Sentry errors to avoid breaking form submission
+        if (import.meta.env.DEV) {
+          console.warn("Failed to add breadcrumb:", error);
+        }
+      }
 
       const response = await apiRequest("POST", "/api/contact", data);
       return response.json();
     },
     onSuccess: (_, data) => {
-      // Track successful form submission
-      captureEvent('Contact form submitted successfully', {
-        inquiryType: data.inquiryType,
-        userEmail: data.email,
-        hasPhone: !!data.phone,
-      });
+      // Track successful form submission with safe data
+      try {
+        const eventData = {
+          inquiryType: String(data.inquiryType || 'Unknown'),
+          userEmail: String(data.email || ''),
+          hasPhone: Boolean(data.phone),
+        };
+        
+        captureEvent('Contact form submitted successfully', eventData);
 
-      // Set user context for future errors
-      setSentryUser({
-        id: data.email,
-        email: data.email,
-        username: `${data.firstName} ${data.lastName}`,
-      });
+        // Set user context for future errors with safe data
+        const userData = {
+          id: String(data.email || ''),
+          email: String(data.email || ''),
+          username: `${String(data.firstName || '')} ${String(data.lastName || '')}`.trim(),
+        };
+        
+        setSentryUser(userData);
+      } catch (sentryError) {
+        // Silently handle Sentry errors in production to avoid breaking the user experience
+        if (import.meta.env.DEV) {
+          console.warn("Failed to capture contact form success event:", sentryError);
+        }
+      }
 
       setIsSubmitted(true);
       form.reset();
@@ -80,13 +98,21 @@ export default function Contact() {
       });
     },
     onError: (error: any, data) => {
-      // Capture the error with context
-      captureError(error, {
-        action: 'contact_form_submission',
-        inquiryType: data?.inquiryType,
-        userEmail: data?.email,
-        errorMessage: error.message,
-      });
+      // Capture the error with context and safe data
+      try {
+        captureError(error, {
+          action: 'contact_form_submission',
+          inquiryType: String(data?.inquiryType || 'Unknown'),
+          userEmail: String(data?.email || ''),
+          errorMessage: String(error?.message || 'Unknown error'),
+        });
+      } catch (sentryError) {
+        // Silently handle Sentry errors to avoid breaking error handling
+        if (import.meta.env.DEV) {
+          console.warn("Failed to capture contact form error:", sentryError);
+          console.error("Original error:", error);
+        }
+      }
 
       toast({
         title: "Error",
@@ -97,10 +123,17 @@ export default function Contact() {
   });
 
   const onSubmit = (data: ContactFormData) => {
-    // Add breadcrumb for form validation success
-    addBreadcrumb('Contact form validation passed', 'user', {
-      inquiryType: data.inquiryType,
-    });
+    // Add breadcrumb for form validation success with safe data
+    try {
+      addBreadcrumb('Contact form validation passed', 'user', {
+        inquiryType: String(data.inquiryType || 'Unknown'),
+      });
+    } catch (error) {
+      // Silently handle Sentry errors to avoid breaking form submission
+      if (import.meta.env.DEV) {
+        console.warn("Failed to add breadcrumb:", error);
+      }
+    }
 
     submitContact.mutate(data);
   };
