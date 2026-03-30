@@ -153,8 +153,8 @@ export default function ApplicationInfo() {
                     </a>
                   </p>
                   <p className="text-sm text-charcoal">
-                    Monday-Friday: 10 AM - 5 PM<br />
-                    Weekends: Closed
+                    Registration Hours: Monday-Friday, 10 AM - 5 PM<br />
+                    Customer Support: Open 24/7
                   </p>
                 </div>
                 <div className="space-y-2">

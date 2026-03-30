@@ -73,7 +73,8 @@ export default function Accessibility() {
                   Talencor Staffing<br />
                   Phone: <a href="tel:647-946-2177" className="text-talencor-gold hover:underline">647-946-2177</a><br />
                   Email: <a href="mailto:accessibility@talencor.ca" className="text-talencor-gold hover:underline">accessibility@talencor.ca</a><br />
-                  Office Hours: Monday-Friday, 10 AM - 5 PM EST
+                  Registration Hours: Monday-Friday, 10 AM - 5 PM EST<br />
+                  Customer Support: Open 24/7
                 </p>
               </div>
 

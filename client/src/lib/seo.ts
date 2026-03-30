@@ -7,7 +7,7 @@ export const SEO_CONFIG = {
   twitterHandle: "@TalencorStaffing",
   businessPhone: "(647) 946-2177",
   businessAddress: "2985 Drew Rd #206, Airport Business Complex, Mississauga, ON",
-  businessHours: "Monday-Friday 10 AM-5 PM",
+  businessHours: "Registration Hours: Monday-Friday 10 AM-5 PM, Customer Support: Open 24/7",
   businessName: "Talencor Staffing",
   keywords: {
     primary: ["staffing agency Toronto", "recruitment services GTA", "temporary staffing", "permanent placement", "workforce solutions"],

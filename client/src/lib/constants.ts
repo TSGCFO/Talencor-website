@@ -11,9 +11,9 @@ export const COMPANY_INFO = {
     complex: "Airport Business Complex"
   },
   hours: {
-    weekdays: "Monday - Friday: 10:00 AM - 5:00 PM",
-    saturday: "Saturday: Closed",
-    sunday: "Sunday: Closed"
+    weekdays: "Registration Hours: Monday - Friday, 10:00 AM - 5:00 PM",
+    saturday: "Customer Support: Open 24/7",
+    sunday: ""
   },
   socialMedia: {
     linkedin: "https://www.linkedin.com/company/talencor-staffing",
